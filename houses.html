@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Houses | Rheaspark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .brand-gradient {
+            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #2FA4E7, #3CB371);
+            border-radius: 10px;
+        }
+        
+        /* Modal Animation */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms, transform 300ms;
+        }
+        
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 300ms, transform 300ms;
+        }
+        
+        /* Card Hover Effects */
+        .property-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Filter Animation */
+        .filter-slide {
+            transition: max-height 0.5s ease-out;
+            overflow: hidden;
+        }
+        
+        /* Price Range Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #2FA4E7, #3CB371);
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #2FA4E7;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Tag Animation */
+        .tag {
+            transition: all 0.2s ease;
+        }
+        
+        .tag:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Loading Skeleton Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -200px 0;
+            }
+            100% {
+                background-position: calc(200px + 100%) 0;
+            }
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* Map Pin Animation */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+        
+        <!-- Page Header -->
+        <div class="mb-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 brand-font">
+                Find Your <span class="brand-gradient">Perfect Home</span>
+            </h1>
+            <p class="text-gray-600 text-lg max-w-3xl mx-auto">
+                Browse verified rental listings with transparent information. Every property includes honest disclosures about common issues and practical solutions.
+            </p>
+        </div>
+        
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <!-- Quick Search Bar -->
+            <div class="mb-6">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        placeholder="Search by location, property type, or keyword..."
+                        class="w-full p-4 pl-12 pr-24 text-lg border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"
+                    >
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                    <button 
+                        id="searchBtn"
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Advanced Filter Toggle -->
+            <div class="mb-4">
+                <button 
+                    id="filterToggle"
+                    class="flex items-center text-[#2FA4E7] font-semibold hover:text-[#3CB371] transition-colors duration-300"
+                >
+                    <i class="fas fa-sliders-h mr-2"></i>
+                    Advanced Filters
+                    <i id="filterToggleIcon" class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+                </button>
+            </div>
+            
+            <!-- Advanced Filters (Collapsible) -->
+            <div id="advancedFilters" class="filter-slide max-h-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4 border-t border-gray-100">
+                    <!-- Price Range Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Price Range (KES)</label>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span id="priceMinDisplay">10,000</span>
+                                <span id="priceMaxDisplay">200,000</span>
+                            </div>
+                            <div class="relative pt-4">
+                                <input 
+                                    type="range" 
+                                    id="priceRange" 
+                                    min="10000" 
+                                    max="200000" 
+                                    step="5000" 
+                                    value="50000"
+                                    class="w-full"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Type Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Property Type</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="tag filter-tag px-3 py-1 bg-blue-50 text-[#2FA4E7] rounded-full border border-blue-100 text-sm font-medium hover:bg-[#2FA4E7] hover:text-white" data-filter="apartment">
+                                Apartment
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-green-50 text-[#3CB371] rounded-full border border-green-100 text-sm font-medium hover:bg-[#3CB371] hover:text-white" data-filter="house">
+                                House
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-blue-50 text-[#2FA4E7] rounded-full border border-blue-100 text-sm font-medium hover:bg-[#2FA4E7] hover:text-white" data-filter="studio">
+                                Studio
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-green-50 text-[#3CB371] rounded-full border border-green-100 text-sm font-medium hover:bg-[#3CB371] hover:text-white" data-filter="bedsitter">
+                                Bedsitter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Bedrooms Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Bedrooms</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="tag filter-tag px-3 py-1 bg-gray-100 text-gray-700 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-200" data-filter="1">
+                                1
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-gray-100 text-gray-700 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-200" data-filter="2">
+                                2
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-gray-100 text-gray-700 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-200" data-filter="3">
+                                3
+                            </button>
+                            <button class="tag filter-tag px-3 py-1 bg-gray-100 text-gray-700 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-200" data-filter="4+">
+                                4+
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Location Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                        <select id="locationFilter" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                            <option value="">All Locations</option>
+                            <option value="Westlands">Westlands</option>
+                            <option value="Kilimani">Kilimani</option>
+                            <option value="Kileleshwa">Kileleshwa</option>
+                            <option value="Lavington">Lavington</option>
+                            <option value="Karen">Karen</option>
+                            <option value="Runda">Runda</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons for Filters -->
+                <div class="flex justify-end space-x-4 mt-6 pt-6 border-t border-gray-100">
+                    <button 
+                        id="clearFilters"
+                        class="px-5 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                    >
+                        Clear All
+                    </button>
+                    <button 
+                        id="applyFilters"
+                        class="px-5 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    >
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Summary -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <span id="resultsCount">12</span> Properties Found
+                </h2>
+                <p class="text-gray-600">Sorted by: <span class="font-semibold text-[#2FA4E7]">Verified First</span></p>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="mt-4 md:mt-0">
+                <select id="sortOptions" class="p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                    <option value="verified">Verified First</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Newest First</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Property Listings Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Property Card 1 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="1">
+                <!-- Property Image -->
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80" 
+                        alt="Modern Apartment"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <!-- Verified Badge -->
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-1"></i> Verified
+                    </div>
+                    <!-- Price Badge -->
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 85,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <!-- Property Details -->
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Spacious 3-Bedroom Apartment</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>Westlands, Nairobi</span>
+                    </div>
+                    
+                    <!-- Property Features -->
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">3 Bed</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">2 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">1,200 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">1 Parking</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Tags -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Pet Friendly</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">Balcony</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Security</span>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Card 2 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="2">
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                        alt="Modern House"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-1"></i> Verified
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 120,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Contemporary Family Home</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>Kileleshwa, Nairobi</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">4 Bed</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">3 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">2,400 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">2 Parking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Garden</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">Swimming Pool</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Security</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Card 3 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="3">
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                        alt="Luxury Apartment"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-1"></i> Verified
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 65,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Luxury 2-Bedroom Suite</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>Kilimani, Nairobi</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">2 Bed</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">2 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">950 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">1 Parking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Gym Access</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">City View</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">24/7 Security</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Card 4 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="4">
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                        alt="Cozy Studio"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#FF9800] to-[#FF5722] text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        New Listing
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 35,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Cozy Studio Apartment</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>Lavington, Nairobi</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">Studio</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">1 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">450 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">Shared Parking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Furnished</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">WiFi Included</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Quiet Area</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Card 5 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="5">
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                        alt="Modern Bedsitter"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-1"></i> Verified
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 25,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Modern Bedsitter</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>South B, Nairobi</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">Bedsitter</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">1 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">300 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-utensils text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">Kitchenette</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Affordable</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">Near Transport</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Water 24/7</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Card 6 -->
+            <div class="property-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer" data-property-id="6">
+                <div class="relative overflow-hidden h-64">
+                    <img 
+                        src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1153&q=80" 
+                        alt="Executive Villa"
+                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    >
+                    <div class="absolute top-4 left-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-1"></i> Verified
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-2 rounded-xl shadow-sm">
+                        <span class="font-bold text-lg">KES 180,000</span>
+                        <span class="text-xs text-gray-600 block">/month</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Executive Villa</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>Runda, Nairobi</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">5 Bed</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">4 Bath</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">4,200 sqft</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-[#2FA4E7] mr-1"></i>
+                            <span class="text-sm text-gray-700">3 Parking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Staff Quarters</span>
+                        <span class="px-2 py-1 bg-green-50 text-[#3CB371] text-xs rounded-full">Swimming Pool</span>
+                        <span class="px-2 py-1 bg-blue-50 text-[#2FA4E7] text-xs rounded-full">Garden</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="view-details-btn flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button class="favorite-btn w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors duration-300">
+                            <i class="far fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-12">
+            <button 
+                id="loadMore"
+                class="px-8 py-4 bg-white border-2 border-[#2FA4E7] text-[#2FA4E7] font-semibold rounded-xl hover:bg-[#2FA4E7] hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            >
+                Load More Properties
+            </button>
+        </div>
+        
+        <!-- Map View Toggle -->
+        <div class="fixed bottom-6 right-6 z-20">
+            <button 
+                id="mapToggle"
+                class="bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
+                title="View on Map"
+            >
+                <i class="fas fa-map-marked-alt text-xl"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Property Details Modal -->
+    <div id="propertyModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-y-auto modal-enter">
+                <!-- Modal Content -->
+                <div class="flex flex-col md:flex-row h-full">
+                    <!-- Left Column - Property Images & Details -->
+                    <div class="md:w-2/3 overflow-y-auto">
+                        <!-- Modal Header -->
+                        <div class="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-gray-800" id="modalPropertyTitle">Spacious 3-Bedroom Apartment</h2>
+                            <button id="closeModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Property Images Gallery -->
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="col-span-2 h-80 rounded-2xl overflow-hidden">
+                                    <img 
+                                        id="modalMainImage"
+                                        src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80" 
+                                        alt="Property"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div class="h-40 rounded-xl overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=958&q=80" alt="Living Room" class="w-full h-full object-cover">
+                                </div>
+                                <div class="h-40 rounded-xl overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Kitchen" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            
+                            <!-- Property Details -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                <!-- Left Column -->
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-4">Property Details</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Property Type</span>
+                                            <span class="font-semibold" id="modalPropertyType">Apartment</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Bedrooms</span>
+                                            <span class="font-semibold" id="modalBedrooms">3</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Bathrooms</span>
+                                            <span class="font-semibold" id="modalBathrooms">2</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Square Feet</span>
+                                            <span class="font-semibold" id="modalSquareFeet">1,200 sqft</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Parking</span>
+                                            <span class="font-semibold" id="modalParking">1 Dedicated</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right Column -->
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-4">Location & Pricing</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Location</span>
+                                            <span class="font-semibold" id="modalLocation">Westlands, Nairobi</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Monthly Rent</span>
+                                            <span class="font-bold text-lg text-[#2FA4E7]" id="modalRent">KES 85,000</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Security Deposit</span>
+                                            <span class="font-semibold" id="modalDeposit">KES 85,000</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Available From</span>
+                                            <span class="font-semibold" id="modalAvailable">Immediately</span>
+                                        </div>
+                                        <div class="flex justify-between py-3 border-b border-gray-100">
+                                            <span class="text-gray-600">Verified Status</span>
+                                            <span class="px-3 py-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white rounded-full text-xs font-semibold">Verified</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Honest Disclosure Section -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">Honest Disclosure</h3>
+                                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+                                    <div class="flex items-start mb-4">
+                                        <i class="fas fa-info-circle text-[#2FA4E7] text-xl mr-3 mt-1"></i>
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 mb-2">Common Issues & Solutions</h4>
+                                            <ul class="space-y-2 text-gray-700">
+                                                <li class="flex items-start">
+                                                    <i class="fas fa-check-circle text-[#3CB371] mr-2 mt-1"></i>
+                                                    <span><strong>Water Pressure:</strong> Slightly low during peak hours. Solution: Building has water storage tanks.</span>
+                                                </li>
+                                                <li class="flex items-start">
+                                                    <i class="fas fa-check-circle text-[#3CB371] mr-2 mt-1"></i>
+                                                    <span><strong>Noise Level:</strong> Moderate street noise. Solution: Double-glazed windows installed.</span>
+                                                </li>
+                                                <li class="flex items-start">
+                                                    <i class="fas fa-check-circle text-[#3CB371] mr-2 mt-1"></i>
+                                                    <span><strong>Access Road:</strong> Partially paved. Solution: Property accessible by all vehicle types.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Amenities -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">Amenities & Features</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-wifi text-[#2FA4E7] mr-3"></i>
+                                        <span>High-Speed WiFi</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-swimming-pool text-[#3CB371] mr-3"></i>
+                                        <span>Swimming Pool</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-dumbbell text-[#2FA4E7] mr-3"></i>
+                                        <span>Gym Access</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-shield-alt text-[#3CB371] mr-3"></i>
+                                        <span>24/7 Security</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-paw text-[#2FA4E7] mr-3"></i>
+                                        <span>Pet Friendly</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-xl">
+                                        <i class="fas fa-car text-[#3CB371] mr-3"></i>
+                                        <span>Dedicated Parking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Booking & Actions -->
+                    <div class="md:w-1/3 bg-gradient-to-b from-blue-50 to-green-50 p-6 overflow-y-auto border-l border-gray-100">
+                        <!-- Payment Access Card -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Access Full Details</h3>
+                            <p class="text-gray-600 mb-6">Pay a one-time fee of <span class="font-bold text-[#2FA4E7]">KES 200</span> to unlock:</p>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-[#3CB371] mr-3"></i>
+                                    <span>Landlord Contact Details</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-[#3CB371] mr-3"></i>
+                                    <span>Exact Location & Directions</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-[#3CB371] mr-3"></i>
+                                    <span>Full Honest Disclosure Report</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-[#3CB371] mr-3"></i>
+                                    <span>Property Viewing Arrangement</span>
+                                </li>
+                            </ul>
+                            <button 
+                                id="payAccessFee"
+                                class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 mb-4"
+                            >
+                                Pay KES 200 to Unlock
+                            </button>
+                            <p class="text-xs text-gray-500 text-center">One-time payment • Full refund if information is inaccurate</p>
+                        </div>
+                        
+                        <!-- Moving Services Card -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Need Moving Services?</h3>
+                            <p class="text-gray-600 mb-6">Connect with trusted movers through our platform</p>
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-[#2FA4E7] to-blue-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-truck text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">SafeMove Relocations</h4>
+                                        <p class="text-sm text-gray-600">4.8 ★ (120 reviews)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-boxes text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">QuickShift Movers</h4>
+                                        <p class="text-sm text-gray-600">4.6 ★ (85 reviews)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                id="requestMovers"
+                                class="w-full py-4 border-2 border-[#2FA4E7] text-[#2FA4E7] font-semibold rounded-xl hover:bg-[#2FA4E7] hover:text-white transition-all duration-300"
+                            >
+                                Request Moving Quote
+                            </button>
+                        </div>
+                        
+                        <!-- Contact Form -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Schedule Viewing</h3>
+                            <form id="viewingForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                    <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                    <input type="tel" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
+                                    <input type="date" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Message (Optional)</label>
+                                    <textarea rows="3" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" placeholder="Any specific requirements..."></textarea>
+                                </div>
+                                <button 
+                                    type="submit"
+                                    class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105"
+                                >
+                                    Request Viewing
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Moving Services Modal -->
+    <div id="moversModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto modal-enter">
+                <!-- Moving Services Content -->
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">Request Moving Services</h2>
+                        <button id="closeMoversModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Form -->
+                        <div>
+                            <form id="movingRequestForm" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Moving From</label>
+                                    <input type="text" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" placeholder="Current address" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Moving To</label>
+                                    <input type="text" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" placeholder="New property address" required>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Moving Date</label>
+                                        <input type="date" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Number of Rooms</label>
+                                        <select class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                            <option>1 Room</option>
+                                            <option>2 Rooms</option>
+                                            <option>3 Rooms</option>
+                                            <option>4+ Rooms</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Special Requirements</label>
+                                    <textarea rows="4" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" placeholder="Fragile items, special handling requirements..."></textarea>
+                                </div>
+                                
+                                <button 
+                                    type="submit"
+                                    class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 text-lg"
+                                >
+                                    Get Quotes from Movers
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Moving Services Info -->
+                        <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">Why Use Rheaspark Movers?</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-[#2FA4E7] to-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-shield-alt text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 mb-2">Verified & Trusted</h4>
+                                        <p class="text-gray-600">All movers are thoroughly vetted and verified by our team.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-money-bill-wave text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 mb-2">Competitive Pricing</h4>
+                                        <p class="text-gray-600">Get multiple quotes and choose the best option for your budget.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-[#2FA4E7] to-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-handshake text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 mb-2">10% Commission</h4>
+                                        <p class="text-gray-600">We charge movers only 10% per successful job - no hidden fees for you.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-star text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 mb-2">Rating System</h4>
+                                        <p class="text-gray-600">Rate your mover after the job to help others make informed decisions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const propertyModal = document.getElementById('propertyModal');
+        const moversModal = document.getElementById('moversModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeMoversModal = document.getElementById('closeMoversModal');
+        const filterToggle = document.getElementById('filterToggle');
+        const filterToggleIcon = document.getElementById('filterToggleIcon');
+        const advancedFilters = document.getElementById('advancedFilters');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearFilters = document.getElementById('clearFilters');
+        const applyFilters = document.getElementById('applyFilters');
+        const loadMore = document.getElementById('loadMore');
+        const mapToggle = document.getElementById('mapToggle');
+        const payAccessFee = document.getElementById('payAccessFee');
+        const requestMovers = document.getElementById('requestMovers');
+        const viewingForm = document.getElementById('viewingForm');
+        const movingRequestForm = document.getElementById('movingRequestForm');
+        const priceRange = document.getElementById('priceRange');
+        const priceMinDisplay = document.getElementById('priceMinDisplay');
+        const priceMaxDisplay = document.getElementById('priceMaxDisplay');
+        
+        // Property Data
+        const propertyData = {
+            1: {
+                title: "Spacious 3-Bedroom Apartment",
+                type: "Apartment",
+                bedrooms: "3",
+                bathrooms: "2",
+                squareFeet: "1,200 sqft",
+                parking: "1 Dedicated",
+                location: "Westlands, Nairobi",
+                rent: "KES 85,000",
+                deposit: "KES 85,000",
+                available: "Immediately",
+                image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80"
+            },
+            2: {
+                title: "Contemporary Family Home",
+                type: "House",
+                bedrooms: "4",
+                bathrooms: "3",
+                squareFeet: "2,400 sqft",
+                parking: "2 Dedicated",
+                location: "Kileleshwa, Nairobi",
+                rent: "KES 120,000",
+                deposit: "KES 120,000",
+                available: "Immediately",
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            3: {
+                title: "Luxury 2-Bedroom Suite",
+                type: "Apartment",
+                bedrooms: "2",
+                bathrooms: "2",
+                squareFeet: "950 sqft",
+                parking: "1 Dedicated",
+                location: "Kilimani, Nairobi",
+                rent: "KES 65,000",
+                deposit: "KES 65,000",
+                available: "Immediately",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            }
+        };
+        
+        // Initialize Price Range Display
+        priceMinDisplay.textContent = formatCurrency(10000);
+        priceMaxDisplay.textContent = formatCurrency(200000);
+        
+        // Format Currency
+        function formatCurrency(amount) {
+            return amount.toLocaleString('en-KE');
+        }
+        
+        // Update Price Range Display
+        priceRange.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            priceMinDisplay.textContent = formatCurrency(10000);
+            priceMaxDisplay.textContent = formatCurrency(value);
+        });
+        
+        // Toggle Advanced Filters
+        filterToggle.addEventListener('click', function() {
+            if (advancedFilters.style.maxHeight === '0px' || advancedFilters.style.maxHeight === '') {
+                advancedFilters.style.maxHeight = advancedFilters.scrollHeight + 'px';
+                filterToggleIcon.style.transform = 'rotate(180deg)';
+            } else {
+                advancedFilters.style.maxHeight = '0px';
+                filterToggleIcon.style.transform = 'rotate(0deg)';
+            }
+        });
+        
+        // Filter Tag Selection
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.classList.toggle('active');
+                
+                if (this.classList.contains('active')) {
+                    if (this.dataset.filter === 'apartment' || this.dataset.filter === 'studio') {
+                        this.style.background = '#2FA4E7';
+                        this.style.color = 'white';
+                        this.style.borderColor = '#2FA4E7';
+                    } else if (this.dataset.filter === 'house' || this.dataset.filter === 'bedsitter') {
+                        this.style.background = '#3CB371';
+                        this.style.color = 'white';
+                        this.style.borderColor = '#3CB371';
+                    } else {
+                        this.style.background = '#4B5563';
+                        this.style.color = 'white';
+                        this.style.borderColor = '#4B5563';
+                    }
+                } else {
+                    this.style.background = '';
+                    this.style.color = '';
+                    this.style.borderColor = '';
+                }
+            });
+        });
+        
+        // Apply Filters
+        applyFilters.addEventListener('click', function() {
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Applying...';
+            
+            // Simulate filter application
+            setTimeout(() => {
+                this.innerHTML = 'Apply Filters';
+                
+                // Close filters
+                advancedFilters.style.maxHeight = '0px';
+                filterToggleIcon.style.transform = 'rotate(0deg)';
+                
+                // Show success message
+                showNotification('Filters applied successfully!', 'success');
+            }, 1000);
+        });
+        
+        // Clear Filters
+        clearFilters.addEventListener('click', function() {
+            // Reset filter tags
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+                tag.style.background = '';
+                tag.style.color = '';
+                tag.style.borderColor = '';
+            });
+            
+            // Reset price range
+            priceRange.value = 50000;
+            priceMaxDisplay.textContent = formatCurrency(50000);
+            
+            // Reset location filter
+            document.getElementById('locationFilter').value = '';
+            
+            // Show notification
+            showNotification('All filters cleared!', 'info');
+        });
+        
+        // Search Functionality
+        searchBtn.addEventListener('click', function() {
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim()) {
+                // Show loading
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Searching...';
+                
+                // Simulate search
+                setTimeout(() => {
+                    this.innerHTML = 'Search';
+                    showNotification(`Search results for: "${searchTerm}"`, 'info');
+                }, 800);
+            }
+        });
+        
+        // Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+        
+        // Open Property Modal
+        document.querySelectorAll('.view-details-btn, .property-card').forEach(element => {
+            element.addEventListener('click', function(event) {
+                // Prevent event bubbling for buttons inside cards
+                if (event.target.classList.contains('favorite-btn')) {
+                    return;
+                }
+                
+                const propertyId = this.closest('.property-card').dataset.propertyId;
+                openPropertyModal(propertyId);
+            });
+        });
+        
+        // Open Property Modal Function
+        function openPropertyModal(propertyId) {
+            const property = propertyData[propertyId];
+            
+            // Update modal content
+            document.getElementById('modalPropertyTitle').textContent = property.title;
+            document.getElementById('modalPropertyType').textContent = property.type;
+            document.getElementById('modalBedrooms').textContent = property.bedrooms;
+            document.getElementById('modalBathrooms').textContent = property.bathrooms;
+            document.getElementById('modalSquareFeet').textContent = property.squareFeet;
+            document.getElementById('modalParking').textContent = property.parking;
+            document.getElementById('modalLocation').textContent = property.location;
+            document.getElementById('modalRent').textContent = property.rent;
+            document.getElementById('modalDeposit').textContent = property.deposit;
+            document.getElementById('modalAvailable').textContent = property.available;
+            document.getElementById('modalMainImage').src = property.image;
+            
+            // Show modal with animation
+            propertyModal.classList.remove('hidden');
+            setTimeout(() => {
+                propertyModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+            }, 10);
+            
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close Property Modal
+        closeModal.addEventListener('click', function() {
+            propertyModal.querySelector('.modal-enter').classList.remove('modal-enter-active');
+            setTimeout(() => {
+                propertyModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        });
+        
+        // Close on background click
+        propertyModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal.click();
+            }
+        });
+        
+        // Open Movers Modal
+        requestMovers.addEventListener('click', function() {
+            // Close property modal first if open
+            if (!propertyModal.classList.contains('hidden')) {
+                closeModal.click();
+                setTimeout(() => {
+                    openMoversModal();
+                }, 350);
+            } else {
+                openMoversModal();
+            }
+        });
+        
+        // Open Movers Modal Function
+        function openMoversModal() {
+            moversModal.classList.remove('hidden');
+            setTimeout(() => {
+                moversModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+            }, 10);
+            
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close Movers Modal
+        closeMoversModal.addEventListener('click', function() {
+            moversModal.querySelector('.modal-enter').classList.remove('modal-enter-active');
+            setTimeout(() => {
+                moversModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        });
+        
+        // Close on background click
+        moversModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMoversModal.click();
+            }
+        });
+        
+        // Pay Access Fee
+        payAccessFee.addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-check mr-2"></i> Payment Successful!';
+                this.style.background = '#3CB371';
+                
+                // Show success notification
+                showNotification('Access granted! Full property details are now available.', 'success');
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    this.innerHTML = 'Pay KES 200 to Unlock';
+                    this.style.background = '';
+                }, 3000);
+            }, 1500);
+        });
+        
+        // Viewing Form Submission
+        viewingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Request Sent!';
+                
+                // Show success notification
+                showNotification('Viewing request sent successfully! The landlord will contact you shortly.', 'success');
+                
+                // Reset form and button
+                setTimeout(() => {
+                    this.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }, 1500);
+        });
+        
+        // Moving Request Form Submission
+        movingRequestForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Request Sent!';
+                
+                // Show success notification
+                showNotification('Moving request sent! You will receive quotes from movers within 24 hours.', 'success');
+                
+                // Close modal after delay
+                setTimeout(() => {
+                    closeMoversModal.click();
+                    
+                    // Reset form and button
+                    this.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Load More Properties
+        loadMore.addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...';
+            
+            // Simulate loading more properties
+            setTimeout(() => {
+                this.innerHTML = 'Load More Properties';
+                showNotification('6 more properties loaded!', 'info');
+            }, 1200);
+        });
+        
+        // Map Toggle
+        mapToggle.addEventListener('click', function() {
+            showNotification('Map view coming soon!', 'info');
+        });
+        
+        // Favorite Button Toggle
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent opening modal
+                
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.classList.add('text-red-500');
+                    this.classList.add('border-red-200');
+                    showNotification('Property added to favorites!', 'success');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.classList.remove('text-red-500');
+                    this.classList.remove('border-red-200');
+                    showNotification('Property removed from favorites!', 'info');
+                }
+            });
+        });
+        
+        // Sort Options Change
+        document.getElementById('sortOptions').addEventListener('change', function() {
+            showNotification(`Sorted by: ${this.options[this.selectedIndex].text}`, 'info');
+        });
+        
+        // Show Notification Function
+        function showNotification(message, type) {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full`;
+            
+            // Set notification style based on type
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(90deg, #3CB371, #4CAF50)';
+            } else if (type === 'error') {
+                notification.style.background = 'linear-gradient(90deg, #F44336, #E53935)';
+            } else {
+                notification.style.background = 'linear-gradient(90deg, #2FA4E7, #2196F3)';
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} text-white text-xl mr-3"></i>
+                    <span class="text-white font-semibold">${message}</span>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
+        
+        // Initialize with filters open on larger screens
+        window.addEventListener('load', function() {
+            if (window.innerWidth >= 768) {
+                advancedFilters.style.maxHeight = advancedFilters.scrollHeight + 'px';
+                filterToggleIcon.style.transform = 'rotate(180deg)';
+            }
+        });
+    </script>
+</body>
+</html>

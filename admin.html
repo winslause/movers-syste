@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Rheaspark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .brand-gradient {
+            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #2FA4E7, #3CB371);
+            border-radius: 10px;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .floating {
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(47, 164, 231, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(47, 164, 231, 0.2); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 3s infinite;
+        }
+        
+        /* Modal Animations */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+        
+        /* Sidebar Animation */
+        .sidebar-item {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to bottom, #2FA4E7, #3CB371);
+            transition: height 0.3s ease;
+        }
+        
+        .sidebar-item:hover::before,
+        .sidebar-item.active::before {
+            height: 100%;
+        }
+        
+        /* Table Row Animation */
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .fade-in-row {
+            animation: fadeInRow 0.3s ease forwards;
+        }
+        
+        /* Stats Card Animation */
+        .stats-card {
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Loading Animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .status-active {
+            background-color: rgba(60, 179, 113, 0.1);
+            color: #3CB371;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: #FF9800;
+        }
+        
+        .status-inactive {
+            background-color: rgba(158, 158, 158, 0.1);
+            color: #9E9E9E;
+        }
+        
+        .status-verified {
+            background-color: rgba(47, 164, 231, 0.1);
+            color: #2FA4E7;
+        }
+        
+        /* Tab Animation */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Action Button Animation */
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Notification Bell Animation */
+        @keyframes ring {
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-15deg); }
+            30% { transform: rotate(15deg); }
+            40% { transform: rotate(-15deg); }
+            50% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .ring-animation {
+            animation: ring 2s ease infinite;
+        }
+        
+        /* Search Input Animation */
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Admin Layout -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mr-3">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Rheaspark</h1>
+                        <p class="text-xs text-gray-400">Admin Panel</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Info -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                             alt="Admin" 
+                             class="w-12 h-12 rounded-full object-cover border-2 border-[#3CB371]">
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold">Admin User</h3>
+                        <p class="text-sm text-gray-400">Super Administrator</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700 active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt w-6 mr-3"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="users">
+                    <i class="fas fa-users w-6 mr-3"></i>
+                    <span>Users Management</span>
+                    <span class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full">24</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="properties">
+                    <i class="fas fa-home w-6 mr-3"></i>
+                    <span>Properties</span>
+                    <span class="ml-auto bg-blue-500 text-xs px-2 py-1 rounded-full">156</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="movers">
+                    <i class="fas fa-truck w-6 mr-3"></i>
+                    <span>Moving Services</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-1 rounded-full">42</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="requests">
+                    <i class="fas fa-handshake w-6 mr-3"></i>
+                    <span>Requests & Bookings</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-1 rounded-full">18</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="payments">
+                    <i class="fas fa-credit-card w-6 mr-3"></i>
+                    <span>Payments</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="contacts">
+                    <i class="fas fa-envelope w-6 mr-3"></i>
+                    <span>Contact Messages</span>
+                    <span class="ml-auto bg-purple-500 text-xs px-2 py-1 rounded-full">7</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="reports">
+                    <i class="fas fa-chart-bar w-6 mr-3"></i>
+                    <span>Reports & Analytics</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="settings">
+                    <i class="fas fa-cog w-6 mr-3"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-gray-700">
+                <button class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700 w-full text-left">
+                    <i class="fas fa-sign-out-alt w-6 mr-3"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <!-- Search -->
+                    <div class="flex-1 max-w-2xl">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                placeholder="Search users, properties, requests..." 
+                                class="search-input w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                            >
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Actions -->
+                    <div class="flex items-center space-x-6">
+                        <!-- Notifications -->
+                        <div class="relative">
+                            <button id="notificationsBtn" class="relative text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                                <i class="fas fa-bell text-xl ring-animation"></i>
+                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="relative">
+                            <button id="quickActionsBtn" class="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white rounded-xl hover:shadow-lg transition-all duration-300">
+                                <i class="fas fa-plus"></i>
+                                <span>Quick Actions</span>
+                                <i class="fas fa-chevron-down ml-2 text-sm"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Date & Time -->
+                        <div class="text-right">
+                            <div class="text-sm text-gray-600" id="currentDate">Monday, Oct 16, 2023</div>
+                            <div class="text-lg font-semibold text-gray-800" id="currentTime">14:30 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Dashboard Section (Default) -->
+                <section id="dashboard" class="section-content active">
+                    <!-- Welcome & Stats -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome back, Admin!</h1>
+                        <p class="text-gray-600">Here's what's happening with your platform today.</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#2FA4E7]">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Total Users</p>
+                                    <p class="text-3xl font-bold text-gray-800">2,847</p>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-users text-[#2FA4E7] text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex items-center text-sm text-green-600">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>12.5% increase</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#3CB371]">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Total Properties</p>
+                                    <p class="text-3xl font-bold text-gray-800">1,243</p>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-home text-[#3CB371] text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex items-center text-sm text-green-600">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>8.2% increase</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#FF9800]">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Pending Requests</p>
+                                    <p class="text-3xl font-bold text-gray-800">42</p>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                                    <i class="fas fa-clock text-[#FF9800] text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex items-center text-sm text-red-600">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    <span>Requires attention</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#9C27B0]">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Revenue (Today)</p>
+                                    <p class="text-3xl font-bold text-gray-800">KES 24,800</p>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <i class="fas fa-money-bill-wave text-[#9C27B0] text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex items-center text-sm text-green-600">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>KES 8,400 yesterday</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts & Quick Actions -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Chart -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800">Platform Activity</h3>
+                                <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#2FA4E7]">
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                </select>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-2xl shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-6">Quick Actions</h3>
+                            <div class="space-y-4">
+                                <button id="addPropertyBtn" class="quick-action-btn w-full flex items-center p-4 rounded-xl border border-gray-200 hover:border-[#2FA4E7] hover:bg-blue-50 transition-all duration-300">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-plus text-[#2FA4E7]"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-medium text-gray-800">Add New Property</div>
+                                        <div class="text-sm text-gray-600">Post a verified listing</div>
+                                    </div>
+                                </button>
+                                
+                                <button id="verifyUserBtn" class="quick-action-btn w-full flex items-center p-4 rounded-xl border border-gray-200 hover:border-[#3CB371] hover:bg-green-50 transition-all duration-300">
+                                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-user-check text-[#3CB371]"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-medium text-gray-800">Verify Users</div>
+                                        <div class="text-sm text-gray-600">Approve pending verifications</div>
+                                    </div>
+                                </button>
+                                
+                                <button id="viewRequestsBtn" class="quick-action-btn w-full flex items-center p-4 rounded-xl border border-gray-200 hover:border-[#FF9800] hover:bg-orange-50 transition-all duration-300">
+                                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-handshake text-[#FF9800]"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-medium text-gray-800">View Requests</div>
+                                        <div class="text-sm text-gray-600">42 pending requests</div>
+                                    </div>
+                                </button>
+                                
+                                <button id="generateReportBtn" class="quick-action-btn w-full flex items-center p-4 rounded-xl border border-gray-200 hover:border-[#9C27B0] hover:bg-purple-50 transition-all duration-300">
+                                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-chart-pie text-[#9C27B0]"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-medium text-gray-800">Generate Report</div>
+                                        <div class="text-sm text-gray-600">Monthly performance report</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-2xl shadow p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                            <button class="text-[#2FA4E7] font-medium hover:text-[#3CB371] transition-colors duration-300">
+                                View All
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 rounded-xl bg-blue-50/50">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-home text-[#2FA4E7]"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-800">New Property Listed</div>
+                                    <div class="text-sm text-gray-600">3-bedroom apartment in Westlands by John Doe</div>
+                                </div>
+                                <div class="text-sm text-gray-500">10 min ago</div>
+                            </div>
+                            
+                            <div class="flex items-center p-4 rounded-xl bg-green-50/50">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-user-check text-[#3CB371]"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-800">User Verified</div>
+                                    <div class="text-sm text-gray-600">Sarah Johnson verified as trusted landlord</div>
+                                </div>
+                                <div class="text-sm text-gray-500">25 min ago</div>
+                            </div>
+                            
+                            <div class="flex items-center p-4 rounded-xl bg-orange-50/50">
+                                <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-exclamation-triangle text-[#FF9800]"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-800">Reported Listing</div>
+                                    <div class="text-sm text-gray-600">Property #P-482 reported for misleading information</div>
+                                </div>
+                                <div class="text-sm text-gray-500">1 hour ago</div>
+                            </div>
+                            
+                            <div class="flex items-center p-4 rounded-xl bg-purple-50/50">
+                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-money-check-alt text-[#9C27B0]"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-800">Payment Processed</div>
+                                    <div class="text-sm text-gray-600">KES 8,400 from 42 property access payments</div>
+                                </div>
+                                <div class="text-sm text-gray-500">2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Users Management Section -->
+                <section id="users" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Users Management</h1>
+                        <p class="text-gray-600">Manage all users: house seekers, landlords, and movers</p>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="mb-6">
+                        <div class="border-b border-gray-200">
+                            <div class="flex space-x-8">
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium" data-tab="all-users">
+                                    All Users (2,847)
+                                </button>
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium" data-tab="house-seekers">
+                                    House Seekers (1,432)
+                                </button>
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium" data-tab="landlords">
+                                    Landlords (956)
+                                </button>
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium" data-tab="movers">
+                                    Movers (459)
+                                </button>
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium active" data-tab="pending">
+                                    Pending Verification (24)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Users List</h3>
+                                <p class="text-sm text-gray-600">Showing 10 of 2,847 users</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                    Export
+                                </button>
+                                <button id="addUserBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="usersTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- User rows will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                            <div class="text-sm text-gray-600">Showing 1 to 10 of 2,847 entries</div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">Previous</button>
+                                <button class="px-3 py-1 bg-[#2FA4E7] text-white rounded">1</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">2</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">3</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Properties Management Section -->
+                <section id="properties" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Properties Management</h1>
+                        <p class="text-gray-600">Manage all rental properties and listings</p>
+                    </div>
+                    
+                    <!-- Properties Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Property cards will be populated here -->
+                    </div>
+                    
+                    <!-- Properties Table -->
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">All Properties</h3>
+                                <p class="text-sm text-gray-600">1,243 properties listed</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                    Filter
+                                </button>
+                                <button id="addPropertyModalBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Add Property
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="propertiesTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Property rows will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Moving Services Section -->
+                <section id="movers" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Moving Services Management</h1>
+                        <p class="text-gray-600">Manage all registered moving service providers</p>
+                    </div>
+                    
+                    <!-- Movers Table -->
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Moving Services</h3>
+                                <p class="text-sm text-gray-600">459 registered movers</p>
+                            </div>
+                            <button id="addMoverBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                Add Mover
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="moversTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                        <th class="px6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jobs</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Mover rows will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Requests & Bookings Section -->
+                <section id="requests" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Requests & Bookings</h1>
+                        <p class="text-gray-600">Manage all viewing requests and moving service bookings</p>
+                    </div>
+                    
+                    <!-- Requests Table -->
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">All Requests</h3>
+                                <p class="text-sm text-gray-600">42 pending requests</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                    Filter
+                                </button>
+                                <button class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Mark All as Read
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="requestsTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Request rows will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Contact Messages Section -->
+                <section id="contacts" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Contact Messages</h1>
+                        <p class="text-gray-600">Manage all customer inquiries and support messages</p>
+                    </div>
+                    
+                    <!-- Contact Table -->
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Messages</h3>
+                                <p class="text-sm text-gray-600">7 unread messages</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                    Filter
+                                </button>
+                                <button class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Mark All as Read
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="contactsTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Contact rows will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    
+    <!-- Add Property Modal -->
+    <div id="addPropertyModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-home text-[#2FA4E7] mr-3"></i>
+                        Add New Property
+                    </h2>
+                    <button id="closeAddPropertyModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-6 overflow-y-auto">
+                    <form id="propertyForm" class="space-y-6">
+                        <!-- Basic Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Property Title *</label>
+                                <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required placeholder="e.g., Spacious 3-Bedroom Apartment">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Property Type *</label>
+                                <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                                    <option value="">Select type</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="house">House</option>
+                                    <option value="studio">Studio</option>
+                                    <option value="bedsitter">Bedsitter</option>
+                                    <option value="commercial">Commercial</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Rent (KES) *</label>
+                                <input type="number" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required placeholder="e.g., 85000">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Security Deposit (KES)</label>
+                                <input type="number" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" placeholder="e.g., 85000">
+                            </div>
+                        </div>
+                        
+                        <!-- Location -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                                        <option value="">Select Area</option>
+                                        <option value="westlands">Westlands</option>
+                                        <option value="kilimani">Kilimani</option>
+                                        <option value="kileleshwa">Kileleshwa</option>
+                                        <option value="lavington">Lavington</option>
+                                        <option value="karen">Karen</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required placeholder="Street address or landmark">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Property Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bedrooms *</label>
+                                <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                                    <option value="">Select</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5+">5+</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bathrooms *</label>
+                                <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                                    <option value="">Select</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4+">4+</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Square Feet</label>
+                                <input type="number" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" placeholder="e.g., 1200">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Parking</label>
+                                <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100">
+                                    <option value="0">None</option>
+                                    <option value="1">1 Space</option>
+                                    <option value="2">2 Spaces</option>
+                                    <option value="3+">3+ Spaces</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Images Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Property Images *</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600 mb-2">Drag & drop images or click to browse</p>
+                                <p class="text-sm text-gray-500">Upload up to 10 images (JPEG, PNG, max 5MB each)</p>
+                                <input type="file" class="hidden" id="propertyImages" multiple accept="image/*">
+                                <button type="button" class="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300" onclick="document.getElementById('propertyImages').click()">
+                                    Select Images
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Honest Disclosure -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Honest Disclosure</label>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Common Issues</label>
+                                    <textarea class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" rows="3" placeholder="Describe any common issues (water pressure, noise, access, etc.)"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Solutions/Workarounds</label>
+                                    <textarea class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" rows="3" placeholder="Describe practical solutions or workarounds"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Amenities -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">WiFi</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Parking</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Security</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Gym</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Pool</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Pet Friendly</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Furnished</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-[#2FA4E7] border-gray-300 rounded focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Balcony</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Landlord Assignment -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Assign to Landlord</label>
+                            <select class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100">
+                                <option value="">Select landlord (optional)</option>
+                                <option value="1">John Doe (Verified)</option>
+                                <option value="2">Sarah Johnson (Verified)</option>
+                                <option value="3">Mike Smith (Pending)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Listing Status *</label>
+                            <div class="flex space-x-6">
+                                <label class="flex items-center">
+                                    <input type="radio" name="status" value="active" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]" checked>
+                                    <span class="ml-2 text-gray-700">Active</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="status" value="pending" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Pending Review</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="status" value="draft" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Draft</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="sticky bottom-0 bg-white border-t border-gray-100 p-6 flex justify-end space-x-4">
+                    <button id="cancelProperty" class="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                        Cancel
+                    </button>
+                    <button id="saveProperty" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-xl hover:shadow-lg transition-all duration-300">
+                        Save Property
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-user-plus text-[#2FA4E7] mr-3"></i>
+                        Add New User
+                    </h2>
+                    <button id="closeAddUserModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-6 overflow-y-auto">
+                    <form id="userForm" class="space-y-6">
+                        <!-- User Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">User Type *</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <label class="relative">
+                                    <input type="radio" name="userType" value="seeker" class="sr-only peer">
+                                    <div class="p-4 border-2 border-gray-200 rounded-xl text-center cursor-pointer peer-checked:border-[#2FA4E7] peer-checked:bg-blue-50 transition-all duration-300">
+                                        <i class="fas fa-search text-2xl text-gray-400 peer-checked:text-[#2FA4E7] mb-2"></i>
+                                        <div class="font-medium">House Seeker</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="relative">
+                                    <input type="radio" name="userType" value="landlord" class="sr-only peer">
+                                    <div class="p-4 border-2 border-gray-200 rounded-xl text-center cursor-pointer peer-checked:border-[#3CB371] peer-checked:bg-green-50 transition-all duration-300">
+                                        <i class="fas fa-home text-2xl text-gray-400 peer-checked:text-[#3CB371] mb-2"></i>
+                                        <div class="font-medium">Landlord</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="relative">
+                                    <input type="radio" name="userType" value="mover" class="sr-only peer">
+                                    <div class="p-4 border-2 border-gray-200 rounded-xl text-center cursor-pointer peer-checked:border-[#2FA4E7] peer-checked:bg-blue-50 transition-all duration-300">
+                                        <i class="fas fa-truck text-2xl text-gray-400 peer-checked:text-[#2FA4E7] mb-2"></i>
+                                        <div class="font-medium">Mover</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Basic Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                                <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                                <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                                <input type="email" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                                <input type="tel" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Temporary Password *</label>
+                            <input type="text" class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" value="Temp@1234" readonly>
+                            <p class="text-sm text-gray-500 mt-2">User will be prompted to change password on first login</p>
+                        </div>
+                        
+                        <!-- Verification Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Verification Status *</label>
+                            <div class="flex space-x-6">
+                                <label class="flex items-center">
+                                    <input type="radio" name="verification" value="verified" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]" checked>
+                                    <span class="ml-2 text-gray-700">Verified</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="verification" value="pending" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Pending</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="verification" value="unverified" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Unverified</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Account Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Account Status *</label>
+                            <div class="flex space-x-6">
+                                <label class="flex items-center">
+                                    <input type="radio" name="accountStatus" value="active" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]" checked>
+                                    <span class="ml-2 text-gray-700">Active</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="accountStatus" value="inactive" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Inactive</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="accountStatus" value="suspended" class="w-4 h-4 text-[#2FA4E7] border-gray-300 focus:ring-[#2FA4E7]">
+                                    <span class="ml-2 text-gray-700">Suspended</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Notes -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Admin Notes</label>
+                            <textarea class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100" rows="3" placeholder="Any notes about this user..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="sticky bottom-0 bg-white border-t border-gray-100 p-6 flex justify-end space-x-4">
+                    <button id="cancelUser" class="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                        Cancel
+                    </button>
+                    <button id="saveUser" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-xl hover:shadow-lg transition-all duration-300">
+                        Create User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View/Edit Property Modal -->
+    <div id="viewPropertyModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-home text-[#2FA4E7] mr-3"></i>
+                        <span id="propertyModalTitle">Property Details</span>
+                    </h2>
+                    <div class="flex items-center space-x-4">
+                        <button id="editPropertyBtn" class="px-4 py-2 bg-[#2FA4E7] text-white rounded-lg hover:bg-blue-600 transition-colors duration-300">
+                            Edit
+                        </button>
+                        <button id="closeViewPropertyModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-6 overflow-y-auto">
+                    <!-- Property details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden modal-enter">
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4" id="confirmTitle">Confirm Action</h3>
+                    <p class="text-gray-600 mb-8" id="confirmMessage">
+                        Are you sure you want to perform this action? This cannot be undone.
+                    </p>
+                    
+                    <div class="flex space-x-4">
+                        <button id="cancelConfirm" class="flex-1 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                            Cancel
+                        </button>
+                        <button id="confirmAction" class="flex-1 py-3 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition-colors duration-300">
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-bell text-[#2FA4E7] mr-3"></i>
+                            Notifications
+                        </h2>
+                        <button id="closeNotificationsModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-4 max-h-96 overflow-y-auto">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // DOM Elements
+        const sections = document.querySelectorAll('.section-content');
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const addPropertyModal = document.getElementById('addPropertyModal');
+        const addUserModal = document.getElementById('addUserModal');
+        const viewPropertyModal = document.getElementById('viewPropertyModal');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const notificationsModal = document.getElementById('notificationsModal');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+        
+        // State Variables
+        let currentAction = null;
+        let currentItemId = null;
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            // Initialize users table
+            $('#usersTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false
+            });
+            
+            // Initialize properties table
+            $('#propertiesTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false
+            });
+            
+            // Initialize movers table
+            $('#moversTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false
+            });
+            
+            // Initialize requests table
+            $('#requestsTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false
+            });
+            
+            // Initialize contacts table
+            $('#contactsTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false
+            });
+        });
+        
+        // Initialize Chart
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Property Views',
+                    data: [120, 190, 300, 500, 200, 300, 450],
+                    borderColor: '#2FA4E7',
+                    backgroundColor: 'rgba(47, 164, 231, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'User Signups',
+                    data: [50, 80, 120, 180, 90, 120, 160],
+                    borderColor: '#3CB371',
+                    backgroundColor: 'rgba(60, 179, 113, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Update Date and Time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Update every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Sidebar Navigation
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get target section
+                const targetSection = this.dataset.section;
+                
+                // Update active state
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show target section
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    section.classList.add('hidden');
+                });
+                
+                document.getElementById(targetSection).classList.remove('hidden');
+                document.getElementById(targetSection).classList.add('active');
+                
+                // Update page title
+                document.title = `${targetSection.charAt(0).toUpperCase() + targetSection.slice(1)} | Rheaspark Admin`;
+            });
+        });
+        
+        // Tab Navigation
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active tab
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Add border bottom
+                tabBtns.forEach(b => {
+                    b.classList.remove('border-[#2FA4E7]', 'text-[#2FA4E7]');
+                });
+                this.classList.add('border-[#2FA4E7]', 'text-[#2FA4E7]');
+            });
+        });
+        
+        // Quick Actions
+        quickActionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.id;
+                
+                switch(action) {
+                    case 'addPropertyBtn':
+                        openModal(addPropertyModal);
+                        break;
+                    case 'verifyUserBtn':
+                        // Navigate to users section
+                        document.querySelector('[data-section="users"]').click();
+                        break;
+                    case 'viewRequestsBtn':
+                        // Navigate to requests section
+                        document.querySelector('[data-section="requests"]').click();
+                        break;
+                    case 'generateReportBtn':
+                        // Navigate to reports section
+                        document.querySelector('[data-section="reports"]').click();
+                        break;
+                }
+            });
+        });
+        
+        // Add Property Button (from properties section)
+        document.getElementById('addPropertyModalBtn')?.addEventListener('click', () => {
+            openModal(addPropertyModal);
+        });
+        
+        // Add User Button
+        document.getElementById('addUserBtn')?.addEventListener('click', () => {
+            openModal(addUserModal);
+        });
+        
+        // Add Mover Button
+        document.getElementById('addMoverBtn')?.addEventListener('click', () => {
+            // For now, use add user modal
+            openModal(addUserModal);
+            // Pre-select mover type
+            document.querySelector('input[name="userType"][value="mover"]').checked = true;
+        });
+        
+        // Quick Actions Button
+        document.getElementById('quickActionsBtn')?.addEventListener('click', function() {
+            // Create quick actions dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50';
+            dropdown.innerHTML = `
+                <div class="p-4">
+                    <div class="space-y-2">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                            <i class="fas fa-home mr-3 text-[#2FA4E7]"></i>
+                            <span>Add Property</span>
+                        </a>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                            <i class="fas fa-user-plus mr-3 text-[#3CB371]"></i>
+                            <span>Add User</span>
+                        </a>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                            <i class="fas fa-truck mr-3 text-[#2FA4E7]"></i>
+                            <span>Add Mover</span>
+                        </a>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                            <i class="fas fa-file-invoice mr-3 text-[#FF9800]"></i>
+                            <span>Generate Report</span>
+                        </a>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                            <i class="fas fa-cog mr-3 text-gray-600"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            // Position and show dropdown
+            this.parentNode.appendChild(dropdown);
+            
+            // Close on outside click
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== this) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            }.bind(this));
+        });
+        
+        // Notifications Button
+        document.getElementById('notificationsBtn')?.addEventListener('click', () => {
+            openModal(notificationsModal);
+            loadNotifications();
+        });
+        
+        // Load Notifications
+        function loadNotifications() {
+            const container = notificationsModal.querySelector('.p-4');
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-home text-blue-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800">New Property Needs Review</div>
+                                <div class="text-sm text-gray-600 mt-1">Property #P-1245 needs verification</div>
+                                <div class="text-xs text-gray-500 mt-2">10 minutes ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-green-50 border border-green-100">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-user-check text-green-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800">User Verification Complete</div>
+                                <div class="text-sm text-gray-600 mt-1">Sarah Johnson verified as landlord</div>
+                                <div class="text-xs text-gray-500 mt-2">1 hour ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-red-50 border border-red-100">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800">Reported Content</div>
+                                <div class="text-sm text-gray-600 mt-1">Property #P-0482 reported for misleading info</div>
+                                <div class="text-xs text-gray-500 mt-2">2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-purple-50 border border-purple-100">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-money-check-alt text-purple-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800">Payment Issue</div>
+                                <div class="text-sm text-gray-600 mt-1">Refund request #R-784 needs approval</div>
+                                <div class="text-xs text-gray-500 mt-2">3 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Save Property
+        document.getElementById('saveProperty')?.addEventListener('click', function() {
+            const form = document.getElementById('propertyForm');
+            const isValid = validateForm(form);
+            
+            if (isValid) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+                this.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    showNotification('Property added successfully!', 'success');
+                    closeModal(addPropertyModal);
+                    this.innerHTML = 'Save Property';
+                    this.disabled = false;
+                    
+                    // Refresh properties table
+                    loadSampleProperties();
+                }, 1500);
+            }
+        });
+        
+        // Save User
+        document.getElementById('saveUser')?.addEventListener('click', function() {
+            const form = document.getElementById('userForm');
+            const isValid = validateForm(form);
+            
+            if (isValid) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
+                this.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    showNotification('User created successfully!', 'success');
+                    closeModal(addUserModal);
+                    this.innerHTML = 'Create User';
+                    this.disabled = false;
+                    
+                    // Refresh users table
+                    loadSampleUsers();
+                }, 1500);
+            }
+        });
+        
+        // Cancel Buttons
+        document.getElementById('cancelProperty')?.addEventListener('click', () => closeModal(addPropertyModal));
+        document.getElementById('cancelUser')?.addEventListener('click', () => closeModal(addUserModal));
+        document.getElementById('closeAddPropertyModal')?.addEventListener('click', () => closeModal(addPropertyModal));
+        document.getElementById('closeAddUserModal')?.addEventListener('click', () => closeModal(addUserModal));
+        document.getElementById('closeViewPropertyModal')?.addEventListener('click', () => closeModal(viewPropertyModal));
+        document.getElementById('closeNotificationsModal')?.addEventListener('click', () => closeModal(notificationsModal));
+        document.getElementById('cancelConfirm')?.addEventListener('click', () => closeModal(confirmationModal));
+        
+        // Open Modal Helper
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.querySelector('.modal-enter').classList.add('modal-enter-active');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close Modal Helper
+        function closeModal(modal) {
+            modal.querySelector('.modal-enter').classList.remove('modal-enter-active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+        
+        // Show Confirmation Modal
+        function showConfirmation(action, itemId, message) {
+            currentAction = action;
+            currentItemId = itemId;
+            
+            document.getElementById('confirmTitle').textContent = 'Confirm Action';
+            document.getElementById('confirmMessage').textContent = message;
+            
+            openModal(confirmationModal);
+        }
+        
+        // Confirm Action
+        document.getElementById('confirmAction')?.addEventListener('click', function() {
+            switch(currentAction) {
+                case 'deleteProperty':
+                    // Simulate delete
+                    showNotification('Property deleted successfully!', 'success');
+                    break;
+                case 'deleteUser':
+                    // Simulate delete
+                    showNotification('User deleted successfully!', 'success');
+                    break;
+                case 'suspendUser':
+                    // Simulate suspend
+                    showNotification('User suspended successfully!', 'success');
+                    break;
+            }
+            
+            closeModal(confirmationModal);
+        });
+        
+        // Validate Form
+        function validateForm(form) {
+            const requiredInputs = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.borderColor = '#F87171';
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                    }, 3000);
+                }
+            });
+            
+            if (!isValid) {
+                showNotification('Please fill all required fields.', 'error');
+            }
+            
+            return isValid;
+        }
+        
+        // Show Notification
+        function showNotification(message, type) {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full`;
+            
+            // Set notification style based on type
+            let bgColor, icon;
+            if (type === 'success') {
+                bgColor = 'linear-gradient(90deg, #3CB371, #4CAF50)';
+                icon = 'check-circle';
+            } else if (type === 'error') {
+                bgColor = 'linear-gradient(90deg, #F44336, #E53935)';
+                icon = 'exclamation-circle';
+            } else {
+                bgColor = 'linear-gradient(90deg, #2FA4E7, #2196F3)';
+                icon = 'info-circle';
+            }
+            
+            notification.style.background = bgColor;
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${icon} text-white text-xl mr-3"></i>
+                    <span class="text-white font-semibold">${message}</span>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
+        
+        // Load Sample Data
+        function loadSampleUsers() {
+            const usersTable = document.querySelector('#usersTable tbody');
+            const users = [
+                { name: 'John Doe', type: 'House Seeker', email: 'john@example.com', phone: '+254712345678', status: 'Active', joined: '2023-10-10' },
+                { name: 'Sarah Johnson', type: 'Landlord', email: 'sarah@example.com', phone: '+254723456789', status: 'Verified', joined: '2023-10-05' },
+                { name: 'Mike Smith', type: 'Mover', email: 'mike@example.com', phone: '+254734567890', status: 'Pending', joined: '2023-10-12' },
+                { name: 'Emma Wilson', type: 'House Seeker', email: 'emma@example.com', phone: '+254745678901', status: 'Active', joined: '2023-10-08' },
+                { name: 'David Brown', type: 'Landlord', email: 'david@example.com', phone: '+254756789012', status: 'Verified', joined: '2023-10-03' }
+            ];
+            
+            usersTable.innerHTML = '';
+            
+            users.forEach((user, index) => {
+                const statusClass = user.status === 'Active' ? 'status-active' : 
+                                   user.status === 'Verified' ? 'status-verified' : 'status-pending';
+                
+                const row = document.createElement('tr');
+                row.className = 'fade-in-row';
+                row.style.animationDelay = `${index * 0.1}s`;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-gray-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">${user.name}</div>
+                                <div class="text-sm text-gray-500">ID: USER-${1000 + index}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full ${user.type === 'Landlord' ? 'bg-green-100' : user.type === 'Mover' ? 'bg-blue-100' : 'bg-gray-100'} flex items-center justify-center mr-2">
+                                <i class="fas ${user.type === 'Landlord' ? 'fa-home text-green-600' : user.type === 'Mover' ? 'fa-truck text-blue-600' : 'fa-search text-gray-600'} text-sm"></i>
+                            </div>
+                            <span class="text-gray-900">${user.type}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${user.email}</div>
+                        <div class="text-sm text-gray-500">${user.phone}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${statusClass}">
+                            <i class="fas ${user.status === 'Active' ? 'fa-check-circle' : user.status === 'Verified' ? 'fa-shield-alt' : 'fa-clock'} mr-1"></i>
+                            ${user.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${user.joined}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn text-[#3CB371] hover:text-green-700" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn text-[#FF9800] hover:text-orange-700" title="Suspend" onclick="showConfirmation('suspendUser', ${index}, 'Are you sure you want to suspend this user?')">
+                                <i class="fas fa-user-slash"></i>
+                            </button>
+                            <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteUser', ${index}, 'Are you sure you want to delete this user? This action cannot be undone.')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                usersTable.appendChild(row);
+            });
+        }
+        
+        function loadSampleProperties() {
+            const propertiesTable = document.querySelector('#propertiesTable tbody');
+            const properties = [
+                { title: 'Spacious 3-Bed Apartment', location: 'Westlands', price: 'KES 85,000', status: 'Active', views: 124 },
+                { title: 'Modern 2-Bed Studio', location: 'Kilimani', price: 'KES 65,000', status: 'Active', views: 89 },
+                { title: 'Luxury Villa', location: 'Karen', price: 'KES 250,000', status: 'Pending', views: 45 },
+                { title: 'Cozy Bedsitter', location: 'South B', price: 'KES 25,000', status: 'Active', views: 156 },
+                { title: 'Executive Apartment', location: 'Kileleshwa', price: 'KES 120,000', status: 'Inactive', views: 67 }
+            ];
+            
+            propertiesTable.innerHTML = '';
+            
+            properties.forEach((property, index) => {
+                const statusClass = property.status === 'Active' ? 'status-active' : 
+                                   property.status === 'Pending' ? 'status-pending' : 'status-inactive';
+                
+                const row = document.createElement('tr');
+                row.className = 'fade-in-row';
+                row.style.animationDelay = `${index * 0.1}s`;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center mr-3">
+                                <i class="fas fa-home text-gray-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">${property.title}</div>
+                                <div class="text-sm text-gray-500">ID: PROP-${2000 + index}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                            <span class="text-gray-900">${property.location}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-semibold">
+                        ${property.price}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge ${statusClass}">
+                            <i class="fas ${property.status === 'Active' ? 'fa-check-circle' : property.status === 'Pending' ? 'fa-clock' : 'fa-ban'} mr-1"></i>
+                            ${property.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-900">
+                        ${property.views}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn text-[#3CB371] hover:text-green-700" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteProperty', ${index}, 'Are you sure you want to delete this property? This action cannot be undone.')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                propertiesTable.appendChild(row);
+            });
+        }
+        
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSampleUsers();
+            loadSampleProperties();
+        });
+        
+        // Close modals on background click
+        [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal].forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    const closeBtn = this.querySelector('button[id^="close"], button[id^="cancel"]');
+                    if (closeBtn) closeBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

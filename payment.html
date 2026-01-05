@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Payment | Rheaspark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .brand-gradient {
+            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #2FA4E7, #3CB371);
+            border-radius: 10px;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Modal Animations */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+        
+        /* Progress Bar Animation */
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .progress-bar {
+            animation: progress 2s ease-in-out;
+        }
+        
+        /* Success Check Animation */
+        @keyframes checkmark {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        .checkmark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmark 0.5s ease-in-out forwards;
+            animation-delay: 0.3s;
+        }
+        
+        /* Step Indicator */
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(47, 164, 231, 0.3);
+        }
+        
+        /* Payment Card Animation */
+        @keyframes cardGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(47, 164, 231, 0.2); }
+            50% { box-shadow: 0 15px 40px rgba(47, 164, 231, 0.4); }
+        }
+        
+        .card-glow {
+            animation: cardGlow 3s infinite;
+        }
+        
+        /* Countdown Animation */
+        @keyframes countdown {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        
+        .countdown-bar {
+            animation: countdown 300s linear forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen">
+    
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <!-- Progress Steps -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex-1">
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] w-1/3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between">
+                <div class="text-center step-indicator active" data-step="1">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mx-auto mb-2 text-white font-bold">
+                        1
+                    </div>
+                    <span class="text-sm font-semibold">Access Info</span>
+                </div>
+                
+                <div class="text-center step-indicator" data-step="2">
+                    <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2 text-gray-600 font-bold">
+                        2
+                    </div>
+                    <span class="text-sm font-semibold text-gray-600">Payment</span>
+                </div>
+                
+                <div class="text-center step-indicator" data-step="3">
+                    <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2 text-gray-600 font-bold">
+                        3
+                    </div>
+                    <span class="text-sm font-semibold text-gray-600">Confirmation</span>
+                </div>
+                
+                <div class="text-center step-indicator" data-step="4">
+                    <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2 text-gray-600 font-bold">
+                        4
+                    </div>
+                    <span class="text-sm font-semibold text-gray-600">Access Granted</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 brand-font">
+                Access <span class="brand-gradient">Property Details</span>
+            </h1>
+            <p class="text-gray-600 text-lg max-w-3xl mx-auto">
+                Pay a one-time fee to unlock verified contact details, exact location mapping, and honest disclosure reports for your selected property.
+            </p>
+        </div>
+        
+        <!-- Property Summary Card -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 card-glow">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/4 mb-6 md:mb-0">
+                    <img 
+                        src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                        alt="Property"
+                        class="w-full h-48 object-cover rounded-xl"
+                    >
+                </div>
+                
+                <div class="md:w-2/3 md:pl-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Spacious 3-Bedroom Apartment</h3>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="text-center p-3 bg-blue-50 rounded-xl">
+                            <div class="text-sm text-gray-600">Location</div>
+                            <div class="font-semibold">Westlands</div>
+                        </div>
+                        <div class="text-center p-3 bg-green-50 rounded-xl">
+                            <div class="text-sm text-gray-600">Rent</div>
+                            <div class="font-semibold">KES 85,000</div>
+                        </div>
+                        <div class="text-center p-3 bg-blue-50 rounded-xl">
+                            <div class="text-sm text-gray-600">Bedrooms</div>
+                            <div class="font-semibold">3</div>
+                        </div>
+                        <div class="text-center p-3 bg-green-50 rounded-xl">
+                            <div class="text-sm text-gray-600">Bathrooms</div>
+                            <div class="font-semibold">2</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mr-4">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">Verified Property</p>
+                            <p class="text-sm text-gray-600">This listing has been manually verified by our team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Access Fee Explanation -->
+            <div class="lg:col-span-2">
+                <!-- Access Fee Card -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-unlock-alt text-[#2FA4E7] mr-3"></i>
+                        What You Get for KES 200
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start p-4 bg-blue-50 rounded-xl">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm">
+                                <i class="fas fa-phone-alt text-[#2FA4E7] text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-2">Landlord Contact Details</h4>
+                                <p class="text-gray-600 text-sm">Direct phone number and email address of the verified property owner.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-green-50 rounded-xl">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm">
+                                <i class="fas fa-map-marked-alt text-[#3CB371] text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-2">Exact Location & Directions</h4>
+                                <p class="text-gray-600 text-sm">Precise GPS coordinates and detailed directions to the property.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-blue-50 rounded-xl">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm">
+                                <i class="fas fa-file-contract text-[#2FA4E7] text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-2">Full Disclosure Report</h4>
+                                <p class="text-gray-600 text-sm">Complete honest disclosure about common issues and practical solutions.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-green-50 rounded-xl">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm">
+                                <i class="fas fa-calendar-check text-[#3CB371] text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-2">Viewing Arrangement</h4>
+                                <p class="text-gray-600 text-sm">Schedule property viewings directly with the landlord.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Features -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Why Pay for Access?</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#2FA4E7] flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <p class="text-gray-700">Eliminates time wasted on unresponsive or fake listings</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#3CB371] flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <p class="text-gray-700">Ensures you have accurate, up-to-date contact information</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#2FA4E7] flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <p class="text-gray-700">Provides transparent information about property issues</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#3CB371] flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <p class="text-gray-700">One-time payment for lifetime access to this property</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Assurance -->
+                    <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100 rounded-2xl p-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-shield-alt text-3xl text-[#2FA4E7] mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-lg mb-2">Payment Assurance</h4>
+                                <p class="text-gray-700 mb-3">Your payment is protected by our <strong>100% Accuracy Guarantee</strong>. If any information provided is inaccurate or the property is no longer available, you'll receive a full refund.</p>
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    <span>Payment expires if not completed in <strong class="text-[#2FA4E7]">5 minutes</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-credit-card text-[#3CB371] mr-3"></i>
+                        Choose Payment Method
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- M-Pesa Option -->
+                        <div class="border-2 border-green-200 rounded-2xl p-6 hover:border-[#3CB371] hover:shadow-lg transition-all duration-300 cursor-pointer payment-option" data-method="mpesa">
+                            <div class="flex items-center mb-4">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mr-4">
+                                    <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-xl">M-Pesa</h3>
+                                    <p class="text-gray-600">Mobile Money</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 mb-4">Pay instantly via M-Pesa. You'll receive a prompt on your phone to complete the payment.</p>
+                            <div class="flex items-center text-green-600 font-semibold">
+                                <i class="fas fa-bolt mr-2"></i>
+                                <span>Instant Payment</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Future Gateway Option -->
+                        <div class="border-2 border-blue-200 rounded-2xl p-6 hover:border-[#2FA4E7] hover:shadow-lg transition-all duration-300 cursor-pointer payment-option" data-method="gateway">
+                            <div class="flex items-center mb-4">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2FA4E7] to-blue-500 flex items-center justify-center mr-4">
+                                    <i class="fas fa-globe text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-xl">Card Payment</h3>
+                                    <p class="text-gray-600">Visa, Mastercard</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 mb-4">Pay securely using your debit or credit card through our payment gateway.</p>
+                            <div class="flex items-center text-blue-600 font-semibold">
+                                <i class="fas fa-lock mr-2"></i>
+                                <span>Secure Payment</span>
+                            </div>
+                            <div class="mt-3 px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full inline-block">
+                                Coming Soon
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Button -->
+                    <button 
+                        id="initiatePayment"
+                        class="w-full py-5 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        <i class="fas fa-lock mr-3"></i>
+                        Pay KES 200 to Unlock
+                    </button>
+                    
+                    <p class="text-center text-gray-600 text-sm mt-4">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Select a payment method to continue
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Right Column - Terms & Info -->
+            <div class="space-y-8">
+                <!-- Payment Summary -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Payment Summary</h3>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="text-gray-600">Access Fee</span>
+                            <span class="font-semibold">KES 200</span>
+                        </div>
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="text-gray-600">Platform Fee</span>
+                            <span class="font-semibold">KES 0</span>
+                        </div>
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="text-gray-600">Tax</span>
+                            <span class="font-semibold">KES 0</span>
+                        </div>
+                        <div class="flex justify-between py-4 border-b border-gray-200">
+                            <span class="text-lg font-bold text-gray-800">Total Amount</span>
+                            <span class="text-2xl font-bold text-[#2FA4E7]">KES 200</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Countdown Timer -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>Payment expires in</span>
+                            <span id="countdownTimer">05:00</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div id="countdownBar" class="h-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] countdown-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Support Info -->
+                    <div class="border-t border-gray-100 pt-6">
+                        <h4 class="font-bold text-gray-800 mb-4">Need Help?</h4>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                                <i class="fas fa-question-circle mr-3"></i>
+                                <span>Payment FAQ</span>
+                            </a>
+                            <a href="#" class="flex items-center text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                                <i class="fas fa-comments mr-3"></i>
+                                <span>Live Chat Support</span>
+                            </a>
+                            <a href="#" class="flex items-center text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                                <i class="fab fa-whatsapp mr-3"></i>
+                                <span>WhatsApp: +254 700 123 456</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Terms & Disclaimer -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Terms & Conditions</h3>
+                    
+                    <div class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                        <div class="text-sm text-gray-600">
+                            <p class="mb-3"><strong>1. One-Time Access Fee</strong><br>
+                            The KES 200 payment grants you lifetime access to the full details of this specific property only.
+                            </p>
+                            
+                            <p class="mb-3"><strong>2. Accuracy Guarantee</strong><br>
+                            We guarantee the accuracy of all information provided. If any details are incorrect, you're eligible for a full refund.
+                            </p>
+                            
+                            <p class="mb-3"><strong>3. No Refunds for:</strong><br>
+                            - Change of mind after accessing details<br>
+                            - Property no longer meeting your requirements<br>
+                            - Landlord unresponsiveness (we provide verified contacts only)
+                            </p>
+                            
+                            <p class="mb-3"><strong>4. Data Privacy</strong><br>
+                            Your payment information is securely processed. We don't store your financial details.
+                            </p>
+                            
+                            <p class="mb-3"><strong>5. Platform Responsibility</strong><br>
+                            Rheaspark acts as an information platform only. We're not responsible for rental agreements or disputes.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex items-start">
+                        <input type="checkbox" id="agreeTerms" class="mt-1 mr-3">
+                        <label for="agreeTerms" class="text-sm text-gray-700">
+                            I agree to the <a href="#" class="text-[#2FA4E7] font-semibold">Terms & Conditions</a> and understand that this is a one-time payment for property access.
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Navigation -->
+        <div class="mt-12 flex justify-between">
+            <a href="#" class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Property
+            </a>
+            
+            <div class="text-gray-600 text-sm">
+                <i class="fas fa-lock mr-2"></i> Secure Payment • SSL Encrypted
+            </div>
+        </div>
+    </div>
+    
+    <!-- M-Pesa Payment Modal -->
+    <div id="mpesaModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-mobile-alt text-green-600"></i>
+                            </div>
+                            M-Pesa Payment
+                        </h2>
+                        <button id="closeMpesaModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <!-- Instructions -->
+                    <div class="mb-8">
+                        <h3 class="font-bold text-gray-800 mb-4">Follow these steps:</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-4 flex-shrink-0">1</div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Check your phone</p>
+                                    <p class="text-gray-600 text-sm">You'll receive an M-Pesa prompt on your registered number</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-4 flex-shrink-0">2</div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Enter your PIN</p>
+                                    <p class="text-gray-600 text-sm">Enter your M-Pesa PIN to authorize the payment of KES 200</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-4 flex-shrink-0">3</div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Wait for confirmation</p>
+                                    <p class="text-gray-600 text-sm">We'll automatically detect your payment and grant access</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Details -->
+                    <div class="bg-green-50 border border-green-100 rounded-2xl p-5 mb-8">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-gray-800 mb-2">KES 200</div>
+                            <div class="text-gray-600 mb-4">Pay to: <span class="font-semibold">RHEASPARK LIMITED</span></div>
+                            <div class="text-sm text-gray-500">
+                                Business Number: <span class="font-semibold">123456</span>
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                Account Number: <span class="font-semibold">PROPERTY-789</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Countdown & Status -->
+                    <div class="text-center mb-8">
+                        <div class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold mb-4">
+                            <i class="fas fa-clock mr-2"></i>
+                            Waiting for payment... <span id="paymentTimer">02:30</span>
+                        </div>
+                        <p class="text-gray-600 text-sm">If you don't receive a prompt, please check that your phone is on and has network coverage.</p>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <button 
+                            id="checkPayment"
+                            class="w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                        >
+                            <i class="fas fa-sync-alt mr-2"></i> Check Payment Status
+                        </button>
+                        <button 
+                            id="cancelPayment"
+                            class="w-full py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300"
+                        >
+                            Cancel Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card Payment Modal -->
+    <div id="cardModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden modal-enter">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-credit-card text-blue-600"></i>
+                            </div>
+                            Card Payment
+                        </h2>
+                        <button id="closeCardModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Coming Soon Content -->
+                <div class="p-8 text-center">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center floating">
+                        <i class="fas fa-tools text-5xl text-gray-400"></i>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Coming Soon!</h3>
+                    <p class="text-gray-600 mb-8">
+                        We're working on integrating secure card payments. For now, please use M-Pesa to complete your payment.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <button 
+                            id="switchToMpesa"
+                            class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                        >
+                            Switch to M-Pesa
+                        </button>
+                        <button 
+                            id="closeCardModalBtn"
+                            class="w-full py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payment Processing Modal -->
+    <div id="processingModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden modal-enter">
+                <div class="p-8 text-center">
+                    <!-- Spinner -->
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full border-4 border-blue-100 border-t-[#2FA4E7] spin"></div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Processing Payment</h3>
+                    <p class="text-gray-600 mb-8">
+                        Please wait while we process your payment. This usually takes 10-30 seconds.
+                    </p>
+                    
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-8">
+                        <div id="processingBar" class="h-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] progress-bar"></div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Do not close this window or refresh the page
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden modal-enter">
+                <div class="p-8 text-center">
+                    <!-- Success Icon -->
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center">
+                        <svg class="w-20 h-20 text-green-500" viewBox="0 0 52 52">
+                            <circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path class="checkmark" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M14 27l7 7 17-17"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Payment Successful!</h3>
+                    <p class="text-gray-600 mb-8">
+                        Your payment of <strong class="text-[#3CB371]">KES 200</strong> has been processed successfully. You now have full access to the property details.
+                    </p>
+                    
+                    <!-- What's Next -->
+                    <div class="bg-blue-50 rounded-2xl p-6 mb-8 text-left">
+                        <h4 class="font-bold text-gray-800 mb-4">What happens next?</h4>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#2FA4E7] text-white flex items-center justify-center mr-3 flex-shrink-0 text-xs">1</div>
+                                <span>You'll be redirected to the property details page</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#3CB371] text-white flex items-center justify-center mr-3 flex-shrink-0 text-xs">2</div>
+                                <span>Access landlord contact details and exact location</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#2FA4E7] text-white flex items-center justify-center mr-3 flex-shrink-0 text-xs">3</div>
+                                <span>Review the full honest disclosure report</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-[#3CB371] text-white flex items-center justify-center mr-3 flex-shrink-0 text-xs">4</div>
+                                <span>Schedule a viewing with the landlord</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <button 
+                            id="redirectToProperty"
+                            class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                        >
+                            <i class="fas fa-external-link-alt mr-2"></i> Go to Property Details
+                        </button>
+                        <button 
+                            id="downloadReceipt"
+                            class="w-full py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300"
+                        >
+                            <i class="fas fa-receipt mr-2"></i> Download Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const initiatePaymentBtn = document.getElementById('initiatePayment');
+        const mpesaModal = document.getElementById('mpesaModal');
+        const cardModal = document.getElementById('cardModal');
+        const processingModal = document.getElementById('processingModal');
+        const successModal = document.getElementById('successModal');
+        const closeMpesaModal = document.getElementById('closeMpesaModal');
+        const closeCardModal = document.getElementById('closeCardModal');
+        const closeCardModalBtn = document.getElementById('closeCardModalBtn');
+        const checkPaymentBtn = document.getElementById('checkPayment');
+        const cancelPaymentBtn = document.getElementById('cancelPayment');
+        const switchToMpesaBtn = document.getElementById('switchToMpesa');
+        const redirectToPropertyBtn = document.getElementById('redirectToProperty');
+        const downloadReceiptBtn = document.getElementById('downloadReceipt');
+        const agreeTermsCheckbox = document.getElementById('agreeTerms');
+        const progressBar = document.getElementById('progressBar');
+        const countdownBar = document.getElementById('countdownBar');
+        const countdownTimer = document.getElementById('countdownTimer');
+        const paymentTimer = document.getElementById('paymentTimer');
+        const processingBar = document.getElementById('processingBar');
+        
+        // State variables
+        let selectedPaymentMethod = null;
+        let paymentCountdown = 300; // 5 minutes in seconds
+        let mpesaCountdown = 150; // 2.5 minutes for M-Pesa payment
+        let countdownInterval;
+        let mpesaInterval;
+        
+        // Initialize countdown timer
+        function initCountdown() {
+            countdownInterval = setInterval(() => {
+                paymentCountdown--;
+                
+                if (paymentCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showNotification('Payment session expired. Please refresh the page to start again.', 'error');
+                    disablePayment();
+                }
+                
+                // Update timer display
+                const minutes = Math.floor(paymentCountdown / 60);
+                const seconds = paymentCountdown % 60;
+                countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update bar (visual)
+                const percentage = (paymentCountdown / 300) * 100;
+                countdownBar.style.width = `${percentage}%`;
+                
+                // Change color when time is running low
+                if (paymentCountdown < 60) {
+                    countdownBar.style.background = 'linear-gradient(to right, #FF9800, #FF5722)';
+                    countdownTimer.style.color = '#FF5722';
+                }
+            }, 1000);
+        }
+        
+        // Start countdown on page load
+        initCountdown();
+        
+        // Disable payment when time expires
+        function disablePayment() {
+            initiatePaymentBtn.disabled = true;
+            initiatePaymentBtn.innerHTML = '<i class="fas fa-clock mr-3"></i> Session Expired';
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.style.opacity = '0.5';
+                option.style.pointerEvents = 'none';
+            });
+        }
+        
+        // Payment method selection
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                document.querySelectorAll('.payment-option').forEach(opt => {
+                    opt.classList.remove('active');
+                    opt.style.borderColor = '';
+                });
+                
+                // Add active class to selected option
+                this.classList.add('active');
+                
+                // Set border color based on method
+                const method = this.dataset.method;
+                if (method === 'mpesa') {
+                    this.style.borderColor = '#3CB371';
+                    this.style.borderWidth = '3px';
+                } else {
+                    this.style.borderColor = '#2FA4E7';
+                    this.style.borderWidth = '3px';
+                }
+                
+                selectedPaymentMethod = method;
+                
+                // Enable payment button if terms are agreed
+                if (agreeTermsCheckbox.checked) {
+                    initiatePaymentBtn.disabled = false;
+                }
+            });
+        });
+        
+        // Terms agreement toggle
+        agreeTermsCheckbox.addEventListener('change', function() {
+            if (this.checked && selectedPaymentMethod) {
+                initiatePaymentBtn.disabled = false;
+            } else {
+                initiatePaymentBtn.disabled = true;
+            }
+        });
+        
+        // Initiate payment button
+        initiatePaymentBtn.addEventListener('click', function() {
+            if (!selectedPaymentMethod) {
+                showNotification('Please select a payment method first.', 'warning');
+                return;
+            }
+            
+            if (!agreeTermsCheckbox.checked) {
+                showNotification('Please agree to the terms and conditions.', 'warning');
+                return;
+            }
+            
+            // Update progress step
+            updateProgressStep(2);
+            
+            if (selectedPaymentMethod === 'mpesa') {
+                openMpesaModal();
+            } else {
+                openCardModal();
+            }
+        });
+        
+        // Open M-Pesa Modal
+        function openMpesaModal() {
+            mpesaModal.classList.remove('hidden');
+            setTimeout(() => {
+                mpesaModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+                startMpesaCountdown();
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close M-Pesa Modal
+        closeMpesaModal.addEventListener('click', function() {
+            closeModal(mpesaModal);
+            clearInterval(mpesaInterval);
+        });
+        
+        // Open Card Modal
+        function openCardModal() {
+            cardModal.classList.remove('hidden');
+            setTimeout(() => {
+                cardModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close Card Modal
+        closeCardModal.addEventListener('click', function() {
+            closeModal(cardModal);
+        });
+        
+        closeCardModalBtn.addEventListener('click', function() {
+            closeModal(cardModal);
+        });
+        
+        // Switch to M-Pesa
+        switchToMpesaBtn.addEventListener('click', function() {
+            closeModal(cardModal);
+            setTimeout(() => {
+                selectedPaymentMethod = 'mpesa';
+                openMpesaModal();
+            }, 300);
+        });
+        
+        // Check Payment Status
+        checkPaymentBtn.addEventListener('click', function() {
+            // Simulate checking payment
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Checking...';
+            
+            setTimeout(() => {
+                // Simulate successful payment detection
+                simulatePaymentSuccess();
+            }, 2000);
+        });
+        
+        // Cancel Payment
+        cancelPaymentBtn.addEventListener('click', function() {
+            closeModal(mpesaModal);
+            clearInterval(mpesaInterval);
+            showNotification('Payment cancelled. You can try again anytime before the session expires.', 'info');
+        });
+        
+        // Start M-Pesa countdown
+        function startMpesaCountdown() {
+            mpesaCountdown = 150;
+            
+            mpesaInterval = setInterval(() => {
+                mpesaCountdown--;
+                
+                if (mpesaCountdown <= 0) {
+                    clearInterval(mpesaInterval);
+                    paymentTimer.textContent = "00:00";
+                    showNotification('M-Pesa payment window expired. Please try again.', 'error');
+                    closeModal(mpesaModal);
+                    return;
+                }
+                
+                const minutes = Math.floor(mpesaCountdown / 60);
+                const seconds = mpesaCountdown % 60;
+                paymentTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Simulate payment processing
+        function simulatePaymentSuccess() {
+            closeModal(mpesaModal);
+            clearInterval(mpesaInterval);
+            
+            // Show processing modal
+            processingModal.classList.remove('hidden');
+            setTimeout(() => {
+                processingModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+            }, 10);
+            
+            // Simulate processing time
+            setTimeout(() => {
+                closeModal(processingModal);
+                
+                // Update progress step
+                updateProgressStep(3);
+                
+                // Show success modal after processing
+                setTimeout(() => {
+                    successModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        successModal.querySelector('.modal-enter').classList.add('modal-enter-active');
+                    }, 10);
+                    
+                    // Update progress step
+                    updateProgressStep(4);
+                }, 500);
+            }, 3000);
+        }
+        
+        // Redirect to property details
+        redirectToPropertyBtn.addEventListener('click', function() {
+            // Show redirecting notification
+            showNotification('Redirecting to property details...', 'success');
+            
+            // Simulate redirect
+            setTimeout(() => {
+                // In a real scenario, this would redirect to the property details page
+                // window.location.href = '/property-details?id=123';
+                
+                // For demo, show a message
+                closeModal(successModal);
+                showNotification('You now have full access to property details!', 'success');
+            }, 1000);
+        });
+        
+        // Download receipt
+        downloadReceiptBtn.addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-receipt mr-2"></i> Download Receipt';
+                showNotification('Receipt downloaded successfully!', 'success');
+            }, 1500);
+        });
+        
+        // Update progress steps
+        function updateProgressStep(step) {
+            // Reset all steps
+            document.querySelectorAll('.step-indicator').forEach(indicator => {
+                indicator.classList.remove('active');
+                const stepNum = indicator.dataset.step;
+                const circle = indicator.querySelector('div');
+                
+                if (parseInt(stepNum) < step) {
+                    // Completed steps
+                    circle.style.background = 'linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%)';
+                    circle.style.color = 'white';
+                } else if (parseInt(stepNum) === step) {
+                    // Current step
+                    indicator.classList.add('active');
+                } else {
+                    // Future steps
+                    circle.style.background = '#e5e7eb';
+                    circle.style.color = '#6b7280';
+                }
+            });
+            
+            // Update progress bar
+            const progressPercentage = ((step - 1) / 3) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        // Close modal helper function
+        function closeModal(modal) {
+            modal.querySelector('.modal-enter').classList.remove('modal-enter-active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full`;
+            
+            // Set notification style based on type
+            let bgColor, icon;
+            if (type === 'success') {
+                bgColor = 'linear-gradient(90deg, #3CB371, #4CAF50)';
+                icon = 'check-circle';
+            } else if (type === 'error') {
+                bgColor = 'linear-gradient(90deg, #F44336, #E53935)';
+                icon = 'exclamation-circle';
+            } else if (type === 'warning') {
+                bgColor = 'linear-gradient(90deg, #FF9800, #FF5722)';
+                icon = 'exclamation-triangle';
+            } else {
+                bgColor = 'linear-gradient(90deg, #2FA4E7, #2196F3)';
+                icon = 'info-circle';
+            }
+            
+            notification.style.background = bgColor;
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${icon} text-white text-xl mr-3"></i>
+                    <span class="text-white font-semibold">${message}</span>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
+        
+        // Close modals on background click
+        [mpesaModal, cardModal, processingModal, successModal].forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    const closeBtn = this.querySelector('button[id^="close"]');
+                    if (closeBtn) closeBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
