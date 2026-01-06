@@ -46,9 +46,16 @@ try {
     $_SESSION['last_name'] = $user['last_name'];
     $_SESSION['email'] = $user['email'];
 
+    // Determine redirect URL based on user type
+    $redirect_url = 'index.php';
+    if ($user['user_type'] === 'admin') {
+        $redirect_url = 'admin.php';
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Login successful',
+        'redirect_url' => $redirect_url,
         'user' => [
             'id' => $user['id'],
             'first_name' => $user['first_name'],

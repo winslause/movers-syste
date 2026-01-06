@@ -27,17 +27,19 @@ if ($method === 'GET') {
                 FROM requests r
                 JOIN houses h ON r.house_id = h.id
                 JOIN users u ON r.house_hunter_id = u.id
-                WHERE h.landlord_id = ? AND r.request_type = 'visit'
+                WHERE h.landlord_id = ?
                 ORDER BY r.created_at DESC
             ");
             $stmt->execute([$user_id]);
         } else {
             // Get user's viewing requests
             $stmt = $pdo->prepare("
-                SELECT r.*, h.title, h.price, h.location, h.image_url_1, h.bedrooms, h.bathrooms
+                SELECT r.*, h.title, h.price, h.location, h.image_url_1, h.bedrooms, h.bathrooms,
+                       u.first_name, u.last_name, u.email, u.phone
                 FROM requests r
                 JOIN houses h ON r.house_id = h.id
-                WHERE r.house_hunter_id = ? AND r.request_type = 'visit'
+                JOIN users u ON r.landlord_id = u.id
+                WHERE r.house_hunter_id = ? AND r.request_type = 'viewing'
                 ORDER BY r.created_at DESC
             ");
             $stmt->execute([$user_id]);
@@ -82,7 +84,7 @@ if ($method === 'GET') {
         // Create viewing request
         $stmt = $pdo->prepare("
             INSERT INTO requests (house_hunter_id, landlord_id, house_id, request_type, message, status)
-            VALUES (?, ?, ?, 'visit', ?, 'pending')
+            VALUES (?, ?, ?, 'viewing', ?, 'pending')
         ");
 
         $request_message = "Viewing request from $full_name ($phone)\nPreferred date: $preferred_date\n" . ($message ? "Message: $message" : "");
@@ -106,9 +108,9 @@ if ($method === 'GET') {
     }
 
     try {
-        // Check if the request belongs to the user
-        $stmt = $pdo->prepare("SELECT id FROM requests WHERE id = ? AND house_hunter_id = ?");
-        $stmt->execute([$request_id, $user_id]);
+        // Check if the request belongs to the user (house hunter) or landlord
+        $stmt = $pdo->prepare("SELECT id FROM requests WHERE id = ? AND (house_hunter_id = ? OR landlord_id = ?)");
+        $stmt->execute([$request_id, $user_id, $user_id]);
         $request = $stmt->fetch();
 
         if (!$request) {

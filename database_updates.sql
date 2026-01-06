@@ -2,6 +2,13 @@
 
 USE movers_system;
 
+-- Add admin to user_type enum
+ALTER TABLE users MODIFY COLUMN user_type ENUM('seeker', 'landlord', 'mover', 'admin') NOT NULL DEFAULT 'seeker';
+
+-- Insert admin user
+INSERT INTO users (first_name, last_name, email, phone, password_hash, user_type, email_verified) VALUES
+('Admin', 'User', 'admin@rheaspark.com', '+254700000000', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', TRUE);
+
 -- Add missing columns to users table
 ALTER TABLE users ADD COLUMN bio TEXT;
 ALTER TABLE users ADD COLUMN address VARCHAR(255);

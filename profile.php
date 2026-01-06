@@ -575,50 +575,61 @@ if ($user_type === 'landlord') {
                         <div class="lg:col-span-2">
                             <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
                                 <div class="flex justify-between items-center mb-6">
-                                    <h3 class="text-xl font-bold text-gray-800">Recent Activity</h3>
-                                    <a href="#" class="text-[#2FA4E7] font-semibold text-sm">View all</a>
+                                    <h3 class="text-xl font-bold text-gray-800"><?php echo $user_type === 'landlord' ? 'Recent Enquiries' : 'Recent Activity'; ?></h3>
+                                    <a href="#" class="text-[#2FA4E7] font-semibold text-sm"><?php echo $user_type === 'landlord' ? 'View all enquiries' : 'View all'; ?></a>
                                 </div>
-                                
-                                <div class="space-y-1">
-                                    <div class="timeline-item">
-                                        <div class="bg-gray-50 rounded-xl p-4">
-                                            <div class="flex justify-between">
-                                                <p class="font-medium text-gray-800">New viewing request received</p>
-                                                <span class="text-xs text-gray-500">Today, 10:30 AM</span>
+
+                                <div id="recentActivityContainer" class="space-y-1">
+                                    <?php if ($user_type === 'landlord'): ?>
+                                        <!-- Enquiries will be loaded here for landlords -->
+                                        <div class="text-center py-8">
+                                            <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                                                <i class="fas fa-inbox text-2xl text-[#2FA4E7]"></i>
                                             </div>
-                                            <p class="text-sm text-gray-600 mt-1">For your 3-bedroom apartment in Westlands</p>
+                                            <p class="text-gray-600">Loading recent enquiries...</p>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="timeline-item">
-                                        <div class="bg-gray-50 rounded-xl p-4">
-                                            <div class="flex justify-between">
-                                                <p class="font-medium text-gray-800">Property verified by admin</p>
-                                                <span class="text-xs text-gray-500">Yesterday, 3:15 PM</span>
+                                    <?php else: ?>
+                                        <!-- Static activity for house hunters -->
+                                        <div class="timeline-item">
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <div class="flex justify-between">
+                                                    <p class="font-medium text-gray-800">New viewing request sent</p>
+                                                    <span class="text-xs text-gray-500">Today, 10:30 AM</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mt-1">For 3-bedroom apartment in Westlands</p>
                                             </div>
-                                            <p class="text-sm text-gray-600 mt-1">Your Kilimani apartment is now verified</p>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="timeline-item">
-                                        <div class="bg-gray-50 rounded-xl p-4">
-                                            <div class="flex justify-between">
-                                                <p class="font-medium text-gray-800">Payment received</p>
-                                                <span class="text-xs text-gray-500">2 days ago</span>
+
+                                        <div class="timeline-item">
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <div class="flex justify-between">
+                                                    <p class="font-medium text-gray-800">Property saved</p>
+                                                    <span class="text-xs text-gray-500">Yesterday, 3:15 PM</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mt-1">Kiliman apartment added to favorites</p>
                                             </div>
-                                            <p class="text-sm text-gray-600 mt-1">KES 200 for property access from a house hunter</p>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="timeline-item">
-                                        <div class="bg-gray-50 rounded-xl p-4">
-                                            <div class="flex justify-between">
-                                                <p class="font-medium text-gray-800">New property listed</p>
-                                                <span class="text-xs text-gray-500">3 days ago</span>
+
+                                        <div class="timeline-item">
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <div class="flex justify-between">
+                                                    <p class="font-medium text-gray-800">Payment made</p>
+                                                    <span class="text-xs text-gray-500">2 days ago</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mt-1">KES 200 for property access</p>
                                             </div>
-                                            <p class="text-sm text-gray-600 mt-1">You added a new property in Kileleshwa</p>
                                         </div>
-                                    </div>
+
+                                        <div class="timeline-item">
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <div class="flex justify-between">
+                                                    <p class="font-medium text-gray-800">Account created</p>
+                                                    <span class="text-xs text-gray-500">3 days ago</span>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mt-1">Welcome to Rheaspark!</p>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             
@@ -948,58 +959,8 @@ if ($user_type === 'landlord') {
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-md p-6">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="border-b border-gray-100">
-                                        <th class="text-left py-3 text-gray-600 font-medium">Property</th>
-                                        <th class="text-left py-3 text-gray-600 font-medium">Landlord</th>
-                                        <th class="text-left py-3 text-gray-600 font-medium">Status</th>
-                                        <th class="text-left py-3 text-gray-600 font-medium">Date Sent</th>
-                                        <th class="text-left py-3 text-gray-600 font-medium">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                        <td class="py-4">
-                                            <div class="flex items-center">
-                                                <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
-                                                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                                                         alt="Property" class="w-full h-full object-cover">
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-gray-800">Westlands Apartment</p>
-                                                    <p class="text-sm text-gray-600">KES 85,000/month</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-4">
-                                            <p class="font-medium">John Mwangi</p>
-                                            <p class="text-sm text-gray-600">john@example.com</p>
-                                        </td>
-                                        <td class="py-4">
-                                            <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs font-semibold rounded-full">Pending</span>
-                                        </td>
-                                        <td class="py-4">
-                                            <p class="font-medium">2 days ago</p>
-                                        </td>
-                                        <td class="py-4">
-                                            <div class="flex space-x-2">
-                                                <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                                    Message
-                                                </button>
-                                                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-300 text-sm">
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="text-center mt-8">
-                            <p class="text-gray-600">No requests yet? <a href="#" class="text-[#2FA4E7] font-semibold">Browse properties</a> to send your first request.</p>
+                        <div id="requestsTableContainer" class="overflow-x-auto">
+                            <!-- Requests table will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -1015,24 +976,8 @@ if ($user_type === 'landlord') {
                         <!-- Conversations List -->
                         <div class="lg:col-span-2">
                             <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-                                <div class="max-h-[600px] overflow-y-auto">
-                                    <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
-                                        <div class="flex">
-                                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
-                                                <span class="font-bold text-green-600">JM</span>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="flex justify-between mb-2">
-                                                    <h4 class="font-bold text-gray-800">John Mwangi</h4>
-                                                    <span class="text-sm text-gray-500">Today, 10:30 AM</span>
-                                                </div>
-                                                <p class="text-gray-700 mb-2">Yes, the apartment is still available. Would you like to schedule a viewing?</p>
-                                                <div class="flex items-center">
-                                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded mr-3">Westlands Apartment</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
+                                <div id="messagesList" class="max-h-[600px] overflow-y-auto">
+                                    <!-- Messages will be loaded here -->
                                 </div>
                             </div>
                         </div>
@@ -1118,46 +1063,8 @@ if ($user_type === 'landlord') {
                                 </div>
 
                                 <!-- Messages/Requests List -->
-                                <div class="max-h-[600px] overflow-y-auto">
-                                    <!-- Viewing Request -->
-                                    <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
-                                        <div class="flex">
-                                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
-                                                <span class="font-bold text-green-600">JM</span>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="flex justify-between mb-2">
-                                                    <h4 class="font-bold text-gray-800">Jane Muthoni</h4>
-                                                    <span class="text-sm text-gray-500">Today, 10:30 AM</span>
-                                                </div>
-                                                <p class="text-gray-700 mb-2">I'd like to schedule a viewing for your Westlands apartment this Friday.</p>
-                                                <div class="flex items-center">
-                                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded mr-3">Viewing Request</span>
-                                                    <span class="text-sm text-gray-600">For: Westlands Apartment</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    <!-- Message -->
-                                    <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300 bg-blue-50/50">
-                                        <div class="flex">
-                                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
-                                                <span class="font-bold text-blue-600">PO</span>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="flex justify-between mb-2">
-                                                    <h4 class="font-bold text-gray-800">Peter Omondi</h4>
-                                                    <span class="text-sm text-gray-500">Yesterday, 3:15 PM</span>
-                                                </div>
-                                                <p class="text-gray-700 mb-2">Can I get more details about the parking and security features?</p>
-                                                <div class="flex items-center">
-                                                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded mr-3">Message</span>
-                                                    <span class="text-sm text-gray-600">For: Kilimani Suite</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
+                                <div id="inquiriesList" class="max-h-[600px] overflow-y-auto">
+                                    <!-- Inquiries will be loaded here -->
                                 </div>
                             </div>
                         </div>
@@ -1898,6 +1805,8 @@ if ($user_type === 'landlord') {
             notifications: 'Notification Settings',
             reports: 'Reports & Analytics'
         };
+
+        const userType = '<?php echo $user_type; ?>';
         
         // Modal Elements
         const addPropertyModal = document.getElementById('addPropertyModal');
@@ -1921,6 +1830,9 @@ if ($user_type === 'landlord') {
             const hash = window.location.hash.substring(1);
             if (hash && tabTitles[hash]) {
                 switchTab(hash);
+            } else {
+                // Load dashboard data if no hash
+                loadRecentEnquiries();
             }
 
             // Close dropdowns when clicking outside
@@ -2411,14 +2323,332 @@ if ($user_type === 'landlord') {
             });
         }
 
-        // Load inquiries for landlord
-        function loadInquiries() {
-            fetch('api/viewing_requests.php?landlord=1')
+        // Load user messages (for Messages tab)
+        function loadUserMessages() {
+            fetch('api/messages.php')
             .then(response => response.json())
             .then(data => {
-                const container = document.getElementById('inquiriesList');
+                const container = document.getElementById('messagesList');
                 if (data.success && data.data.length > 0) {
-                    container.innerHTML = data.data.map(request => createInquiryItem(request)).join('');
+                    container.innerHTML = data.data.map(message => createMessageListItem(message)).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                <i class="fas fa-envelope text-3xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Messages Yet</h3>
+                            <p class="text-gray-600">When you send or receive messages, they'll appear here.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+            });
+        }
+
+        // Create sent enquiry item for house hunters
+        function createSentEnquiryItem(request) {
+            const timeAgo = formatTimeAgo(request.created_at);
+            const statusColors = {
+                'pending': 'yellow',
+                'accepted': 'green',
+                'rejected': 'red'
+            };
+            const color = statusColors[request.status] || 'gray';
+
+            // Parse the message to extract details
+            const message = request.message || '';
+            const lines = message.split('\n');
+
+            let preferredDate = '';
+            let enquiryMessage = '';
+
+            // Parse "Preferred date: YYYY-MM-DD"
+            if (lines[1] && lines[1].startsWith('Preferred date: ')) {
+                preferredDate = lines[1].substring('Preferred date: '.length);
+            }
+
+            // Parse "Message: ..." if exists
+            if (lines[2] && lines[2].startsWith('Message: ')) {
+                enquiryMessage = lines[2].substring('Message: '.length);
+            }
+
+            return `
+                <div class="timeline-item bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-paper-plane text-[#2FA4E7] text-lg"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-semibold text-gray-900">Viewing Request Sent</p>
+                                <span class="text-xs text-gray-500">${timeAgo}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-sm text-gray-800"><strong>Property:</strong> ${request.title || 'Unknown Property'}</p>
+                                <p class="text-sm text-gray-600">Preferred Date: ${preferredDate || 'Not specified'}</p>
+                                ${enquiryMessage ? `<p class="text-sm text-gray-600">Message: "${enquiryMessage}"</p>` : ''}
+                                <div class="flex items-center mt-2">
+                                    <span class="px-2 py-1 bg-${color}-100 text-${color}-600 text-xs font-semibold rounded-full capitalize">${request.status}</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex space-x-2">
+                                <button onclick="viewProperty(${request.house_id})" class="px-3 py-1 bg-blue-50 text-[#2FA4E7] text-xs font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300">
+                                    View Property
+                                </button>
+                                ${request.status === 'pending' ? `<button onclick="cancelRequest(${request.id})" class="px-3 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-100 transition-colors duration-300">Cancel</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create recent enquiry item for dashboard
+        function createRecentEnquiryItem(data, type) {
+            const timeAgo = formatTimeAgo(data.created_at);
+
+            if (type === 'request') {
+                // Parse the viewing request message
+                const message = data.message || '';
+                const lines = message.split('\n');
+
+                let fullName = 'Unknown';
+                let phone = '';
+                let preferredDate = '';
+                let enquiryMessage = '';
+
+                // Parse "Viewing request from Full Name (Phone)"
+                if (lines[0] && lines[0].startsWith('Viewing request from ')) {
+                    const fromPart = lines[0].substring('Viewing request from '.length);
+                    const parenIndex = fromPart.indexOf(' (');
+                    if (parenIndex !== -1) {
+                        fullName = fromPart.substring(0, parenIndex);
+                        const phoneEnd = fromPart.indexOf(')', parenIndex);
+                        if (phoneEnd !== -1) {
+                            phone = fromPart.substring(parenIndex + 2, phoneEnd);
+                        }
+                    }
+                }
+
+                // Parse "Preferred date: YYYY-MM-DD"
+                if (lines[1] && lines[1].startsWith('Preferred date: ')) {
+                    preferredDate = lines[1].substring('Preferred date: '.length);
+                }
+
+                // Parse "Message: ..." if exists
+                if (lines[2] && lines[2].startsWith('Message: ')) {
+                    enquiryMessage = lines[2].substring('Message: '.length);
+                }
+
+                return `
+                    <div class="timeline-item bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-calendar-check text-[#2FA4E7] text-lg"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="text-sm font-semibold text-gray-900">Viewing Request</p>
+                                    <span class="text-xs text-gray-500">${timeAgo}</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-sm text-gray-800"><strong>${fullName}</strong> <span class="text-gray-600">(${phone})</span></p>
+                                    <p class="text-sm text-gray-600">Property: ${data.title || 'Unknown Property'}</p>
+                                    <p class="text-sm text-gray-600">Preferred Date: ${preferredDate || 'Not specified'}</p>
+                                    ${enquiryMessage ? `<p class="text-sm text-gray-600">Message: "${enquiryMessage}"</p>` : ''}
+                                </div>
+                                <div class="mt-3 flex space-x-2">
+                                    <button onclick="viewProperty(${data.house_id})" class="px-3 py-1 bg-blue-50 text-[#2FA4E7] text-xs font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300">
+                                        View Property
+                                    </button>
+                                    <button onclick="respondToEnquiry(${data.id}, 'accept')" class="px-3 py-1 bg-green-50 text-green-600 text-xs font-semibold rounded-lg hover:bg-green-100 transition-colors duration-300">
+                                        Accept
+                                    </button>
+                                    <button onclick="respondToEnquiry(${data.id}, 'decline')" class="px-3 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-100 transition-colors duration-300">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // For messages
+                const title = `Message from ${data.sender_name || 'House hunter'}`;
+                const description = data.message ? (data.message.length > 100 ? data.message.substring(0, 100) + '...' : data.message) : 'New message';
+                const icon = 'fas fa-envelope';
+
+                return `
+                    <div class="timeline-item bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0">
+                                <i class="${icon} text-green-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="text-sm font-semibold text-gray-900">${title}</p>
+                                    <span class="text-xs text-gray-500">${timeAgo}</span>
+                                </div>
+                                <p class="text-sm text-gray-600">${description}</p>
+                                ${data.house_title ? `<p class="text-xs text-gray-500 mt-1">Regarding: ${data.house_title}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load recent enquiries for dashboard
+        function loadRecentEnquiries() {
+            const container = document.getElementById('recentActivityContainer');
+
+            if (userType === 'landlord') {
+                // Load both requests and messages for landlords
+                Promise.all([
+                    fetch('api/viewing_requests.php?landlord=1').then(r => r.json()),
+                    fetch('api/messages.php').then(r => r.json())
+                ])
+                .then(([requestsData, messagesData]) => {
+                    const allItems = [];
+
+                    // Add requests
+                    if (requestsData.success && requestsData.data.length > 0) {
+                        requestsData.data.forEach(request => {
+                            allItems.push({
+                                type: 'request',
+                                data: request,
+                                date: new Date(request.created_at)
+                            });
+                        });
+                    }
+
+                    // Add messages
+                    if (messagesData.success && messagesData.data.length > 0) {
+                        messagesData.data.forEach(message => {
+                            allItems.push({
+                                type: 'message',
+                                data: message,
+                                date: new Date(message.created_at)
+                            });
+                        });
+                    }
+
+                    // Sort by date (newest first) and take first 5
+                    allItems.sort((a, b) => b.date - a.date);
+                    const recentItems = allItems.slice(0, 5);
+
+                    if (recentItems.length > 0) {
+                        container.innerHTML = recentItems.map(item => {
+                            if (item.type === 'request') {
+                                return createRecentEnquiryItem(item.data, 'request');
+                            } else {
+                                return createRecentEnquiryItem(item.data, 'message');
+                            }
+                        }).join('');
+                    } else {
+                        container.innerHTML = `
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                                    <i class="fas fa-inbox text-2xl text-[#2FA4E7]"></i>
+                                </div>
+                                <p class="text-gray-600">No recent enquiries yet</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading recent enquiries:', error);
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                            </div>
+                            <p class="text-gray-600">Failed to load enquiries. Please try refreshing the page.</p>
+                        </div>
+                    `;
+                });
+            } else {
+                // Load sent requests for house hunters
+                fetch('api/viewing_requests.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data.length > 0) {
+                        // Sort by date (newest first) and take first 5
+                        const sortedRequests = data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+
+                        container.innerHTML = sortedRequests.map(request => createSentEnquiryItem(request)).join('');
+                    } else {
+                        container.innerHTML = `
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                                    <i class="fas fa-paper-plane text-2xl text-[#2FA4E7]"></i>
+                                </div>
+                                <p class="text-gray-600">No enquiries sent yet</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading sent enquiries:', error);
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                            </div>
+                            <p class="text-gray-600">Failed to load enquiries. Please try refreshing the page.</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Load inquiries for landlord
+        function loadInquiries() {
+            // Load both requests and messages
+            Promise.all([
+                fetch('api/viewing_requests.php?landlord=1').then(r => r.json()),
+                fetch('api/messages.php').then(r => r.json())
+            ])
+            .then(([requestsData, messagesData]) => {
+                const container = document.getElementById('inquiriesList');
+                const allItems = [];
+
+                // Add requests
+                if (requestsData.success && requestsData.data.length > 0) {
+                    requestsData.data.forEach(request => {
+                        allItems.push({
+                            type: 'request',
+                            data: request,
+                            date: new Date(request.created_at)
+                        });
+                    });
+                }
+
+                // Add messages
+                if (messagesData.success && messagesData.data.length > 0) {
+                    messagesData.data.forEach(message => {
+                        allItems.push({
+                            type: 'message',
+                            data: message,
+                            date: new Date(message.created_at)
+                        });
+                    });
+                }
+
+                // Sort by date (newest first)
+                allItems.sort((a, b) => b.date - a.date);
+
+                if (allItems.length > 0) {
+                    container.innerHTML = allItems.map(item => {
+                        if (item.type === 'request') {
+                            return createInquiryItem(item.data);
+                        } else {
+                            return createMessageItem(item.data);
+                        }
+                    }).join('');
                 } else {
                     container.innerHTML = `
                         <div class="text-center py-12">
@@ -2426,7 +2656,7 @@ if ($user_type === 'landlord') {
                                 <i class="fas fa-inbox text-3xl text-gray-400"></i>
                             </div>
                             <h3 class="text-xl font-bold text-gray-800 mb-2">No Inquiries Yet</h3>
-                            <p class="text-gray-600">When potential tenants send viewing requests, they'll appear here.</p>
+                            <p class="text-gray-600">When potential tenants send viewing requests or messages, they'll appear here.</p>
                         </div>
                     `;
                 }
@@ -2523,6 +2753,39 @@ if ($user_type === 'landlord') {
             `;
         }
 
+        // Create message list item for Messages tab
+        function createMessageListItem(message) {
+            const isFromUser = message.sender_id == <?php echo $_SESSION['user_id']; ?>;
+            const otherUser = isFromUser ? message.receiver_first_name + ' ' + message.receiver_last_name : message.sender_first_name + ' ' + message.sender_last_name;
+            const initials = otherUser.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            return `
+                <div class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300 ${isFromUser ? 'bg-blue-50/50' : ''}">
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
+                            <span class="font-bold text-blue-600">${initials}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-2">
+                                <h4 class="font-bold text-gray-800">${otherUser}</h4>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-3">${new Date(message.created_at).toLocaleDateString()}</span>
+                                    <button onclick="deleteInquiry(${message.id}, 'message')" class="text-red-500 hover:text-red-700 text-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 mb-2">${message.message}</p>
+                            <div class="flex items-center">
+                                <span class="px-2 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded mr-3">Message</span>
+                                ${message.house_title ? `<span class="text-sm text-gray-600">For: ${message.house_title}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         // Create inquiry item for landlord
         function createInquiryItem(request) {
             const statusColors = {
@@ -2533,7 +2796,7 @@ if ($user_type === 'landlord') {
             const color = statusColors[request.status] || 'gray';
 
             return `
-                <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
+                <div class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
                     <div class="flex">
                         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
                             <span class="font-bold text-green-600">${(request.first_name + ' ' + request.last_name).split(' ').map(n => n[0]).join('').toUpperCase()}</span>
@@ -2541,7 +2804,12 @@ if ($user_type === 'landlord') {
                         <div class="flex-1">
                             <div class="flex justify-between mb-2">
                                 <h4 class="font-bold text-gray-800">${request.first_name} ${request.last_name}</h4>
-                                <span class="text-sm text-gray-500">${new Date(request.created_at).toLocaleDateString()}</span>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-3">${new Date(request.created_at).toLocaleDateString()}</span>
+                                    <button onclick="deleteInquiry(${request.id}, 'request')" class="text-red-500 hover:text-red-700 text-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                             <p class="text-gray-700 mb-2">${request.message || 'Viewing request for your property'}</p>
                             <div class="flex items-center">
@@ -2550,7 +2818,40 @@ if ($user_type === 'landlord') {
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
+            `;
+        }
+
+        // Create message item for landlord
+        function createMessageItem(message) {
+            const isFromUser = message.sender_id == <?php echo $_SESSION['user_id']; ?>;
+            const otherUser = isFromUser ? message.receiver_first_name + ' ' + message.receiver_last_name : message.sender_first_name + ' ' + message.sender_last_name;
+            const initials = otherUser.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            return `
+                <div class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300 ${isFromUser ? 'bg-blue-50/50' : ''}">
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
+                            <span class="font-bold text-blue-600">${initials}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-2">
+                                <h4 class="font-bold text-gray-800">${otherUser}</h4>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-3">${new Date(message.created_at).toLocaleDateString()}</span>
+                                    <button onclick="deleteInquiry(${message.id}, 'message')" class="text-red-500 hover:text-red-700 text-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 mb-2">${message.message}</p>
+                            <div class="flex items-center">
+                                <span class="px-2 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded mr-3">Message</span>
+                                ${message.house_title ? `<span class="text-sm text-gray-600">For: ${message.house_title}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             `;
         }
 
@@ -2594,6 +2895,46 @@ if ($user_type === 'landlord') {
             deleteRequest(requestId);
         }
 
+        // Delete inquiry (request or message)
+        function deleteInquiry(id, type) {
+            if (confirm('Are you sure you want to delete this ' + type + '?')) {
+                const endpoint = type === 'request' ? 'api/viewing_requests.php' : 'api/messages.php';
+                const method = type === 'request' ? 'DELETE' : 'DELETE';
+                const body = type === 'request' ? { request_id: id } : { message_id: id };
+
+                fetch(endpoint, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadInquiries(); // Reload the inquiries
+                        showNotification(type.charAt(0).toUpperCase() + type.slice(1) + ' deleted successfully!', 'success');
+                    } else {
+                        showNotification(data.error || 'Failed to delete ' + type, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Network error. Please try again.', 'error');
+                });
+            }
+        }
+
+        // Respond to enquiry (accept/decline viewing request)
+        function respondToEnquiry(requestId, action) {
+            const actionText = action === 'accept' ? 'accept' : 'decline';
+            if (confirm(`Are you sure you want to ${actionText} this viewing request?`)) {
+                // For now, just show a notification. In a real app, you'd update the request status
+                showNotification(`Viewing request ${actionText}ed successfully!`, 'success');
+                // Reload the enquiries to reflect the change
+                loadRecentEnquiries();
+            }
+        }
+
         // Load data when tabs are clicked
         document.addEventListener('click', function(e) {
             if (e.target.closest('.tab-link[data-tab="saved"]')) {
@@ -2602,6 +2943,12 @@ if ($user_type === 'landlord') {
                 setTimeout(loadViewings, 100);
             } else if (e.target.closest('.tab-link[data-tab="properties"]')) {
                 setTimeout(loadUserProperties, 100);
+            } else if (e.target.closest('.tab-link[data-tab="inquiries"]')) {
+                setTimeout(loadInquiries, 100);
+            } else if (e.target.closest('.tab-link[data-tab="requests"]')) {
+                setTimeout(loadUserRequests, 100);
+            } else if (e.target.closest('.tab-link[data-tab="messages"]')) {
+                setTimeout(loadUserMessages, 100);
             }
         });
 

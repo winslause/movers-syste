@@ -450,8 +450,8 @@
                         submitBtn.innerHTML = originalText;
                         submitBtn.disabled = false;
 
-                        // Redirect to home
-                        window.location.href = 'index.php';
+                        // Redirect based on user type
+                        window.location.href = result.redirect_url || 'index.php';
                     }, 2000);
                 } else {
                     submitBtn.innerHTML = originalText;

@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Main Container
 ?>
 <div class="container mx-auto px-4 py-8">
