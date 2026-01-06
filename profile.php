@@ -1,3 +1,41 @@
+<?php
+require_once 'db.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: auth.php');
+    exit;
+}
+
+// Get user data
+$user_id = $_SESSION['user_id'];
+$user_type = $_SESSION['user_type'];
+$user_name = $_SESSION['first_name'] . ' ' . $_SESSION['last_name'];
+$user_email = $_SESSION['email'];
+
+// Get user details from database
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+
+// Get user stats based on type
+if ($user_type === 'landlord') {
+    // Count properties
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM houses WHERE landlord_id = ?");
+    $stmt->execute([$user_id]);
+    $property_count = $stmt->fetch()['count'];
+
+    // Count viewings (requests)
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM requests WHERE landlord_id = ?");
+    $stmt->execute([$user_id]);
+    $viewing_count = $stmt->fetch()['count'];
+} else {
+    // For house hunters, count saved properties and viewings
+    $property_count = 5; // Placeholder
+    $viewing_count = 12; // Placeholder
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -216,7 +254,7 @@
     <!-- Dashboard Container -->
     <div class="flex">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar-collapse w-64 bg-white shadow-xl min-h-screen fixed lg:relative z-30">
+        <aside id="sidebar" class="sidebar-collapse w-64 bg-white shadow-xl min-h-screen fixed lg:relative lg:mr-4 z-30">
             <!-- Sidebar Header -->
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
@@ -233,8 +271,8 @@
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center space-x-4">
                     <div class="profile-image-container w-16 h-16 rounded-full overflow-hidden cursor-pointer">
-                        <img 
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                        <img
+                            src="<?php echo htmlspecialchars($user['profile_image'] ? 'uploads/profiles/' . $user['profile_image'] : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'); ?>"
                             alt="Profile"
                             class="w-full h-full object-cover"
                         >
@@ -243,10 +281,10 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800">John Mwangi</h3>
+                        <h3 class="font-bold text-gray-800"><?php echo htmlspecialchars($user_name); ?></h3>
                         <div class="flex items-center mt-1">
                             <span class="px-2 py-1 bg-gradient-to-r from-[#2FA4E7]/10 to-[#3CB371]/10 text-[#3CB371] text-xs font-semibold rounded-full">
-                                <i class="fas fa-user-tie mr-1"></i> Landlord
+                                <i class="fas fa-user-tie mr-1"></i> <?php echo ucfirst($user_type); ?>
                             </span>
                             <span class="ml-2 px-2 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
                                 <i class="fas fa-shield-alt mr-1"></i> Verified
@@ -258,24 +296,25 @@
                 <!-- Quick Stats -->
                 <div class="grid grid-cols-2 gap-3 mt-6">
                     <div class="text-center p-3 bg-blue-50 rounded-xl">
-                        <div class="text-2xl font-bold text-[#2FA4E7]">5</div>
-                        <div class="text-xs text-gray-600">Properties</div>
+                        <div class="text-2xl font-bold text-[#2FA4E7]"><?php echo $property_count; ?></div>
+                        <div class="text-xs text-gray-600"><?php echo $user_type === 'landlord' ? 'Properties' : 'Saved'; ?></div>
                     </div>
                     <div class="text-center p-3 bg-green-50 rounded-xl">
-                        <div class="text-2xl font-bold text-[#3CB371]">12</div>
-                        <div class="text-xs text-gray-600">Viewings</div>
+                        <div class="text-2xl font-bold text-[#3CB371]"><?php echo $viewing_count; ?></div>
+                        <div class="text-xs text-gray-600"><?php echo $user_type === 'landlord' ? 'Requests' : 'Viewings'; ?></div>
                     </div>
                 </div>
             </div>
             
             <!-- Navigation Menu -->
-            <nav class="p-4">
+            <nav class="p-4 overflow-y-auto flex-1">
                 <div class="space-y-2">
                     <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300 active" data-tab="dashboard">
                         <i class="fas fa-tachometer-alt mr-3 text-lg"></i>
                         <span>Dashboard</span>
                     </a>
-                    
+
+                    <?php if ($user_type === 'seeker'): ?>
                     <!-- House Hunter Menu -->
                     <div class="mb-2">
                         <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-2">House Hunter</h4>
@@ -288,34 +327,43 @@
                             <i class="fas fa-calendar-alt mr-3 text-lg"></i>
                             <span>My Viewings</span>
                         </a>
+                        <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="requests">
+                            <i class="fas fa-paper-plane mr-3 text-lg"></i>
+                            <span>My Requests</span>
+                        </a>
+                        <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="messages">
+                            <i class="fas fa-envelope mr-3 text-lg"></i>
+                            <span>Messages</span>
+                        </a>
                         <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="payments">
                             <i class="fas fa-receipt mr-3 text-lg"></i>
                             <span>Payment History</span>
                         </a>
                     </div>
-                    
+                    <?php else: ?>
                     <!-- Landlord Menu -->
                     <div class="mb-2">
                         <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-2">Landlord</h4>
                         <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="properties">
                             <i class="fas fa-home mr-3 text-lg"></i>
                             <span>My Properties</span>
-                            <span class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">5</span>
+                            <span class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full"><?php echo $property_count; ?></span>
                         </a>
-                        <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="listings">
+                        <button id="addListingBtn" class="w-full text-left flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300">
                             <i class="fas fa-plus-circle mr-3 text-lg"></i>
                             <span>Add New Listing</span>
-                        </a>
+                        </button>
                         <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="inquiries">
                             <i class="fas fa-inbox mr-3 text-lg"></i>
                             <span>Inquiries</span>
-                            <span class="ml-auto bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full notification-badge">3</span>
+                            <span class="ml-auto bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full notification-badge"><?php echo $viewing_count; ?></span>
                         </a>
                         <a href="#" class="tab-link flex items-center px-4 py-3 text-gray-700 hover:text-[#2FA4E7] hover:bg-blue-50 rounded-xl transition-all duration-300" data-tab="reports">
                             <i class="fas fa-chart-bar mr-3 text-lg"></i>
                             <span>Reports & Analytics</span>
                         </a>
                     </div>
+                    <?php endif; ?>
                     
                     <!-- Account Settings -->
                     <div>
@@ -337,16 +385,16 @@
             </nav>
             
             <!-- Sidebar Footer -->
-            <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100">
-                <a href="#" class="flex items-center text-gray-700 hover:text-red-600 transition-colors duration-300">
+            <!-- <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100">
+                <a href="index.php?page=logout" class="flex items-center text-gray-700 hover:text-red-600 transition-colors duration-300">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     <span>Log Out</span>
                 </a>
-            </div>
+            </div> -->
         </aside>
         
         <!-- Main Content -->
-        <div class="flex-1 lg:ml-64">
+        <div class="flex-1 lg:ml-0 p-6 lg:pl-0">
             <!-- Top Bar -->
             <header class="bg-white shadow-sm sticky top-0 z-20">
                 <div class="px-6 py-4 flex items-center justify-between">
@@ -421,15 +469,15 @@
                         <div class="relative">
                             <button id="userMenuBtn" class="flex items-center space-x-3">
                                 <div class="w-10 h-10 rounded-full overflow-hidden">
-                                    <img 
-                                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                                    <img
+                                        src="<?php echo htmlspecialchars($user['profile_image'] ? 'uploads/profiles/' . $user['profile_image'] : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'); ?>"
                                         alt="Profile"
                                         class="w-full h-full object-cover"
                                     >
                                 </div>
                                 <div class="hidden md:block text-left">
-                                    <p class="font-medium text-gray-800">John Mwangi</p>
-                                    <p class="text-sm text-gray-600">Landlord</p>
+                                    <p class="font-medium text-gray-800"><?php echo htmlspecialchars($user_name); ?></p>
+                                    <p class="text-sm text-gray-600"><?php echo ucfirst($user_type); ?></p>
                                 </div>
                                 <i class="fas fa-chevron-down text-gray-500"></i>
                             </button>
@@ -437,8 +485,8 @@
                             <!-- User Dropdown -->
                             <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 hidden z-30">
                                 <div class="p-4 border-b border-gray-100">
-                                    <p class="font-medium text-gray-800">John Mwangi</p>
-                                    <p class="text-sm text-gray-600">john@example.com</p>
+                                    <p class="font-medium text-gray-800"><?php echo htmlspecialchars($user_name); ?></p>
+                                    <p class="text-sm text-gray-600"><?php echo htmlspecialchars($user_email); ?></p>
                                 </div>
                                 <div class="p-2">
                                     <a href="#" class="tab-link flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors duration-300" data-tab="profile">
@@ -455,7 +503,7 @@
                                     </a>
                                 </div>
                                 <div class="p-2 border-t border-gray-100">
-                                    <a href="#" class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-300">
+                                    <a href="index.php?page=logout" class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-300">
                                         <i class="fas fa-sign-out-alt mr-3"></i>
                                         <span>Log Out</span>
                                     </a>
@@ -467,14 +515,14 @@
             </header>
             
             <!-- Main Content Area -->
-            <main class="p-6">
+            <main class="p-6 lg:pl-0">
                 <!-- Tab Content: Dashboard -->
                 <div id="dashboard" class="tab-content active">
                     <!-- Welcome Card -->
                     <div class="bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] rounded-2xl p-8 text-white mb-8 shadow-lg">
                         <div class="flex flex-col md:flex-row justify-between items-center">
                             <div class="mb-6 md:mb-0">
-                                <h2 class="text-3xl font-bold mb-2">Welcome back, John!</h2>
+                                <h2 class="text-3xl font-bold mb-2">Welcome back, <?php echo htmlspecialchars($user['first_name']); ?>!</h2>
                                 <p class="opacity-90">Here's what's happening with your Rheaspark account today.</p>
                             </div>
                             <div class="flex space-x-4">
@@ -489,64 +537,34 @@
                     </div>
                     
                     <!-- Statistics Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
                         <div class="dashboard-card stat-card bg-white rounded-2xl p-6 shadow-md">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-gray-600 text-sm">Total Properties</p>
-                                    <h3 class="text-3xl font-bold text-gray-800 mt-2">5</h3>
+                                    <p class="text-gray-600 text-sm"><?php echo $user_type === 'landlord' ? 'Total Properties' : 'Saved Properties'; ?></p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2"><?php echo $property_count; ?></h3>
                                 </div>
                                 <div class="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
                                     <i class="fas fa-home text-2xl text-[#2FA4E7]"></i>
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <span class="text-green-600 text-sm font-semibold"><i class="fas fa-arrow-up mr-1"></i> 2 this month</span>
+                                <span class="text-green-600 text-sm font-semibold"><i class="fas fa-arrow-up mr-1"></i> <?php echo $user_type === 'landlord' ? '2 this month' : '3 this week'; ?></span>
                             </div>
                         </div>
-                        
+
                         <div class="dashboard-card stat-card bg-white rounded-2xl p-6 shadow-md">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-gray-600 text-sm">Viewing Requests</p>
-                                    <h3 class="text-3xl font-bold text-gray-800 mt-2">12</h3>
+                                    <p class="text-gray-600 text-sm"><?php echo $user_type === 'landlord' ? 'Viewing Requests' : 'Scheduled Viewings'; ?></p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2"><?php echo $viewing_count; ?></h3>
                                 </div>
                                 <div class="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center">
                                     <i class="fas fa-calendar-alt text-2xl text-[#3CB371]"></i>
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <span class="text-green-600 text-sm font-semibold"><i class="fas fa-arrow-up mr-1"></i> 3 pending</span>
-                            </div>
-                        </div>
-                        
-                        <div class="dashboard-card stat-card bg-white rounded-2xl p-6 shadow-md">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-gray-600 text-sm">Total Revenue</p>
-                                    <h3 class="text-3xl font-bold text-gray-800 mt-2">KES 425K</h3>
-                                </div>
-                                <div class="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
-                                    <i class="fas fa-money-bill-wave text-2xl text-[#2FA4E7]"></i>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <span class="text-green-600 text-sm font-semibold"><i class="fas fa-arrow-up mr-1"></i> 15% from last month</span>
-                            </div>
-                        </div>
-                        
-                        <div class="dashboard-card stat-card bg-white rounded-2xl p-6 shadow-md">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-gray-600 text-sm">Verified Status</p>
-                                    <h3 class="text-3xl font-bold text-gray-800 mt-2">100%</h3>
-                                </div>
-                                <div class="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center">
-                                    <i class="fas fa-shield-alt text-2xl text-[#3CB371]"></i>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <span class="text-blue-600 text-sm font-semibold"><i class="fas fa-check-circle mr-1"></i> Fully verified</span>
+                                <span class="text-green-600 text-sm font-semibold"><i class="fas fa-arrow-up mr-1"></i> <?php echo $user_type === 'landlord' ? '3 pending' : '2 confirmed'; ?></span>
                             </div>
                         </div>
                     </div>
@@ -610,70 +628,9 @@
                                     <h3 class="text-xl font-bold text-gray-800">My Properties</h3>
                                     <a href="#" class="text-[#2FA4E7] font-semibold text-sm">Manage all</a>
                                 </div>
-                                
-                                <div class="overflow-x-auto">
-                                    <table class="w-full">
-                                        <thead>
-                                            <tr class="border-b border-gray-100">
-                                                <th class="text-left py-3 text-gray-600 font-medium">Property</th>
-                                                <th class="text-left py-3 text-gray-600 font-medium">Status</th>
-                                                <th class="text-left py-3 text-gray-600 font-medium">Viewings</th>
-                                                <th class="text-left py-3 text-gray-600 font-medium">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                                <td class="py-4">
-                                                    <div class="flex items-center">
-                                                        <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
-                                                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                                                 alt="Property" class="w-full h-full object-cover">
-                                                        </div>
-                                                        <div>
-                                                            <p class="font-medium text-gray-800">Westlands Apartment</p>
-                                                            <p class="text-sm text-gray-600">KES 85,000/month</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="py-4">
-                                                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded-full">Active</span>
-                                                </td>
-                                                <td class="py-4">
-                                                    <span class="font-medium">5 scheduled</span>
-                                                </td>
-                                                <td class="py-4">
-                                                    <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                                        Manage
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                                <td class="py-4">
-                                                    <div class="flex items-center">
-                                                        <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
-                                                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                                                 alt="Property" class="w-full h-full object-cover">
-                                                        </div>
-                                                        <div>
-                                                            <p class="font-medium text-gray-800">Kilimani Suite</p>
-                                                            <p class="text-sm text-gray-600">KES 65,000/month</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="py-4">
-                                                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">Pending</span>
-                                                </td>
-                                                <td class="py-4">
-                                                    <span class="font-medium">2 scheduled</span>
-                                                </td>
-                                                <td class="py-4">
-                                                    <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                                        Manage
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+
+                                <div id="userPropertiesTable" class="overflow-x-auto">
+                                    <!-- Properties table will be loaded here -->
                                 </div>
                             </div>
                         </div>
@@ -778,32 +735,32 @@
                             <!-- Personal Information Form -->
                             <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
                                 <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
-                                
-                                <form>
+
+                                <form id="personalInfoForm">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                                            <input type="text" value="John" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                            <input type="text" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                                            <input type="text" value="Mwangi" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                            <input type="text" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="mb-6">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                        <input type="email" value="john@example.com" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                        <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                     </div>
-                                    
+
                                     <div class="mb-6">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                                        <input type="tel" value="+254 712 345 678" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                        <input type="tel" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                     </div>
-                                    
+
                                     <div class="mb-6">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-                                        <textarea rows="4" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">Professional landlord with 5 years experience. I believe in transparency and good communication with tenants.</textarea>
+                                        <textarea name="bio" rows="4" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
                                     </div>
                                     
                                     <div class="flex justify-end">
@@ -820,21 +777,21 @@
                             <!-- Address Information -->
                             <div class="bg-white rounded-2xl shadow-md p-6">
                                 <h3 class="text-xl font-bold text-gray-800 mb-6">Address Information</h3>
-                                
-                                <form>
+
+                                <form id="addressForm">
                                     <div class="mb-6">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Primary Address</label>
-                                        <input type="text" value="123 Westlands Road" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                        <input type="text" name="address" value="<?php echo htmlspecialchars($user['address'] ?? ''); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                     </div>
-                                    
+       
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
-                                            <input type="text" value="Nairobi" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                            <input type="text" name="city" value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
-                                            <input type="text" value="00100" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                            <input type="text" name="postal_code" value="<?php echo htmlspecialchars($user['postal_code'] ?? ''); ?>" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
                                         </div>
                                     </div>
                                     
@@ -855,8 +812,8 @@
                                 
                                 <div class="text-center">
                                     <div class="w-48 h-48 rounded-full overflow-hidden mx-auto mb-6 relative">
-                                        <img 
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                                        <img
+                                            src="<?php echo htmlspecialchars($user['profile_image'] ? 'uploads/profiles/' . $user['profile_image'] : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'); ?>"
                                             alt="Profile"
                                             class="w-full h-full object-cover"
                                         >
@@ -866,12 +823,13 @@
                                     </div>
                                     
                                     <div class="space-y-3">
-                                        <button class="w-full py-3 bg-blue-50 text-[#2FA4E7] font-semibold rounded-xl hover:bg-blue-100 transition-colors duration-300">
+                                        <button class="upload-photo-btn w-full py-3 bg-blue-50 text-[#2FA4E7] font-semibold rounded-xl hover:bg-blue-100 transition-colors duration-300">
                                             Upload New Photo
                                         </button>
-                                        <button class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                        <button class="remove-photo-btn w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
                                             Remove Photo
                                         </button>
+                                        <input type="file" id="photoInput" accept="image/*" style="display:none">
                                     </div>
                                     
                                     <p class="text-sm text-gray-600 mt-4">Recommended: Square image, at least 400x400 pixels</p>
@@ -905,8 +863,8 @@
                                                 <p class="text-sm text-gray-600">Search and book properties</p>
                                             </div>
                                         </div>
-                                        <button class="w-full mt-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
-                                            Switch to House Hunter
+                                        <button class="switch-account-btn w-full mt-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                            Switch Profile
                                         </button>
                                     </div>
                                 </div>
@@ -923,132 +881,15 @@
                                 <h2 class="text-2xl font-bold text-gray-800">My Properties</h2>
                                 <p class="text-gray-600">Manage all your listed properties</p>
                             </div>
-                            <button class="tab-link px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300" data-tab="listings">
+                            <button id="addPropertyBtn" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
                                 <i class="fas fa-plus mr-2"></i> Add New Property
                             </button>
                         </div>
                     </div>
                     
                     <!-- Properties Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        <!-- Property Card 1 -->
-                        <div class="dashboard-card bg-white rounded-2xl shadow-md overflow-hidden">
-                            <div class="relative h-48">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                    alt="Property"
-                                    class="w-full h-full object-cover"
-                                >
-                                <div class="absolute top-4 left-4">
-                                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded-full">Active</span>
-                                </div>
-                                <div class="absolute top-4 right-4">
-                                    <span class="px-3 py-1 bg-white text-gray-800 font-bold rounded-lg">KES 85,000</span>
-                                </div>
-                            </div>
-                            
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Westlands Apartment</h3>
-                                <div class="flex items-center text-gray-600 mb-4">
-                                    <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
-                                    <span>Westlands, Nairobi</span>
-                                </div>
-                                
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">3 Bed</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">2 Bath</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">1,200 sqft</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm text-gray-600">Viewings</p>
-                                        <p class="font-bold">5 scheduled</p>
-                                    </div>
-                                    <div class="space-x-2">
-                                        <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                            Edit
-                                        </button>
-                                        <button class="px-4 py-2 bg-green-50 text-[#3CB371] font-semibold rounded-lg hover:bg-green-100 transition-colors duration-300 text-sm">
-                                            View
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Property Card 2 -->
-                        <div class="dashboard-card bg-white rounded-2xl shadow-md overflow-hidden">
-                            <div class="relative h-48">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                    alt="Property"
-                                    class="w-full h-full object-cover"
-                                >
-                                <div class="absolute top-4 left-4">
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">Pending</span>
-                                </div>
-                                <div class="absolute top-4 right-4">
-                                    <span class="px-3 py-1 bg-white text-gray-800 font-bold rounded-lg">KES 65,000</span>
-                                </div>
-                            </div>
-                            
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Kilimani Suite</h3>
-                                <div class="flex items-center text-gray-600 mb-4">
-                                    <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
-                                    <span>Kilimani, Nairobi</span>
-                                </div>
-                                
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">2 Bed</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">2 Bath</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">950 sqft</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm text-gray-600">Viewings</p>
-                                        <p class="font-bold">2 scheduled</p>
-                                    </div>
-                                    <div class="space-x-2">
-                                        <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                            Edit
-                                        </button>
-                                        <button class="px-4 py-2 bg-green-50 text-[#3CB371] font-semibold rounded-lg hover:bg-green-100 transition-colors duration-300 text-sm">
-                                            View
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Add Property Card -->
-                        <div class="dashboard-card bg-gradient-to-br from-blue-50 to-green-50 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#2FA4E7] transition-all duration-300" onclick="document.querySelector('[data-tab=\"listings\"]').click()">
-                            <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm">
-                                <i class="fas fa-plus text-3xl text-[#2FA4E7]"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">Add New Property</h3>
-                            <p class="text-gray-600 text-center">List your property for free during Year One promotion</p>
-                        </div>
+                    <div id="userPropertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Properties will be loaded dynamically -->
                     </div>
                     
                     <!-- Property Statistics -->
@@ -1068,244 +909,14 @@
                                 <div class="text-3xl font-bold text-[#2FA4E7] mb-2">12</div>
                                 <p class="text-gray-700 font-medium">Total Viewings</p>
                             </div>
-                            <div class="text-center p-6 bg-green-50 rounded-2xl">
+                            <!-- <div class="text-center p-6 bg-green-50 rounded-2xl">
                                 <div class="text-3xl font-bold text-[#3CB371] mb-2">KES 425K</div>
                                 <p class="text-gray-700 font-medium">Total Revenue</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
                 
-                <!-- Tab Content: Add New Listing -->
-                <div id="listings" class="tab-content">
-                    <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-800">Add New Property Listing</h2>
-                        <p class="text-gray-600">List your property for free during our Year One promotion</p>
-                    </div>
-                    
-                    <!-- Listing Form -->
-                    <div class="bg-white rounded-2xl shadow-md p-8">
-                        <form id="propertyForm">
-                            <!-- Step Indicator -->
-                            <div class="mb-10">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center text-white font-bold mr-3">1</div>
-                                        <span class="font-semibold">Basic Information</span>
-                                    </div>
-                                    <div class="h-1 flex-1 bg-gray-200 mx-4"></div>
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">2</div>
-                                        <span class="font-semibold text-gray-500">Property Details</span>
-                                    </div>
-                                    <div class="h-1 flex-1 bg-gray-200 mx-4"></div>
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">3</div>
-                                        <span class="font-semibold text-gray-500">Photos & Pricing</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Basic Information -->
-                            <div class="mb-10">
-                                <h3 class="text-xl font-bold text-gray-800 mb-6">Basic Information</h3>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Title*</label>
-                                        <input type="text" placeholder="e.g., Spacious 3-Bedroom Apartment" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type*</label>
-                                        <select class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                            <option value="">Select type</option>
-                                            <option value="apartment">Apartment</option>
-                                            <option value="house">House</option>
-                                            <option value="studio">Studio</option>
-                                            <option value="bedsitter">Bedsitter</option>
-                                            <option value="commercial">Commercial</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-6">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Description*</label>
-                                    <textarea rows="4" placeholder="Describe your property in detail..." class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required></textarea>
-                                </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Location*</label>
-                                        <input type="text" placeholder="e.g., Westlands, Nairobi" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Neighborhood</label>
-                                        <input type="text" placeholder="e.g., Near shopping mall" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Property Details -->
-                            <div class="mb-10">
-                                <h3 class="text-xl font-bold text-gray-800 mb-6">Property Details</h3>
-                                
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Bedrooms*</label>
-                                        <select class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3" selected>3</option>
-                                            <option value="4">4</option>
-                                            <option value="5+">5+</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Bathrooms*</label>
-                                        <select class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                            <option value="1">1</option>
-                                            <option value="2" selected>2</option>
-                                            <option value="3">3</option>
-                                            <option value="4+">4+</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Square Feet</label>
-                                        <input type="number" placeholder="e.g., 1200" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Parking Spots</label>
-                                        <select class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
-                                            <option value="0">None</option>
-                                            <option value="1" selected>1</option>
-                                            <option value="2">2</option>
-                                            <option value="3+">3+</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Amenities -->
-                                <div class="mb-6">
-                                    <label class="block text-sm font-medium text-gray-700 mb-4">Amenities</label>
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="wifi" class="mr-3">
-                                            <label for="wifi" class="text-gray-700">WiFi</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="parking" class="mr-3" checked>
-                                            <label for="parking" class="text-gray-700">Parking</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="security" class="mr-3" checked>
-                                            <label for="security" class="text-gray-700">Security</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="pool" class="mr-3">
-                                            <label for="pool" class="text-gray-700">Swimming Pool</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="gym" class="mr-3">
-                                            <label for="gym" class="text-gray-700">Gym</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="pets" class="mr-3" checked>
-                                            <label for="pets" class="text-gray-700">Pet Friendly</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="furnished" class="mr-3">
-                                            <label for="furnished" class="text-gray-700">Furnished</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="balcony" class="mr-3" checked>
-                                            <label for="balcony" class="text-gray-700">Balcony</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Honest Disclosure -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-4">Honest Disclosure</label>
-                                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6">
-                                        <div class="flex items-start mb-4">
-                                            <i class="fas fa-info-circle text-[#2FA4E7] text-xl mr-3 mt-1"></i>
-                                            <div>
-                                                <h4 class="font-bold text-gray-800 mb-2">Transparency Matters</h4>
-                                                <p class="text-gray-700 mb-4">Please disclose any common issues and their solutions. This builds trust with potential tenants.</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Common Issues</label>
-                                                <textarea rows="3" placeholder="e.g., Water pressure slightly low during peak hours" class="w-full p-3 border border-blue-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"></textarea>
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Solutions/Workarounds</label>
-                                                <textarea rows="3" placeholder="e.g., Building has water storage tanks to compensate" class="w-full p-3 border border-blue-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Pricing & Photos -->
-                            <div class="mb-10">
-                                <h3 class="text-xl font-bold text-gray-800 mb-6">Pricing & Photos</h3>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Rent (KES)*</label>
-                                        <input type="number" placeholder="e.g., 85000" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Security Deposit (KES)</label>
-                                        <input type="number" placeholder="e.g., 85000" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
-                                    </div>
-                                </div>
-                                
-                                <!-- Photo Upload -->
-                                <div class="mb-8">
-                                    <label class="block text-sm font-medium text-gray-700 mb-4">Property Photos</label>
-                                    <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-[#2FA4E7] transition-colors duration-300 cursor-pointer">
-                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                                        <h4 class="text-lg font-bold text-gray-800 mb-2">Upload Property Photos</h4>
-                                        <p class="text-gray-600 mb-4">Drag & drop images here or click to browse</p>
-                                        <p class="text-sm text-gray-500">Recommended: High-quality photos, minimum 5 images</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Listing Promotion -->
-                                <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-6">
-                                    <div class="flex items-center mb-4">
-                                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                            <i class="fas fa-gift text-green-600 text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-800">Free Listing Promotion</h4>
-                                            <p class="text-gray-700">During Year One, all property listings are completely free! No charges until 2025.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Form Actions -->
-                            <div class="flex justify-between pt-6 border-t border-gray-100">
-                                <button type="button" class="px-8 py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300">
-                                    Save as Draft
-                                </button>
-                                <div class="space-x-4">
-                                    <button type="button" class="px-8 py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300">
-                                        Preview Listing
-                                    </button>
-                                    <button type="submit" class="px-8 py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
-                                        <i class="fas fa-paper-plane mr-2"></i> Publish Listing
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
                 
                 <!-- Tab Content: Saved Properties (House Hunter) -->
                 <div id="saved" class="tab-content">
@@ -1313,86 +924,38 @@
                         <h2 class="text-2xl font-bold text-gray-800">Saved Properties</h2>
                         <p class="text-gray-600">Properties you've saved for later viewing</p>
                     </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Saved Property Card -->
-                        <div class="dashboard-card bg-white rounded-2xl shadow-md overflow-hidden">
-                            <div class="relative h-48">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                    alt="Property"
-                                    class="w-full h-full object-cover"
-                                >
-                                <button class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow duration-300 text-red-500">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                                <div class="absolute bottom-4 left-4">
-                                    <span class="px-3 py-1 bg-white text-gray-800 font-bold rounded-lg">KES 85,000</span>
-                                </div>
-                            </div>
-                            
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Westlands Apartment</h3>
-                                <div class="flex items-center text-gray-600 mb-4">
-                                    <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
-                                    <span>Westlands, Nairobi</span>
-                                </div>
-                                
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bed text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">3 Bed</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-bath text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">2 Bath</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i>
-                                        <span class="text-sm">1,200 sqft</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-3">
-                                    <button class="w-full py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
-                                        View Details
-                                    </button>
-                                    <button class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
-                                        Request Viewing
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- More saved properties would be here -->
+
+                    <div id="savedPropertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Saved properties will be loaded here -->
                         <div class="text-center col-span-1 md:col-span-2 lg:col-span-3 py-12">
                             <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
-                                <i class="fas fa-search text-3xl text-gray-400"></i>
+                                <i class="fas fa-heart text-3xl text-gray-400"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">More Saved Properties</h3>
-                            <p class="text-gray-600 mb-6">As a house hunter, you'll see all your saved properties here</p>
-                            <button class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Saved Properties</h3>
+                            <p class="text-gray-600 mb-6">You haven't saved any properties yet</p>
+                            <button onclick="switchTab('dashboard')" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
                                 Browse Properties
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Tab Content: My Viewings (House Hunter) -->
-                <div id="viewings" class="tab-content">
+                <!-- Tab Content: My Requests (House Hunter) -->
+                <div id="requests" class="tab-content">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-800">My Viewings</h2>
-                        <p class="text-gray-600">Schedule and manage property viewings</p>
+                        <h2 class="text-2xl font-bold text-gray-800">My Requests</h2>
+                        <p class="text-gray-600">Requests you've sent to landlords</p>
                     </div>
-                    
+
                     <div class="bg-white rounded-2xl shadow-md p-6">
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead>
                                     <tr class="border-b border-gray-100">
                                         <th class="text-left py-3 text-gray-600 font-medium">Property</th>
-                                        <th class="text-left py-3 text-gray-600 font-medium">Date & Time</th>
+                                        <th class="text-left py-3 text-gray-600 font-medium">Landlord</th>
                                         <th class="text-left py-3 text-gray-600 font-medium">Status</th>
+                                        <th class="text-left py-3 text-gray-600 font-medium">Date Sent</th>
                                         <th class="text-left py-3 text-gray-600 font-medium">Actions</th>
                                     </tr>
                                 </thead>
@@ -1401,7 +964,7 @@
                                         <td class="py-4">
                                             <div class="flex items-center">
                                                 <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
-                                                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                                                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
                                                          alt="Property" class="w-full h-full object-cover">
                                                 </div>
                                                 <div>
@@ -1411,16 +974,19 @@
                                             </div>
                                         </td>
                                         <td class="py-4">
-                                            <p class="font-medium">Tomorrow, 10:00 AM</p>
-                                            <p class="text-sm text-gray-600">Confirmed</p>
+                                            <p class="font-medium">John Mwangi</p>
+                                            <p class="text-sm text-gray-600">john@example.com</p>
                                         </td>
                                         <td class="py-4">
-                                            <span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded-full">Confirmed</span>
+                                            <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs font-semibold rounded-full">Pending</span>
+                                        </td>
+                                        <td class="py-4">
+                                            <p class="font-medium">2 days ago</p>
                                         </td>
                                         <td class="py-4">
                                             <div class="flex space-x-2">
                                                 <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                                    Reschedule
+                                                    Message
                                                 </button>
                                                 <button class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-300 text-sm">
                                                     Cancel
@@ -1428,42 +994,96 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                        <td class="py-4">
-                                            <div class="flex items-center">
-                                                <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
-                                                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                                                         alt="Property" class="w-full h-full object-cover">
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-gray-800">Kilimani Suite</p>
-                                                    <p class="text-sm text-gray-600">KES 65,000/month</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-4">
-                                            <p class="font-medium">Friday, 2:30 PM</p>
-                                            <p class="text-sm text-gray-600">Pending landlord confirmation</p>
-                                        </td>
-                                        <td class="py-4">
-                                            <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs font-semibold rounded-full">Pending</span>
-                                        </td>
-                                        <td class="py-4">
-                                            <div class="flex space-x-2">
-                                                <button class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
-                                                    Edit
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="text-center mt-8">
-                            <button class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
-                                <i class="fas fa-plus mr-2"></i> Schedule New Viewing
-                            </button>
+                            <p class="text-gray-600">No requests yet? <a href="#" class="text-[#2FA4E7] font-semibold">Browse properties</a> to send your first request.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Messages (House Hunter) -->
+                <div id="messages" class="tab-content">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800">Messages</h2>
+                        <p class="text-gray-600">Conversations with landlords</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Conversations List -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                                <div class="max-h-[600px] overflow-y-auto">
+                                    <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
+                                        <div class="flex">
+                                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                                <span class="font-bold text-green-600">JM</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex justify-between mb-2">
+                                                    <h4 class="font-bold text-gray-800">John Mwangi</h4>
+                                                    <span class="text-sm text-gray-500">Today, 10:30 AM</span>
+                                                </div>
+                                                <p class="text-gray-700 mb-2">Yes, the apartment is still available. Would you like to schedule a viewing?</p>
+                                                <div class="flex items-center">
+                                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded mr-3">Westlands Apartment</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Message Thread -->
+                        <div>
+                            <div class="bg-white rounded-2xl shadow-md p-6 sticky top-24">
+                                <h3 class="text-xl font-bold text-gray-800 mb-6">Conversation</h3>
+
+                                <div class="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                                    <!-- Messages would be loaded here -->
+                                    <div class="text-center text-gray-500 py-8">
+                                        Select a conversation to view messages
+                                    </div>
+                                </div>
+
+                                <form>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Send Message</label>
+                                        <textarea rows="4" placeholder="Type your message here..." class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                        Send Message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: My Viewings (House Hunter) -->
+                <div id="viewings" class="tab-content">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800">My Viewings</h2>
+                        <p class="text-gray-600">Schedule and manage property viewings</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-md p-6">
+                        <div id="viewingsTableContainer" class="overflow-x-auto">
+                            <!-- Viewings table will be loaded here -->
+                            <div class="text-center py-12">
+                                <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                    <i class="fas fa-calendar-alt text-3xl text-gray-400"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">No Viewing Requests</h3>
+                                <p class="text-gray-600 mb-6">You haven't requested any property viewings yet</p>
+                                <button onclick="switchTab('dashboard')" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                    Browse Properties
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1471,10 +1091,10 @@
                 <!-- Tab Content: Inquiries (Landlord) -->
                 <div id="inquiries" class="tab-content">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-800">Inquiries</h2>
-                        <p class="text-gray-600">Manage messages and inquiries from potential tenants</p>
+                        <h2 class="text-2xl font-bold text-gray-800">Inquiries & Messages</h2>
+                        <p class="text-gray-600">Manage requests and messages from potential tenants</p>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <!-- Inquiries List -->
                         <div class="lg:col-span-2">
@@ -1483,19 +1103,23 @@
                                 <div class="border-b border-gray-100">
                                     <div class="flex">
                                         <button class="inquiry-filter px-6 py-4 font-semibold border-b-2 border-[#2FA4E7] text-[#2FA4E7]" data-filter="all">
-                                            All Messages
+                                            All <span class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"><?php echo $viewing_count; ?></span>
+                                        </button>
+                                        <button class="inquiry-filter px-6 py-4 font-semibold text-gray-600 hover:text-gray-800" data-filter="requests">
+                                            Requests <span class="ml-2 bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">2</span>
+                                        </button>
+                                        <button class="inquiry-filter px-6 py-4 font-semibold text-gray-600 hover:text-gray-800" data-filter="messages">
+                                            Messages <span class="ml-2 bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">1</span>
                                         </button>
                                         <button class="inquiry-filter px-6 py-4 font-semibold text-gray-600 hover:text-gray-800" data-filter="unread">
-                                            Unread <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
-                                        </button>
-                                        <button class="inquiry-filter px-6 py-4 font-semibold text-gray-600 hover:text-gray-800" data-filter="viewing">
-                                            Viewing Requests
+                                            Unread <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">2</span>
                                         </button>
                                     </div>
                                 </div>
-                                
-                                <!-- Messages List -->
+
+                                <!-- Messages/Requests List -->
                                 <div class="max-h-[600px] overflow-y-auto">
+                                    <!-- Viewing Request -->
                                     <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
                                         <div class="flex">
                                             <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
@@ -1506,7 +1130,7 @@
                                                     <h4 class="font-bold text-gray-800">Jane Muthoni</h4>
                                                     <span class="text-sm text-gray-500">Today, 10:30 AM</span>
                                                 </div>
-                                                <p class="text-gray-700 mb-2">Interested in your Westlands apartment. Is it still available?</p>
+                                                <p class="text-gray-700 mb-2">I'd like to schedule a viewing for your Westlands apartment this Friday.</p>
                                                 <div class="flex items-center">
                                                     <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded mr-3">Viewing Request</span>
                                                     <span class="text-sm text-gray-600">For: Westlands Apartment</span>
@@ -1514,7 +1138,8 @@
                                             </div>
                                         </div>
                                     </a>
-                                    
+
+                                    <!-- Message -->
                                     <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300 bg-blue-50/50">
                                         <div class="flex">
                                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
@@ -1525,9 +1150,9 @@
                                                     <h4 class="font-bold text-gray-800">Peter Omondi</h4>
                                                     <span class="text-sm text-gray-500">Yesterday, 3:15 PM</span>
                                                 </div>
-                                                <p class="text-gray-700 mb-2">Can I get more details about the Kilimani property?</p>
+                                                <p class="text-gray-700 mb-2">Can I get more details about the parking and security features?</p>
                                                 <div class="flex items-center">
-                                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded mr-3">General Inquiry</span>
+                                                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded mr-3">Message</span>
                                                     <span class="text-sm text-gray-600">For: Kilimani Suite</span>
                                                 </div>
                                             </div>
@@ -1536,41 +1161,44 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Quick Reply -->
+
+                        <!-- Quick Actions -->
                         <div>
                             <div class="bg-white rounded-2xl shadow-md p-6 sticky top-24">
-                                <h3 class="text-xl font-bold text-gray-800 mb-6">Quick Reply</h3>
-                                
-                                <form>
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">To</label>
-                                        <input type="text" value="Jane Muthoni" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" disabled>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Regarding Property</label>
-                                        <select class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
-                                            <option>Westlands Apartment</option>
-                                            <option>Kilimani Suite</option>
-                                            <option>Other</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                                        <textarea rows="6" placeholder="Type your response here..." class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300"></textarea>
-                                    </div>
-                                    
-                                    <div class="space-y-3">
-                                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
-                                            Send Reply
+                                <h3 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h3>
+
+                                <div class="space-y-4">
+                                    <button class="w-full py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                        <i class="fas fa-reply mr-2"></i> Reply to Message
+                                    </button>
+
+                                    <button class="w-full py-3 border border-[#2FA4E7] text-[#2FA4E7] font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300">
+                                        <i class="fas fa-calendar-check mr-2"></i> Approve Viewing
+                                    </button>
+
+                                    <button class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                        <i class="fas fa-envelope mr-2"></i> Send Message
+                                    </button>
+
+                                    <button class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                        <i class="fas fa-user-plus mr-2"></i> Add to Contacts
+                                    </button>
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-gray-100">
+                                    <h4 class="font-bold text-gray-800 mb-4">Response Templates</h4>
+                                    <div class="space-y-2">
+                                        <button class="w-full text-left py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-300">
+                                            ✓ Viewing confirmed
                                         </button>
-                                        <button type="button" class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
-                                            Use Template
+                                        <button class="w-full text-left py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-300">
+                                            ✗ Property not available
+                                        </button>
+                                        <button class="w-full text-left py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-300">
+                                            💬 More information needed
                                         </button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2020,6 +1648,229 @@
         </div>
     </div>
 
+    <!-- Add Property Modal -->
+    <div id="addPropertyModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto modal-enter">
+                <!-- Modal Header -->
+                <div class="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-plus-circle text-[#2FA4E7] mr-3"></i>
+                        Add New Property Listing
+                    </h2>
+                    <button id="closePropertyModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6 overflow-y-auto">
+                    <!-- Listing Form -->
+                    <form id="propertyForm">
+                        <!-- Step Indicator -->
+                        <div class="mb-10">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center text-white font-bold mr-3">1</div>
+                                    <span class="font-semibold">Basic Information</span>
+                                </div>
+                                <div class="h-1 flex-1 bg-gray-200 mx-4"></div>
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">2</div>
+                                    <span class="font-semibold text-gray-500">Property Details</span>
+                                </div>
+                                <div class="h-1 flex-1 bg-gray-200 mx-4"></div>
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">3</div>
+                                    <span class="font-semibold text-gray-500">Photos & Pricing</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basic Information -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Basic Information</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Title*</label>
+                                    <input type="text" name="title" placeholder="e.g., Spacious 3-Bedroom Apartment" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Type*</label>
+                                    <select id="propertyTypeSelect" name="property_type" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                        <option value="">Select type</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description*</label>
+                                <textarea name="description" rows="4" placeholder="Describe your property in detail..." class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Location*</label>
+                                    <input type="text" name="location" placeholder="e.g., Westlands, Nairobi" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Neighborhood</label>
+                                    <input type="text" name="neighborhood" placeholder="e.g., Near shopping mall" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Details -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Property Details</h3>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bedrooms*</label>
+                                    <select name="bedrooms" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3" selected>3</option>
+                                        <option value="4">4</option>
+                                        <option value="5+">5+</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bathrooms*</label>
+                                    <select name="bathrooms" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                        <option value="1">1</option>
+                                        <option value="2" selected>2</option>
+                                        <option value="3">3</option>
+                                        <option value="4+">4+</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Square Feet</label>
+                                    <input type="number" name="size_sqft" placeholder="e.g., 1200" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Parking Spots</label>
+                                    <select name="parking_spaces" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                        <option value="0">None</option>
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3+">3+</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Amenities -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-4">Amenities</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="wifi" name="wifi" class="mr-3">
+                                        <label for="wifi" class="text-gray-700">WiFi</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="parking" name="parking" class="mr-3" checked>
+                                        <label for="parking" class="text-gray-700">Parking</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="security" name="security" class="mr-3" checked>
+                                        <label for="security" class="text-gray-700">Security</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="pool" name="pool" class="mr-3">
+                                        <label for="pool" class="text-gray-700">Swimming Pool</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="gym" name="gym" class="mr-3">
+                                        <label for="gym" class="text-gray-700">Gym</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="pets" name="pets" class="mr-3" checked>
+                                        <label for="pets" class="text-gray-700">Pet Friendly</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="furnished" name="furnished" class="mr-3">
+                                        <label for="furnished" class="text-gray-700">Furnished</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="balcony" name="balcony" class="mr-3" checked>
+                                        <label for="balcony" class="text-gray-700">Balcony</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & Photos -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Pricing & Photos</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Rent (KES)*</label>
+                                    <input type="number" name="price" placeholder="e.g., 85000" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Security Deposit (KES)</label>
+                                    <input type="number" name="security_deposit" placeholder="e.g., 85000" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300">
+                                </div>
+                            </div>
+
+                            <!-- Photo Upload -->
+                            <div class="mb-8">
+                                <label class="block text-sm font-medium text-gray-700 mb-4">Property Photos</label>
+                                <div id="photoUploadArea" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-[#2FA4E7] transition-colors duration-300 cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <h4 class="text-lg font-bold text-gray-800 mb-2">Upload Property Photos</h4>
+                                    <p class="text-gray-600 mb-4">Drag & drop images here or click to browse</p>
+                                    <p class="text-sm text-gray-500">Recommended: High-quality photos, minimum 3 images</p>
+                                </div>
+                                <input type="file" id="propertyPhotoInput" accept="image/*" multiple style="display:none">
+
+                                <!-- Photo Preview -->
+                                <div id="photoPreview" class="mt-4 hidden">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span id="photoCount" class="text-sm text-gray-600">0 photos selected</span>
+                                        <button type="button" id="clearPhotos" class="text-sm text-red-600 hover:text-red-800">Clear all</button>
+                                    </div>
+                                    <div id="photoGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+                                </div>
+                            </div>
+
+                            <!-- Listing Promotion -->
+                            <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 rounded-2xl p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-gift text-green-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Free Listing Promotion</h4>
+                                        <p class="text-gray-700">During Year One, all property listings are completely free! No charges until 2025.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex justify-between pt-6 border-t border-gray-100">
+                            <button type="button" id="closePropertyModalBtn" class="px-8 py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300">
+                                Cancel
+                            </button>
+                            <div class="space-x-4">
+                                <button type="button" class="px-8 py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300">
+                                    Save as Draft
+                                </button>
+                                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                    <i class="fas fa-paper-plane mr-2"></i> Publish Listing
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // DOM Elements
         const sidebar = document.getElementById('sidebar');
@@ -2039,13 +1890,31 @@
             listings: 'Add New Listing',
             saved: 'Saved Properties',
             viewings: 'My Viewings',
+            requests: 'My Requests',
+            messages: 'Messages',
             payments: 'Payment History',
-            inquiries: 'Inquiries',
+            inquiries: 'Inquiries & Messages',
             security: 'Security Settings',
             notifications: 'Notification Settings',
             reports: 'Reports & Analytics'
         };
         
+        // Modal Elements
+        const addPropertyModal = document.getElementById('addPropertyModal');
+        const addListingBtn = document.getElementById('addListingBtn');
+        const addPropertyBtn = document.getElementById('addPropertyBtn');
+        const closePropertyModal = document.getElementById('closePropertyModal');
+        const closePropertyModalBtn = document.getElementById('closePropertyModalBtn');
+
+        // Modal functions
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal(modal) {
+            modal.classList.add('hidden');
+        }
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             // Set active tab from URL hash if present
@@ -2053,17 +1922,53 @@
             if (hash && tabTitles[hash]) {
                 switchTab(hash);
             }
-            
+
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 // Close notification dropdown
                 if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
                     notificationDropdown.classList.add('hidden');
                 }
-                
+
                 // Close user dropdown
                 if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
                     userDropdown.classList.add('hidden');
+                }
+            });
+
+            // Modal functionality
+            if (addListingBtn) {
+                addListingBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal(addPropertyModal);
+                    loadPropertyTypes();
+                });
+            }
+
+            if (addPropertyBtn) {
+                addPropertyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal(addPropertyModal);
+                    loadPropertyTypes();
+                });
+            }
+
+            if (closePropertyModal) {
+                closePropertyModal.addEventListener('click', function() {
+                    closeModal(addPropertyModal);
+                });
+            }
+
+            if (closePropertyModalBtn) {
+                closePropertyModalBtn.addEventListener('click', function() {
+                    closeModal(addPropertyModal);
+                });
+            }
+
+            // Close modal on background click
+            addPropertyModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(addPropertyModal);
                 }
             });
         });
@@ -2159,16 +2064,103 @@
         // Property form submission
         document.getElementById('propertyForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Show success message
-            showNotification('Property listing published successfully!', 'success');
-            
-            // Switch to properties tab after delay
-            setTimeout(() => {
-                switchTab('properties');
-            }, 2000);
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Publishing...';
+            submitBtn.disabled = true;
+
+            // Collect form data
+            const formData = new FormData(this);
+
+            // Add photos
+            const files = propertyPhotoInput?.files || [];
+            for (let i = 0; i < files.length && i < 3; i++) {
+                formData.append('photo_' + (i + 1), files[i]);
+            }
+
+            // Add amenities
+            formData.append('wifi', document.getElementById('wifi')?.checked ? '1' : '0');
+            formData.append('parking', document.getElementById('parking')?.checked ? '1' : '0');
+            formData.append('security', document.getElementById('security')?.checked ? '1' : '0');
+            formData.append('pool', document.getElementById('pool')?.checked ? '1' : '0');
+            formData.append('gym', document.getElementById('gym')?.checked ? '1' : '0');
+            formData.append('pets', document.getElementById('pets')?.checked ? '1' : '0');
+            formData.append('furnished', document.getElementById('furnished')?.checked ? '1' : '0');
+            formData.append('balcony', document.getElementById('balcony')?.checked ? '1' : '0');
+
+            fetch('api/add_house.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Published!';
+                    showNotification('Property listing published successfully!', 'success');
+
+                    // Reset form
+                    this.reset();
+                    if (propertyPhotoInput) propertyPhotoInput.value = '';
+
+                    // Switch to properties tab after delay
+                    setTimeout(() => {
+                        switchTab('properties');
+                        // Reload page to show new property
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    showNotification(result.error, 'error');
+                }
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showNotification('An error occurred. Please try again.', 'error');
+            });
         });
-        
+
+        // Personal info form submission
+        document.getElementById('personalInfoForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('api/update_profile.php', {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    showNotification('Personal information updated successfully!', 'success');
+                } else {
+                    showNotification(data.error || 'Failed to update profile', 'error');
+                }
+            }).catch(() => {
+                showNotification('Network error. Please try again.', 'error');
+            });
+        });
+
+        // Address form submission
+        document.getElementById('addressForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('api/update_profile.php', {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    showNotification('Address updated successfully!', 'success');
+                } else {
+                    showNotification(data.error || 'Failed to update address', 'error');
+                }
+            }).catch(() => {
+                showNotification('Network error. Please try again.', 'error');
+            });
+        });
+
         // Show notification function
         function showNotification(message, type) {
             // Remove existing notification
@@ -2229,6 +2221,801 @@
                 sidebar.classList.remove('hidden');
             }
         });
+
+        // Load saved properties
+        function loadSavedProperties() {
+            fetch('api/favorites.php')
+            .then(response => response.json())
+            .then(data => {
+                const grid = document.getElementById('savedPropertiesGrid');
+                if (data.success && data.data.length > 0) {
+                    grid.innerHTML = '';
+                    data.data.forEach(favorite => {
+                        const card = createSavedPropertyCard(favorite);
+                        grid.appendChild(card);
+                    });
+                } else {
+                    grid.innerHTML = `
+                        <div class="text-center col-span-1 md:col-span-2 lg:col-span-3 py-12">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                <i class="fas fa-heart text-3xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Saved Properties</h3>
+                            <p class="text-gray-600 mb-6">You haven't saved any properties yet</p>
+                            <button onclick="switchTab('dashboard')" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                Browse Properties
+                            </button>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading saved properties:', error);
+            });
+        }
+
+        // Create saved property card
+        function createSavedPropertyCard(favorite) {
+            const card = document.createElement('div');
+            card.className = 'dashboard-card bg-white rounded-2xl shadow-md overflow-hidden';
+
+            const features = [];
+            if (favorite.bedrooms) features.push(`<div class="flex items-center"><i class="fas fa-bed text-[#2FA4E7] mr-1"></i><span class="text-sm">${favorite.bedrooms} Bed</span></div>`);
+            if (favorite.bathrooms) features.push(`<div class="flex items-center"><i class="fas fa-bath text-[#2FA4E7] mr-1"></i><span class="text-sm">${favorite.bathrooms} Bath</span></div>`);
+
+            card.innerHTML = `
+                <div class="relative h-48">
+                    <img src="${favorite.image_url_1}" alt="Property" class="w-full h-full object-cover">
+                    <button onclick="removeFavorite(${favorite.house_id})" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow duration-300 text-red-500">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-3 py-1 bg-white text-gray-800 font-bold rounded-lg">KES ${favorite.price.toLocaleString()}</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${favorite.title}</h3>
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span>${favorite.location}</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${features.join('')}
+                    </div>
+
+                    <div class="space-y-3">
+                        <button onclick="viewProperty(${favorite.house_id})" class="w-full py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                            View Details
+                        </button>
+                        <button onclick="requestViewing(${favorite.house_id})" class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                            Request Viewing
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Remove favorite
+        function removeFavorite(houseId) {
+            fetch('api/favorites.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    house_id: houseId,
+                    action: 'remove'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadSavedProperties(); // Reload the list
+                    showNotification('Property removed from favorites!', 'info');
+                } else {
+                    showNotification(data.error || 'Failed to remove favorite', 'error');
+                }
+            })
+            .catch(error => {
+                showNotification('Network error. Please try again.', 'error');
+            });
+        }
+
+        // Load viewings
+        function loadViewings() {
+            fetch('api/viewing_requests.php')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('viewingsTableContainer');
+                if (data.success && data.data.length > 0) {
+                    const tableHTML = `
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-100">
+                                    <th class="text-left py-3 text-gray-600 font-medium">Property</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Date & Time</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Status</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.data.map(request => createViewingRow(request)).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                <i class="fas fa-calendar-alt text-3xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Viewing Requests</h3>
+                            <p class="text-gray-600 mb-6">You haven't requested any property viewings yet</p>
+                            <button onclick="switchTab('dashboard')" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                Browse Properties
+                            </button>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading viewings:', error);
+            });
+        }
+
+        // Load user requests (for My Requests tab)
+        function loadUserRequests() {
+            fetch('api/viewing_requests.php')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('requestsTableContainer');
+                if (data.success && data.data.length > 0) {
+                    const tableHTML = `
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-100">
+                                    <th class="text-left py-3 text-gray-600 font-medium">Property</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Landlord</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Status</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Date Sent</th>
+                                    <th class="text-left py-3 text-gray-600 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.data.map(request => createRequestRow(request)).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                <i class="fas fa-paper-plane text-3xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Requests Sent</h3>
+                            <p class="text-gray-600 mb-6">You haven't sent any requests yet</p>
+                            <button onclick="switchTab('dashboard')" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                                Browse Properties
+                            </button>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading requests:', error);
+            });
+        }
+
+        // Load inquiries for landlord
+        function loadInquiries() {
+            fetch('api/viewing_requests.php?landlord=1')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('inquiriesList');
+                if (data.success && data.data.length > 0) {
+                    container.innerHTML = data.data.map(request => createInquiryItem(request)).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                                <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">No Inquiries Yet</h3>
+                            <p class="text-gray-600">When potential tenants send viewing requests, they'll appear here.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading inquiries:', error);
+            });
+        }
+
+        // Create viewing row
+        function createViewingRow(request) {
+            const statusColors = {
+                'pending': 'yellow',
+                'accepted': 'green',
+                'rejected': 'red'
+            };
+            const color = statusColors[request.status] || 'gray';
+
+            return `
+                <tr class="border-b border-gray-50 hover:bg-gray-50">
+                    <td class="py-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
+                                <img src="${request.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" alt="Property" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">${request.title}</p>
+                                <p class="text-sm text-gray-600">KES ${request.price.toLocaleString()}/month</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <p class="font-medium">${new Date(request.created_at).toLocaleDateString()}</p>
+                        <p class="text-sm text-gray-600">${request.status === 'pending' ? 'Awaiting confirmation' : 'Confirmed'}</p>
+                    </td>
+                    <td class="py-4">
+                        <span class="px-3 py-1 bg-${color}-100 text-${color}-600 text-xs font-semibold rounded-full capitalize">${request.status}</span>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex space-x-2">
+                            <button onclick="viewProperty(${request.house_id})" class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
+                                View
+                            </button>
+                            ${request.status === 'pending' ? `<button onclick="cancelRequest(${request.id})" class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-300 text-sm">Cancel</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Create request row for My Requests tab
+        function createRequestRow(request) {
+            const statusColors = {
+                'pending': 'yellow',
+                'accepted': 'green',
+                'rejected': 'red'
+            };
+            const color = statusColors[request.status] || 'gray';
+
+            return `
+                <tr class="border-b border-gray-50 hover:bg-gray-50">
+                    <td class="py-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
+                                <img src="${request.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" alt="Property" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">${request.title}</p>
+                                <p class="text-sm text-gray-600">KES ${request.price.toLocaleString()}/month</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <p class="font-medium">Landlord</p>
+                        <p class="text-sm text-gray-600">Contact info available</p>
+                    </td>
+                    <td class="py-4">
+                        <span class="px-3 py-1 bg-${color}-100 text-${color}-600 text-xs font-semibold rounded-full capitalize">${request.status}</span>
+                    </td>
+                    <td class="py-4">
+                        <p class="font-medium">${new Date(request.created_at).toLocaleDateString()}</p>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex space-x-2">
+                            <button onclick="viewProperty(${request.house_id})" class="px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm">
+                                View
+                            </button>
+                            <button onclick="deleteRequest(${request.id})" class="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors duration-300 text-sm">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Create inquiry item for landlord
+        function createInquiryItem(request) {
+            const statusColors = {
+                'pending': 'yellow',
+                'accepted': 'green',
+                'rejected': 'red'
+            };
+            const color = statusColors[request.status] || 'gray';
+
+            return `
+                <a href="#" class="block p-6 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-300">
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                            <span class="font-bold text-green-600">${(request.first_name + ' ' + request.last_name).split(' ').map(n => n[0]).join('').toUpperCase()}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-2">
+                                <h4 class="font-bold text-gray-800">${request.first_name} ${request.last_name}</h4>
+                                <span class="text-sm text-gray-500">${new Date(request.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <p class="text-gray-700 mb-2">${request.message || 'Viewing request for your property'}</p>
+                            <div class="flex items-center">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded mr-3">Viewing Request</span>
+                                <span class="text-sm text-gray-600">For: ${request.title}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // View property (redirect to houses page with modal)
+        function viewProperty(houseId) {
+            window.location.href = `index.php?page=houses&property=${houseId}`;
+        }
+
+        // Request viewing (redirect to houses page with modal)
+        function requestViewing(houseId) {
+            window.location.href = `index.php?page=houses&property=${houseId}&action=viewing`;
+        }
+
+        // Delete request
+        function deleteRequest(requestId) {
+            if (confirm('Are you sure you want to delete this request?')) {
+                fetch('api/viewing_requests.php', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ request_id: requestId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadUserRequests(); // Reload the requests
+                        showNotification('Request deleted successfully!', 'success');
+                    } else {
+                        showNotification(data.error || 'Failed to delete request', 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Network error. Please try again.', 'error');
+                });
+            }
+        }
+
+        // Cancel request (same as delete for pending)
+        function cancelRequest(requestId) {
+            deleteRequest(requestId);
+        }
+
+        // Load data when tabs are clicked
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.tab-link[data-tab="saved"]')) {
+                setTimeout(loadSavedProperties, 100);
+            } else if (e.target.closest('.tab-link[data-tab="viewings"]')) {
+                setTimeout(loadViewings, 100);
+            } else if (e.target.closest('.tab-link[data-tab="properties"]')) {
+                setTimeout(loadUserProperties, 100);
+            }
+        });
+
+        // Property management
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.delete-property-btn')) {
+                e.preventDefault();
+                const btn = e.target.closest('.delete-property-btn');
+                const propertyId = btn.dataset.propertyId;
+
+                if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+                    fetch('api/delete_house.php', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({id: propertyId})
+                    }).then(res => res.json()).then(data => {
+                        if (data.success) {
+                            loadUserProperties();
+                            showNotification('Property deleted successfully', 'success');
+                        } else {
+                            showNotification(data.error || 'Failed to delete property', 'error');
+                        }
+                    }).catch(() => {
+                        showNotification('Network error. Please try again.', 'error');
+                    });
+                }
+            } else if (e.target.closest('.edit-property-btn')) {
+                const btn = e.target.closest('.edit-property-btn');
+                const propertyId = btn.dataset.propertyId;
+                // For now, just show a message
+                showNotification('Edit functionality coming soon!', 'info');
+            }
+        });
+
+        // Load user properties
+        function loadUserProperties() {
+            fetch('api/houses.php?landlord_id=<?php echo $_SESSION['user_id']; ?>')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    renderUserPropertiesGrid(data.data);
+                    renderUserPropertiesTable(data.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading user properties:', error);
+            });
+        }
+
+        // Render user properties grid
+        function renderUserPropertiesGrid(properties) {
+            const grid = document.getElementById('userPropertiesGrid');
+            grid.innerHTML = '';
+
+            if (properties.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                            <i class="fas fa-home text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Properties Listed</h3>
+                        <p class="text-gray-600 mb-6">You haven't listed any properties yet</p>
+                        <button id="addFirstPropertyBtn" class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                            Add Your First Property
+                        </button>
+                    </div>
+                `;
+                document.getElementById('addFirstPropertyBtn')?.addEventListener('click', () => {
+                    openModal(addPropertyModal);
+                    loadPropertyTypes();
+                });
+                return;
+            }
+
+            properties.forEach(property => {
+                const card = document.createElement('div');
+                card.className = 'dashboard-card bg-white rounded-2xl shadow-md overflow-hidden';
+
+                const features = [];
+                if (property.bedrooms) features.push(`<div class="flex items-center"><i class="fas fa-bed text-[#2FA4E7] mr-1"></i><span class="text-sm">${property.bedrooms} Bed</span></div>`);
+                if (property.bathrooms) features.push(`<div class="flex items-center"><i class="fas fa-bath text-[#2FA4E7] mr-1"></i><span class="text-sm">${property.bathrooms} Bath</span></div>`);
+                if (property.size_sqft) features.push(`<div class="flex items-center"><i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i><span class="text-sm">${property.size_sqft} sqft</span></div>`);
+
+                card.innerHTML = `
+                    <div class="relative h-48">
+                        <img src="${property.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" alt="Property" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded-full">Active</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-white text-gray-800 font-bold rounded-lg">KES ${property.price.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${property.title}</h3>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                            <span>${property.location}</span>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${features.join('')}
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-600">Viewings</p>
+                                <p class="font-bold">0 scheduled</p>
+                            </div>
+                            <div class="space-x-2">
+                                <button class="edit-property-btn px-4 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm" data-property-id="${property.id}">
+                                    Edit
+                                </button>
+                                <button class="delete-property-btn px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors duration-300 text-sm" data-property-id="${property.id}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Render user properties table
+        function renderUserPropertiesTable(properties) {
+            const container = document.getElementById('userPropertiesTable');
+
+            if (properties.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                            <i class="fas fa-home text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Properties Listed</h3>
+                        <p class="text-gray-600">Start by adding your first property listing.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100">
+                            <th class="text-left py-3 text-gray-600 font-medium">Property</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">Status</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">Viewings</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${properties.map(property => `
+                            <tr class="border-b border-gray-50 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-lg overflow-hidden mr-3">
+                                            <img src="${property.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" alt="Property" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">${property.title}</p>
+                                            <p class="text-sm text-gray-600">KES ${property.price.toLocaleString()}/month</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4">
+                                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-semibold rounded-full">Active</span>
+                                </td>
+                                <td class="py-4">
+                                    <span class="font-medium">0 scheduled</span>
+                                </td>
+                                <td class="py-4">
+                                    <div class="space-x-2">
+                                        <button class="edit-property-btn px-3 py-2 bg-blue-50 text-[#2FA4E7] font-semibold rounded-lg hover:bg-blue-100 transition-colors duration-300 text-sm" data-property-id="${property.id}">
+                                            Edit
+                                        </button>
+                                        <button class="delete-property-btn px-3 py-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors duration-300 text-sm" data-property-id="${property.id}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = tableHTML;
+        }
+
+        // Photo upload functionality
+        const uploadBtn = document.querySelector('.upload-photo-btn');
+        const removeBtn = document.querySelector('.remove-photo-btn');
+        const photoInput = document.getElementById('photoInput');
+        const profileImgs = document.querySelectorAll('img[alt="Profile"]');
+
+        // Property photo upload
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const propertyPhotoInput = document.getElementById('propertyPhotoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const photoCount = document.getElementById('photoCount');
+        const photoGrid = document.getElementById('photoGrid');
+        const clearPhotos = document.getElementById('clearPhotos');
+
+        if (photoUploadArea && propertyPhotoInput) {
+            photoUploadArea.addEventListener('click', () => {
+                propertyPhotoInput.click();
+            });
+
+            // Handle drag and drop
+            photoUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                photoUploadArea.classList.add('border-[#2FA4E7]');
+            });
+
+            photoUploadArea.addEventListener('dragleave', () => {
+                photoUploadArea.classList.remove('border-[#2FA4E7]');
+            });
+
+            photoUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                photoUploadArea.classList.remove('border-[#2FA4E7]');
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+        }
+
+        // Handle file selection
+        propertyPhotoInput?.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Clear all photos
+        clearPhotos?.addEventListener('click', () => {
+            propertyPhotoInput.value = '';
+            photoGrid.innerHTML = '';
+            photoPreview.classList.add('hidden');
+            updatePhotoCount();
+        });
+
+        function handleFiles(files) {
+            // Limit to 3 files
+            const validFiles = Array.from(files).filter(file => file.type.startsWith('image/')).slice(0, 3);
+
+            // Set files to input
+            const dt = new DataTransfer();
+            validFiles.forEach(file => dt.items.add(file));
+            propertyPhotoInput.files = dt.files;
+
+            updatePhotoCount();
+            displayPreviews(validFiles);
+        }
+
+        function updatePhotoCount() {
+            const count = propertyPhotoInput?.files.length || 0;
+            photoCount.textContent = `${count} photo${count !== 1 ? 's' : ''} selected`;
+            photoPreview.classList.toggle('hidden', count === 0);
+        }
+
+        function displayPreviews(files) {
+            photoGrid.innerHTML = '';
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="w-full h-24 object-cover rounded-lg">
+                        <button type="button" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600" onclick="removePhoto(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    photoGrid.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Remove individual photo
+        window.removePhoto = function(index) {
+            const dt = new DataTransfer();
+            const files = Array.from(propertyPhotoInput.files);
+            files.splice(index, 1);
+            files.forEach(file => dt.items.add(file));
+            propertyPhotoInput.files = dt.files;
+            updatePhotoCount();
+            displayPreviews(files);
+        };
+
+        // Load property types
+        function loadPropertyTypes() {
+            const select = document.getElementById('propertyTypeSelect');
+            if (!select) return;
+
+            fetch('api/property_types.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    select.innerHTML = '<option value="">Select type</option>';
+                    data.data.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.slug;
+                        option.textContent = type.name;
+                        select.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading property types:', error);
+            });
+        }
+
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', () => {
+                photoInput.click();
+            });
+        }
+
+        if (photoInput) {
+            photoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (2MB max)
+                    if (file.size > 2 * 1024 * 1024) {
+                        showNotification('File too large. Please select an image under 2MB.', 'error');
+                        return;
+                    }
+
+                    // Check file type
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!allowedTypes.includes(file.type)) {
+                        showNotification('Please select a valid image file (JPEG, PNG, GIF, WebP).', 'error');
+                        return;
+                    }
+
+                    // Show loading
+                    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+                    uploadBtn.disabled = true;
+
+                    const formData = new FormData();
+                    formData.append('photo', file);
+
+                    fetch('api/upload_photo.php', {
+                        method: 'POST',
+                        body: formData
+                    }).then(res => res.json()).then(data => {
+                        uploadBtn.innerHTML = 'Upload New Photo';
+                        uploadBtn.disabled = false;
+
+                        if (data.success) {
+                            profileImgs.forEach(img => img.src = data.photo_url);
+                            showNotification('Profile photo updated successfully!', 'success');
+                        } else {
+                            showNotification(data.error || 'Upload failed', 'error');
+                        }
+                    }).catch(() => {
+                        uploadBtn.innerHTML = 'Upload New Photo';
+                        uploadBtn.disabled = false;
+                        showNotification('Upload failed', 'error');
+                    });
+                }
+            });
+        }
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to remove your profile photo?')) {
+                    fetch('api/remove_photo.php', {
+                        method: 'POST'
+                    }).then(res => res.json()).then(data => {
+                        if (data.success) {
+                            profileImg.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                            showNotification('Profile photo removed', 'info');
+                        } else {
+                            showNotification(data.error || 'Failed to remove photo', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // Switch account type
+        const switchBtn = document.querySelector('.switch-account-btn');
+        if (switchBtn) {
+            switchBtn.addEventListener('click', () => {
+                const currentType = '<?php echo $user_type; ?>';
+                const newType = currentType === 'landlord' ? 'seeker' : 'landlord';
+                const confirmMsg = `Are you sure you want to switch to ${newType === 'landlord' ? 'Landlord' : 'House Hunter'} account?`;
+
+                if (confirm(confirmMsg)) {
+                    switchBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Switching...';
+                    switchBtn.disabled = true;
+
+                    fetch('api/update_user_type.php', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({user_type: newType})
+                    }).then(res => res.json()).then(data => {
+                        if (data.success) {
+                            showNotification('Account type updated successfully!', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            switchBtn.innerHTML = 'Switch to ' + (newType === 'landlord' ? 'Landlord' : 'House Hunter');
+                            switchBtn.disabled = false;
+                            showNotification(data.error || 'Failed to update account type', 'error');
+                        }
+                    }).catch(() => {
+                        switchBtn.innerHTML = 'Switch to ' + (newType === 'landlord' ? 'Landlord' : 'House Hunter');
+                        switchBtn.disabled = false;
+                        showNotification('Network error', 'error');
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>

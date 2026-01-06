@@ -1235,116 +1235,225 @@
         submitRegistration.addEventListener('click', () => {
             const submitBtn = submitRegistration;
             const originalText = submitBtn.innerHTML;
-            
+
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating Account...';
             submitBtn.disabled = true;
-            
-            // Simulate registration process
-            setTimeout(() => {
-                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Account Created!';
-                
-                // Close register modal
-                setTimeout(() => {
-                    closeModal(registerModal);
-                    
-                    // Show success modal
-                    document.getElementById('successTitle').textContent = 'Account Created!';
-                    document.getElementById('successMessage').textContent = 'Your account has been created successfully. Please check your email to verify your account.';
-                    openModal(successModal);
-                    
-                    // Reset button
+
+            // Collect form data
+            const registerForm = document.getElementById('registerForm');
+            const formData = new FormData(registerForm);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                password: formData.get('password'),
+                userType: selectedUserType
+            };
+
+            // Add user type specific data
+            switch(selectedUserType) {
+                case 'seeker':
+                    data.preferredLocations = formData.get('preferredLocations');
+                    data.maxBudget = formData.get('maxBudget');
+                    break;
+                case 'landlord':
+                    data.propertyCount = formData.get('propertyCount');
+                    data.primaryLocation = formData.get('primaryLocation');
+                    break;
+                case 'mover':
+                    data.companyName = formData.get('companyName');
+                    data.serviceAreas = formData.get('serviceAreas');
+                    break;
+            }
+
+            fetch('api/register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Account Created!';
+
+                    // Close register modal
+                    setTimeout(() => {
+                        closeModal(registerModal);
+
+                        // Show success modal
+                        document.getElementById('successTitle').textContent = 'Account Created!';
+                        document.getElementById('successMessage').textContent = result.message;
+                        openModal(successModal);
+
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 1000);
+                } else {
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
-                }, 1000);
-            }, 2000);
+                    showNotification(result.error, 'error');
+                }
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showNotification('An error occurred. Please try again.', 'error');
+            });
         });
         
         // Login Form Submission
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            
+
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing In...';
             submitBtn.disabled = true;
-            
-            // Simulate login process
-            setTimeout(() => {
-                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Success!';
-                
-                // Show success message
-                showNotification('Login successful! Redirecting...', 'success');
-                
-                // Reset button after delay
-                setTimeout(() => {
+
+            const formData = new FormData(this);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            fetch('api/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Success!';
+                    showNotification('Login successful! Redirecting...', 'success');
+
+                    // Reset button after delay
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+
+                        // Redirect to profile
+                        window.location.href = 'index.php?page=profile';
+                    }, 2000);
+                } else {
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
-                    
-                    // In real app, would redirect to dashboard
-                    // window.location.href = '/dashboard';
-                }, 2000);
-            }, 1500);
+                    showNotification(result.error, 'error');
+                }
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showNotification('An error occurred. Please try again.', 'error');
+            });
         });
         
         // Forgot Password Form Submission
         forgotPasswordForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            
+
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
             submitBtn.disabled = true;
-            
-            // Simulate sending reset link
-            setTimeout(() => {
+
+            const formData = new FormData(this);
+            const data = {
+                email: formData.get('email')
+            };
+
+            fetch('api/forgot_password.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
                 submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Sent!';
-                
+
                 // Close forgot password modal
                 setTimeout(() => {
                     closeModal(forgotPasswordModal);
-                    
+
                     // Show success modal
                     document.getElementById('successTitle').textContent = 'Check Your Email';
-                    document.getElementById('successMessage').textContent = 'We\'ve sent a password reset link to your email. Please check your inbox and follow the instructions.';
+                    document.getElementById('successMessage').textContent = result.message;
                     openModal(successModal);
-                    
+
                     // Reset button
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }, 1000);
-            }, 1500);
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showNotification('An error occurred. Please try again.', 'error');
+            });
         });
         
         // Reset Password Form Submission
         resetPasswordForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            
+
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
             submitBtn.disabled = true;
-            
-            // Simulate password reset
-            setTimeout(() => {
-                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Updated!';
-                
-                // Close reset password modal
-                setTimeout(() => {
-                    closeModal(resetPasswordModal);
-                    
-                    // Show success modal
-                    document.getElementById('successTitle').textContent = 'Password Updated!';
-                    document.getElementById('successMessage').textContent = 'Your password has been successfully updated. You can now sign in with your new password.';
-                    openModal(successModal);
-                    
-                    // Reset button
+
+            const formData = new FormData(this);
+            const data = {
+                token: formData.get('token'), // Hidden field
+                password: formData.get('newPassword')
+            };
+
+            fetch('api/reset_password.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Updated!';
+
+                    // Close reset password modal
+                    setTimeout(() => {
+                        closeModal(resetPasswordModal);
+
+                        // Show success modal
+                        document.getElementById('successTitle').textContent = 'Password Updated!';
+                        document.getElementById('successMessage').textContent = result.message;
+                        openModal(successModal);
+
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 1000);
+                } else {
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
-                }, 1000);
-            }, 1500);
+                    showNotification(result.error, 'error');
+                }
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                showNotification('An error occurred. Please try again.', 'error');
+            });
         });
         
         // Password Toggle Functions
@@ -1577,13 +1686,28 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Check URL for reset token
+            const urlParams = new URLSearchParams(window.location.search);
+            const resetToken = urlParams.get('token');
+            if (resetToken) {
+                // Add hidden token field to reset form
+                const tokenField = document.createElement('input');
+                tokenField.type = 'hidden';
+                tokenField.name = 'token';
+                tokenField.value = resetToken;
+                resetPasswordForm.appendChild(tokenField);
+
+                // Open reset password modal
+                openModal(resetPasswordModal);
+            }
+
             // Add click effect to social buttons
             document.querySelectorAll('.social-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     showNotification(`Sign in with ${this.querySelector('span').textContent} coming soon!`, 'info');
                 });
             });
-            
+
             // Add click effect to guest buttons
             document.querySelectorAll('.guest-actions button').forEach(btn => {
                 btn.addEventListener('click', function() {

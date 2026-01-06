@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Skip API requests
+RewriteRule ^api/ - [L]
+
+# Redirect /house to index.php?page=house
+RewriteRule ^house$ index.php?page=house [L,QSA]
+
+# Handle other pages if needed
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
