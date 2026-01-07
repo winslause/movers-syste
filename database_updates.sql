@@ -73,6 +73,17 @@ INSERT INTO messages (sender_id, receiver_id, house_id, message, message_type, i
 (2, 3, 1, 'Hello! Yes, I would be happy to show you the apartment. What day works best for you?', 'reply', FALSE),
 (4, 2, 2, 'Is the Kilimani suite still available? I would like to view it this weekend.', 'inquiry', TRUE);
 
+-- Create contact_messages table for contact form submissions
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    status ENUM('unread', 'read', 'replied') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert sample requests
 INSERT INTO requests (house_hunter_id, landlord_id, house_id, request_type, status, requested_date, requested_time, message) VALUES
 (3, 2, 1, 'viewing', 'pending', '2024-01-15', '14:00:00', 'Interested in viewing the Westlands apartment'),

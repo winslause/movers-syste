@@ -309,7 +309,7 @@
 
                     <!-- Moving Services -->
                     <div class="dropdown-container">
-                        <a href="#" class="nav-link">
+                        <a href="index.php?page=moving_services" class="nav-link">
                             Moving Services
                         </a>
                         <div class="dropdown-menu">
@@ -335,7 +335,7 @@
 
                     <!-- About -->
                     <div class="dropdown-container">
-                        <a href="#" class="nav-link">
+                        <a href="index.php?page=about" class="nav-link">
                             About
                         </a>
                         <div class="dropdown-menu">
@@ -384,10 +384,10 @@
                                     <div class="text-sm text-gray-500 mt-1">Account preferences</div>
                                 </a>
                                 <div class="border-t border-gray-100 my-2"></div>
-                                <a href="index.php?page=logout" class="dropdown-item">
+                                <!-- <a href="index.php?page=logout" class="dropdown-item">
                                     <div class="font-medium">Log Out</div>
                                     <div class="text-sm text-gray-500 mt-1">Sign out of your account</div>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                     <?php else: ?>
@@ -463,9 +463,9 @@
 
                 <!-- Moving Services Dropdown -->
                 <div class="border-b border-gray-100">
-                    <button class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
+                    <a href="index.php?page=moving_services" class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
                         Moving Services
-                    </button>
+                    </a>
                     <div class="mobile-dropdown pl-6">
                         <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
                             Find Registered Movers
@@ -485,9 +485,9 @@
 
                 <!-- About Dropdown -->
                 <div class="border-b border-gray-100">
-                    <button class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
+                    <a href="index.php?page=about" class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
                         About
-                    </button>
+                    </a>
                     <div class="mobile-dropdown pl-6">
                         <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
                             Our Mission
@@ -561,7 +561,11 @@
 
         // Mobile dropdown functionality
         document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
+            toggle.addEventListener('click', function(e) {
+                // Prevent navigation for links
+                if (this.tagName === 'A') {
+                    e.preventDefault();
+                }
                 const dropdown = this.nextElementSibling;
                 const isOpen = dropdown.classList.contains('open');
 

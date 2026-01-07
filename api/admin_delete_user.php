@@ -29,6 +29,17 @@ if (empty($user_id) || !is_numeric($user_id)) {
 }
 
 try {
+    // Check if user has associated houses
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM houses WHERE landlord_id = ?");
+    $stmt->execute([$user_id]);
+    $houses_count = $stmt->fetch()['count'];
+
+    if ($houses_count > 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Cannot delete user because they have associated properties. Please reassign or delete the properties first.']);
+        exit;
+    }
+
     // Delete user
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
     $stmt->execute([$user_id]);

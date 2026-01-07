@@ -1,154 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Rheaspark | Trust & Transparency</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .brand-font {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .brand-gradient {
-            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #2FA4E7, #3CB371);
-            border-radius: 10px;
-        }
-        
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        .floating {
-            animation: float 4s infinite ease-in-out;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
-        .shimmer {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            background-size: 1000px 100%;
-            animation: shimmer 3s infinite;
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(47, 164, 231, 0.2); }
-            50% { box-shadow: 0 0 30px rgba(47, 164, 231, 0.4); }
-        }
-        
-        .pulse-glow {
-            animation: pulse-glow 3s infinite;
-        }
-        
-        /* Timeline Animation */
-        .timeline-item {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
-        
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Value Card Animation */
-        .value-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .value-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-        
-        /* Trust Badge Animation */
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .spin-slow {
-            animation: spin-slow 20s linear infinite;
-        }
-        
-        /* Stats Counter Animation */
-        .counter {
-            font-variant-numeric: tabular-nums;
-        }
-        
-        /* Ethical Policy Cards */
-        .policy-card {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .policy-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #2FA4E7, #3CB371);
-            transition: left 0.5s ease;
-        }
-        
-        .policy-card:hover::before {
-            left: 0;
-        }
-        
-        /* Business Model Animation */
-        .business-model-step {
-            transition: all 0.4s ease;
-        }
-        
-        .business-model-step:hover {
-            transform: scale(1.05);
-            z-index: 10;
-        }
-        
-        /* Trust Wave Animation */
-        @keyframes wave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        .wave {
-            background: linear-gradient(90deg, transparent, rgba(47, 164, 231, 0.2), transparent);
-            animation: wave 2s infinite linear;
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-b from-blue-50 via-white to-green-50">
-    
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
         <!-- Background Elements -->
@@ -156,7 +5,7 @@
             <div class="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#2FA4E7] to-transparent rounded-full filter blur-3xl floating"></div>
             <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#3CB371] to-transparent rounded-full filter blur-3xl floating" style="animation-delay: 2s;"></div>
         </div>
-        
+
         <div class="container mx-auto px-6 py-20 md:py-32 relative z-10">
             <div class="text-center max-w-4xl mx-auto">
                 <!-- Trust Badge -->
@@ -166,19 +15,19 @@
                     </div>
                     <span class="font-bold text-gray-800">Built on Trust & Transparency</span>
                 </div>
-                
+
                 <!-- Main Heading -->
                 <h1 class="text-5xl md:text-7xl font-bold mb-8 brand-font">
                     <span class="block text-gray-800">Redefining</span>
                     <span class="brand-gradient">House Hunting</span>
                 </h1>
-                
+
                 <!-- Subheading -->
                 <p class="text-2xl text-gray-600 mb-12 leading-relaxed">
-                    A people-centered platform designed to eliminate uncertainty, promote honesty, 
+                    A people-centered platform designed to eliminate uncertainty, promote honesty,
                     and create a transparent ecosystem for renters, landlords, and movers.
                 </p>
-                
+
                 <!-- Stats -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mb-12">
                     <div class="text-center p-6 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm">
@@ -198,7 +47,7 @@
                         <div class="text-gray-600">Trusted Partners</div>
                     </div>
                 </div>
-                
+
                 <!-- CTA Button -->
                 <a href="#our-story" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
                     <i class="fas fa-book-open mr-3"></i>
@@ -206,7 +55,7 @@
                 </a>
             </div>
         </div>
-        
+
         <!-- Scroll Indicator -->
         <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
             <div class="flex flex-col items-center">
@@ -217,7 +66,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Vision & Mission Section -->
     <section class="py-20 px-6 bg-white">
         <div class="container mx-auto max-w-6xl">
@@ -251,7 +100,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <!-- Mission -->
                 <div class="value-card bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-10 shadow-xl">
                     <div class="flex items-center mb-8">
@@ -284,7 +133,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Platform Story -->
     <section id="our-story" class="py-20 px-6 bg-gradient-to-b from-white to-blue-50">
         <div class="container mx-auto max-w-6xl">
@@ -297,14 +146,14 @@
                     Born from frustration, built on integrity, and driven by a vision for better housing experiences.
                 </p>
             </div>
-            
+
             <!-- Timeline -->
             <div class="relative">
                 <!-- Vertical Timeline Line -->
                 <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 transform -translate-x-1/2">
                     <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
                 </div>
-                
+
                 <!-- Timeline Items -->
                 <div class="space-y-20">
                     <!-- Item 1 -->
@@ -318,28 +167,28 @@
                                 </p>
                             </div>
                         </div>
-                        
+
                         <!-- Center Dot -->
                         <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] border-4 border-white shadow-xl"></div>
                         </div>
-                        
+
                         <div class="md:w-1/2 md:pl-16">
                             <!-- Empty for alternating layout -->
                         </div>
                     </div>
-                    
+
                     <!-- Item 2 -->
                     <div class="timeline-item relative flex flex-col md:flex-row items-center">
                         <div class="md:w-1/2 md:pr-16">
                             <!-- Empty for alternating layout -->
                         </div>
-                        
+
                         <!-- Center Dot -->
                         <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#3CB371] to-[#2FA4E7] border-4 border-white shadow-xl"></div>
                         </div>
-                        
+
                         <div class="md:w-1/2 md:pl-16 mb-8 md:mb-0">
                             <div class="bg-white rounded-3xl shadow-xl p-8">
                                 <div class="text-6xl font-bold text-gray-200 mb-4">02</div>
@@ -350,7 +199,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Item 3 -->
                     <div class="timeline-item relative flex flex-col md:flex-row items-center">
                         <div class="md:w-1/2 md:pr-16 md:text-right mb-8 md:mb-0">
@@ -362,28 +211,28 @@
                                 </p>
                             </div>
                         </div>
-                        
+
                         <!-- Center Dot -->
                         <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] border-4 border-white shadow-xl"></div>
                         </div>
-                        
+
                         <div class="md:w-1/2 md:pl-16">
                             <!-- Empty for alternating layout -->
                         </div>
                     </div>
-                    
+
                     <!-- Item 4 -->
                     <div class="timeline-item relative flex flex-col md:flex-row items-center">
                         <div class="md:w-1/2 md:pr-16">
                             <!-- Empty for alternating layout -->
                         </div>
-                        
+
                         <!-- Center Dot -->
                         <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#3CB371] to-[#2FA4E7] border-4 border-white shadow-xl"></div>
                         </div>
-                        
+
                         <div class="md:w-1/2 md:pl-16 mb-8 md:mb-0">
                             <div class="bg-white rounded-3xl shadow-xl p-8">
                                 <div class="text-6xl font-bold text-gray-200 mb-4">04</div>
@@ -398,7 +247,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Business Model Explanation -->
     <section class="py-20 px-6 bg-white">
         <div class="container mx-auto max-w-6xl">
@@ -411,7 +260,7 @@
                     Simple, transparent, and designed to align incentives for all parties involved.
                 </p>
             </div>
-            
+
             <!-- Business Model Steps -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                 <!-- Step 1 -->
@@ -443,11 +292,11 @@
                         </div>
                     </div>
                     <div class="mt-8 pt-6 border-t border-blue-100">
-                        <div class="text-center text-3xl font-bold text-[#2FA4E7]">KES 200</div>
-                        <div class="text-center text-gray-600">per property access</div>
+                        <!-- <div class="text-center text-3xl font-bold text-[#2FA4E7]">KES 200</div>
+                        <div class="text-center text-gray-600">per property access</div> -->
                     </div>
                 </div>
-                
+
                 <!-- Step 2 -->
                 <div class="business-model-step bg-gradient-to-b from-green-50 to-white rounded-3xl p-8 shadow-lg border border-green-100">
                     <div class="text-center mb-8">
@@ -481,7 +330,7 @@
                         <div class="text-center text-gray-600">Year One listing</div>
                     </div>
                 </div>
-                
+
                 <!-- Step 3 -->
                 <div class="business-model-step bg-gradient-to-b from-blue-50 to-white rounded-3xl p-8 shadow-lg border border-blue-100">
                     <div class="text-center mb-8">
@@ -516,11 +365,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Business Model Visualization -->
             <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-3xl p-8 md:p-12 shadow-xl">
                 <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">How Money Flows in Our Ecosystem</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
                     <!-- Renter -->
                     <div class="text-center">
@@ -530,12 +379,12 @@
                         <h4 class="font-bold text-gray-800">Renter</h4>
                         <div class="text-sm text-gray-600 mt-2">Pays KES 200</div>
                     </div>
-                    
+
                     <!-- Arrow -->
                     <div class="text-center hidden md:block">
                         <i class="fas fa-arrow-right text-3xl text-gray-400"></i>
                     </div>
-                    
+
                     <!-- Platform -->
                     <div class="text-center">
                         <div class="w-24 h-24 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mx-auto mb-4 shadow-xl pulse-glow">
@@ -544,12 +393,12 @@
                         <h4 class="font-bold text-gray-800">Rheaspark</h4>
                         <div class="text-sm text-gray-600 mt-2">Verifies & Connects</div>
                     </div>
-                    
+
                     <!-- Arrow -->
                     <div class="text-center hidden md:block">
                         <i class="fas fa-arrow-right text-3xl text-gray-400"></i>
                     </div>
-                    
+
                     <!-- Dual Destinations -->
                     <div class="md:col-span-2">
                         <div class="grid grid-cols-2 gap-6">
@@ -561,7 +410,7 @@
                                 <h4 class="font-bold text-gray-800">Landlord</h4>
                                 <div class="text-sm text-gray-600 mt-2">Free listing → Future fees</div>
                             </div>
-                            
+
                             <!-- Mover -->
                             <div class="text-center">
                                 <div class="w-20 h-20 rounded-full bg-gradient-to-r from-[#2FA4E7] to-blue-300 flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -573,7 +422,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mt-8 text-center text-gray-600">
                     <i class="fas fa-info-circle mr-2"></i>
                     Everyone wins: Renters get verified info, landlords find tenants, movers get jobs, and we sustain the platform.
@@ -581,7 +430,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Why Rheaspark is Different -->
     <section class="py-20 px-6 bg-gradient-to-b from-white to-green-50">
         <div class="container mx-auto max-w-6xl">
@@ -594,7 +443,7 @@
                     We're not just another listing site. We're building an ecosystem based on trust and transparency.
                 </p>
             </div>
-            
+
             <!-- Differences Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                 <!-- Traditional Market -->
@@ -605,7 +454,7 @@
                         </div>
                         <h3 class="text-2xl font-bold text-gray-800">Traditional Market</h3>
                     </div>
-                    
+
                     <div class="space-y-6">
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
@@ -616,7 +465,7 @@
                                 <p class="text-gray-600">Photoshopped images, incorrect locations, and phantom properties.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-times text-red-500"></i>
@@ -626,7 +475,7 @@
                                 <p class="text-gray-600">Problems discovered only after moving in: water issues, noise, poor access.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-times text-red-500"></i>
@@ -636,7 +485,7 @@
                                 <p class="text-gray-600">Phone numbers that don't work, emails that bounce, wasted time.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-times text-red-500"></i>
@@ -648,7 +497,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Rheaspark -->
                 <div class="bg-white rounded-3xl shadow-xl p-8 border border-green-100">
                     <div class="flex items-center mb-8">
@@ -657,7 +506,7 @@
                         </div>
                         <h3 class="text-2xl font-bold text-gray-800">Rheaspark</h3>
                     </div>
-                    
+
                     <div class="space-y-6">
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
@@ -668,7 +517,7 @@
                                 <p class="text-gray-600">Manual verification process with honest disclosure of property conditions.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-check text-green-500"></i>
@@ -678,7 +527,7 @@
                                 <p class="text-gray-600">Common issues and practical solutions disclosed upfront before payment.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-check text-green-500"></i>
@@ -688,7 +537,7 @@
                                 <p class="text-gray-600">Working phone numbers and responsive landlords guaranteed.</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start">
                             <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                                 <i class="fas fa-check text-green-500"></i>
@@ -701,15 +550,15 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Unique Value Proposition -->
-            <div class="bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] rounded-3xl p-10 text-white shadow-2xl">
+            <!-- <div class="bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] rounded-3xl p-10 text-white shadow-2xl">
                 <div class="flex flex-col md:flex-row items-center">
                     <div class="md:w-2/3 md:pr-12 mb-8 md:mb-0">
                         <h3 class="text-3xl font-bold mb-6">Our Unique Value Proposition</h3>
                         <p class="text-white/90 text-lg leading-relaxed mb-6">
-                            We charge renters for <strong>verified information</strong> rather than taking commissions from transactions. 
-                            This aligns our incentives with truthfulness rather than just closing deals. Our success depends on 
+                            We charge renters for <strong>verified information</strong> rather than taking commissions from transactions.
+                            This aligns our incentives with truthfulness rather than just closing deals. Our success depends on
                             accuracy, not volume.
                         </p>
                         <div class="flex items-center">
@@ -717,7 +566,7 @@
                             <span class="text-xl font-semibold">Better information = Better decisions = Better outcomes for everyone</span>
                         </div>
                     </div>
-                    
+
                     <div class="md:w-1/3">
                         <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6 text-center">
                             <div class="text-5xl font-bold mb-2">KES 200</div>
@@ -729,10 +578,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
-    
+
     <!-- Ethical & Honesty Policy -->
     <section class="py-20 px-6 bg-white">
         <div class="container mx-auto max-w-6xl">
@@ -745,7 +594,7 @@
                     The principles that guide every decision we make and every feature we build.
                 </p>
             </div>
-            
+
             <!-- Ethical Principles Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                 <!-- Principle 1 -->
@@ -762,7 +611,7 @@
                         <span>No surprises policy</span>
                     </div>
                 </div>
-                
+
                 <!-- Principle 2 -->
                 <div class="policy-card bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-xl">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mb-6">
@@ -777,7 +626,7 @@
                         <span>Win-win approach</span>
                     </div>
                 </div>
-                
+
                 <!-- Principle 3 -->
                 <div class="policy-card bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-xl">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-6">
@@ -792,7 +641,7 @@
                         <span>Earn through accuracy</span>
                     </div>
                 </div>
-                
+
                 <!-- Principle 4 -->
                 <div class="policy-card bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-xl">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mb-6">
@@ -807,7 +656,7 @@
                         <span>Manual verification process</span>
                     </div>
                 </div>
-                
+
                 <!-- Principle 5 -->
                 <div class="policy-card bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-xl">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-6">
@@ -822,7 +671,7 @@
                         <span>User protection focus</span>
                     </div>
                 </div>
-                
+
                 <!-- Principle 6 -->
                 <div class="policy-card bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-xl">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#3CB371] to-green-100 flex items-center justify-center mb-6">
@@ -838,7 +687,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Honesty Pledge -->
             <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-3xl p-10 shadow-xl border border-blue-100">
                 <div class="flex flex-col md:flex-row items-center">
@@ -847,17 +696,17 @@
                             <i class="fas fa-star text-5xl text-white"></i>
                         </div>
                     </div>
-                    
+
                     <div class="md:w-3/4 md:pl-12">
                         <h3 class="text-3xl font-bold text-gray-800 mb-6">Our Honesty Pledge</h3>
                         <div class="text-lg text-gray-700 leading-relaxed mb-8">
-                            "We pledge to always prioritize truth over transactions, transparency over tricks, 
-                            and user benefit over quick profits. We believe that in the long run, honesty is not 
-                            just ethically right—it's commercially smart. We will build features that protect users, 
-                            design policies that empower all parties, and create a platform where everyone can 
+                            "We pledge to always prioritize truth over transactions, transparency over tricks,
+                            and user benefit over quick profits. We believe that in the long run, honesty is not
+                            just ethically right—it's commercially smart. We will build features that protect users,
+                            design policies that empower all parties, and create a platform where everyone can
                             trust the information they receive."
                         </div>
-                        
+
                         <div class="flex items-center">
                             <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm">
                                 <i class="fas fa-feather-alt text-[#2FA4E7]"></i>
@@ -872,7 +721,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- CTA Section -->
     <section class="py-20 px-6 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371]">
         <div class="container mx-auto max-w-4xl text-center">
@@ -880,18 +729,18 @@
                 Join the Transparency Revolution
             </h2>
             <p class="text-white/90 text-xl mb-12 max-w-3xl mx-auto leading-relaxed">
-                Whether you're looking for a home, listing a property, or providing moving services, 
+                Whether you're looking for a home, listing a property, or providing moving services,
                 join a platform built on trust, transparency, and mutual respect.
             </p>
-            
+
             <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <a href="#" class="px-8 py-4 bg-white text-[#2FA4E7] font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <a href="index.php?page=houses" class="px-8 py-4 bg-white text-[#2FA4E7] font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                     <i class="fas fa-search mr-3"></i> Find Your Home
                 </a>
-                <a href="#" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300">
+                <a href="index.php?page=moving_services" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300">
                     <i class="fas fa-user-tie mr-3"></i> List Your Property
                 </a>
-                <a href="#" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300">
+                <a href="index.php?page=moving_services" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300">
                     <i class="fas fa-truck mr-3"></i> Become a Mover
                 </a>
             </div>
@@ -903,76 +752,65 @@
         function animateCounters() {
             const counters = document.querySelectorAll('.counter');
             const speed = 200;
-            
+
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
                 const count = +counter.innerText;
-                
+
                 if (count < target) {
                     counter.innerText = Math.ceil(count + (target / speed));
-                    setTimeout(animateCounters, 10);
+                    setTimeout(() => animateCounters(), 10);
                 } else {
                     counter.innerText = target;
                 }
             });
         }
-        
+
         // Animate timeline items on scroll
         function animateTimeline() {
             const timelineItems = document.querySelectorAll('.timeline-item');
-            
+
             timelineItems.forEach(item => {
                 const position = item.getBoundingClientRect();
-                
+
                 // If item is in viewport
                 if (position.top < window.innerHeight - 100) {
                     item.classList.add('visible');
                 }
             });
         }
-        
+
         // Initialize animations when page loads
         window.addEventListener('load', () => {
             // Start counter animations
             setTimeout(animateCounters, 500);
-            
+
             // Animate timeline initially
             animateTimeline();
-            
+
             // Animate value cards on hover
             document.querySelectorAll('.value-card').forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.15)';
                 });
-                
+
                 card.addEventListener('mouseleave', function() {
                     this.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.1)';
                 });
             });
-            
-            // Animate business model steps
-            document.querySelectorAll('.business-model-step').forEach(step => {
-                step.addEventListener('mouseenter', function() {
-                    this.style.zIndex = '10';
-                });
-                
-                step.addEventListener('mouseleave', function() {
-                    this.style.zIndex = '1';
-                });
-            });
         });
-        
+
         // Animate on scroll
         window.addEventListener('scroll', animateTimeline);
-        
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
-                
+
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     window.scrollTo({
@@ -982,7 +820,7 @@
                 }
             });
         });
-        
+
         // Add floating animation to trust badge
         const trustBadge = document.querySelector('.pulse-glow');
         if (trustBadge) {
@@ -993,7 +831,7 @@
                 }, 100);
             }, 3000);
         }
-        
+
         // Add wave animation to ethical policy section
         const waveContainer = document.createElement('div');
         waveContainer.className = 'absolute inset-0 overflow-hidden opacity-20';
@@ -1001,12 +839,15 @@
             <div class="absolute inset-0 wave" style="height: 3px; top: 50%;"></div>
             <div class="absolute inset-0 wave" style="height: 3px; top: 50%; animation-delay: 1s;"></div>
         `;
-        
+
         const ethicalSection = document.querySelector('.bg-gradient-to-r.from-blue-50.to-green-50');
         if (ethicalSection) {
             ethicalSection.style.position = 'relative';
             ethicalSection.appendChild(waveContainer);
         }
     </script>
-</body>
-</html>
+    <?php  
+
+include "contactus.php";
+
+?>

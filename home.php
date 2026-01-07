@@ -1,736 +1,271 @@
     <!-- Hero Section -->
-    <section class="relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute inset-0 hero-pattern opacity-30"></div>
+<section class="relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 hero-pattern opacity-30"></div>
 
-        <!-- Floating Shapes -->
-        <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#2FA4E7] to-transparent rounded-full filter blur-3xl opacity-10 floating"></div>
-        <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#3CB371] to-transparent rounded-full filter blur-3xl opacity-10 floating" style="animation-delay: 2s;"></div>
+    <!-- Floating Shapes -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#2FA4E7] to-transparent rounded-full filter blur-3xl opacity-10 floating"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#3CB371] to-transparent rounded-full filter blur-3xl opacity-10 floating" style="animation-delay: 2s;"></div>
 
-        <div class="container mx-auto px-6 py-20 md:py-32 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <!-- Left Content -->
-                <div class="max-w-2xl">
-                    <!-- Badge -->
-                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-[#2FA4E7]/10 to-[#3CB371]/10 mb-8 fade-in-up">
-                        <span class="w-2 h-2 rounded-full bg-[#3CB371] mr-2"></span>
-                        <span class="text-sm font-semibold text-gray-700">Trusted House Hunting Platform</span>
+    <div class="container mx-auto px-6 py-20 md:py-32 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Left Content -->
+            <div class="max-w-2xl">
+                <!-- Badge -->
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-[#2FA4E7]/10 to-[#3CB371]/10 mb-8 fade-in-up">
+                    <span class="w-2 h-2 rounded-full bg-[#3CB371] mr-2"></span>
+                    <span class="text-sm font-semibold text-gray-700">Trusted House Hunting Platform</span>
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 brand-font">
+                    <span class="block text-gray-800 fade-in-up">Find Your</span>
+                    <span class="brand-gradient fade-in-up-delay">Perfect Home</span>
+                    <span class="block text-gray-800 fade-in-up-delay-2">With Confidence</span>
+                </h1>
+
+                <!-- Subheading -->
+                <p class="text-xl text-gray-600 mb-10 leading-relaxed fade-in-up-delay-2">
+                    Rheaspark eliminates the stress of house hunting with <span class="font-semibold text-[#2FA4E7]">verified listings</span>,
+                    <span class="font-semibold text-[#3CB371]">transparent information</span>, and seamless connections to trusted
+                    moving services. Save time, reduce uncertainty, and experience honesty in housing.
+                </p>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+                    <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up">
+                        <div class="text-3xl font-bold mb-2 text-[#2FA4E7]">
+                            <span class="counter" data-target="100">0</span>%
+                        </div>
+                        <p class="text-sm text-gray-600 font-medium">Verified Listings</p>
                     </div>
 
-                    <!-- Main Heading -->
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 brand-font">
-                        <span class="block text-gray-800 fade-in-up">Find Your</span>
-                        <span class="brand-gradient fade-in-up-delay">Perfect Home</span>
-                        <span class="block text-gray-800 fade-in-up-delay-2">With Confidence</span>
-                    </h1>
+                    <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up-delay">
+                        <div class="text-3xl font-bold mb-2 text-[#3CB371]">
+                            <span class="counter" data-target="50">0</span>+
+                        </div>
+                        <p class="text-sm text-gray-600 font-medium">Trusted Movers</p>
+                    </div>
 
-                    <!-- Subheading -->
-                    <p class="text-xl text-gray-600 mb-10 leading-relaxed fade-in-up-delay-2">
-                        Rheaspark eliminates the stress of house hunting with <span class="font-semibold text-[#2FA4E7]">verified listings</span>,
-                        <span class="font-semibold text-[#3CB371]">transparent information</span>, and seamless connections to trusted
-                        moving services. Save time, reduce uncertainty, and experience honesty in housing.
+                    <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up-delay-2">
+                        <div class="text-3xl font-bold mb-2 text-[#2FA4E7]">
+                            KES <span class="counter" data-target="200">0</span>
+                        </div>
+                        <p class="text-sm text-gray-600 font-medium">One-Time Access</p>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-5 fade-in-up-delay-2">
+                    <a href="index.php?page=house" class="px-8 py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
+                        <i class="fas fa-search mr-3"></i> Start Your Search
+                    </a>
+                    <a href="#" class="px-8 py-4 bg-white text-gray-800 font-semibold rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all duration-300 flex items-center justify-center">
+                        <i class="fas fa-play-circle mr-3 text-[#2FA4E7]"></i> How It Works
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Content - Static Image Slideshow -->
+            <div class="relative fade-in-up-delay">
+                <!-- Main Image Card -->
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl pulse-glow">
+                    <div class="swiper heroSwiper h-[500px]">
+                        <div class="swiper-wrapper">
+                            <!-- Slide 1 -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1724165944295-8932b636f452?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Modern Apartment Interior"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Verified</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Spacious 3-Bedroom Apartment</h3>
+                                    <p class="text-gray-200">Westlands • </p>
+                                </div>
+                            </div>
+
+                            <!-- Slide 2 -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Modern House Exterior"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Verified</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Contemporary Family Home</h3>
+                                    <p class="text-gray-200">Kileleshwa • </p>
+                                </div>
+                            </div>
+
+                            <!-- Slide 3 -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1721614463390-f5f4441e06e7?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Apartment Living Room"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Verified</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Luxury 2-Bedroom Suite</h3>
+                                    <p class="text-gray-200">Kilimani • </p>
+                                </div>
+                            </div>
+
+                            <!-- Slide 4 - New -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1503174971373-b1f69850bded?q=80&w=913&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Modern Studio Apartment"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Featured</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Modern Studio Apartment</h3>
+                                    <p class="text-gray-200">Lavington • </p>
+                                </div>
+                            </div>
+
+                            <!-- Slide 5 - New -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1640357264346-dbc88b9895fd?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Penthouse with City View"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Premium</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Penthouse with City View</h3>
+                                    <p class="text-gray-200">Upper Hill •</p>
+                                </div>
+                            </div>
+
+                            <!-- Slide 6 - New -->
+                            <div class="swiper-slide relative">
+                                <img src="https://images.unsplash.com/photo-1721522288380-b5ea044d1cbb?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                     alt="Cozy Bungalow House"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                    <div class="flex items-center mb-3">
+                                        <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
+                                        <span class="font-semibold">Verified</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold mb-2">Cozy 4-Bedroom Bungalow</h3>
+                                    <p class="text-gray-200">Karen •</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="swiper-button-next bg-white/20 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-chevron-right text-white"></i>
+                        </div>
+                        <div class="swiper-button-prev bg-white/20 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-chevron-left text-white"></i>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+
+                <!-- Moving Services Card -->
+                <!-- <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-2xl p-6 max-w-xs border border-gray-100 transform hover:-translate-y-2 transition-all duration-500">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3CB371]/20 to-[#3CB371]/5 flex items-center justify-center mr-4">
+                            <i class="fas fa-truck-moving text-2xl text-[#3CB371]"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Moving Services</h4>
+                            <p class="text-sm text-gray-600">Integrated & Trusted</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        Connect with verified movers, get competitive quotes, and enjoy seamless relocation.
                     </p>
+                    <a href="#" class="text-[#2FA4E7] font-semibold text-sm flex items-center hover:text-[#3CB371] transition-colors">
+                        Explore Movers <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div> -->
 
-                    <!-- Stats -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-                        <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up">
-                            <div class="text-3xl font-bold mb-2 text-[#2FA4E7]">
-                                <span class="counter" data-target="100">0</span>%
-                            </div>
-                            <p class="text-sm text-gray-600 font-medium">Verified Listings</p>
-                        </div>
-
-                        <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up-delay">
-                            <div class="text-3xl font-bold mb-2 text-[#3CB371]">
-                                <span class="counter" data-target="50">0</span>+
-                            </div>
-                            <p class="text-sm text-gray-600 font-medium">Trusted Movers</p>
-                        </div>
-
-                        <div class="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm fade-in-up-delay-2">
-                            <div class="text-3xl font-bold mb-2 text-[#2FA4E7]">
-                                KES <span class="counter" data-target="200">0</span>
-                            </div>
-                            <p class="text-sm text-gray-600 font-medium">One-Time Access</p>
-                        </div>
-                    </div>
-
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-5 fade-in-up-delay-2">
-                        <a href="index.php?page=house" class="px-8 py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
-                            <i class="fas fa-search mr-3"></i> Start Your Search
-                        </a>
-                        <a href="#" class="px-8 py-4 bg-white text-gray-800 font-semibold rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all duration-300 flex items-center justify-center">
-                            <i class="fas fa-play-circle mr-3 text-[#2FA4E7]"></i> How It Works
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right Content - Image Slideshow -->
-                <div class="relative fade-in-up-delay">
-                    <!-- Main Image Card -->
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl pulse-glow">
-                        <div class="swiper heroSwiper h-[500px]">
-                            <div class="swiper-wrapper">
-                                <!-- Slide 1 -->
-                                <div class="swiper-slide relative">
-                                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80"
-                                         alt="Modern Apartment Interior"
-                                         class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                        <div class="flex items-center mb-3">
-                                            <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
-                                            <span class="font-semibold">Verified</span>
-                                        </div>
-                                        <h3 class="text-2xl font-bold mb-2">Spacious 3-Bedroom Apartment</h3>
-                                        <p class="text-gray-200">Westlands • KES 85,000/month</p>
-                                    </div>
-                                </div>
-
-                                <!-- Slide 2 -->
-                                <div class="swiper-slide relative">
-                                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-                                         alt="Modern House Exterior"
-                                         class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                        <div class="flex items-center mb-3">
-                                            <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
-                                            <span class="font-semibold">Verified</span>
-                                        </div>
-                                        <h3 class="text-2xl font-bold mb-2">Contemporary Family Home</h3>
-                                        <p class="text-gray-200">Kileleshwa • KES 120,000/month</p>
-                                    </div>
-                                </div>
-
-                                <!-- Slide 3 -->
-                                <div class="swiper-slide relative">
-                                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-                                         alt="Apartment Living Room"
-                                         class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                        <div class="flex items-center mb-3">
-                                            <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
-                                            <span class="font-semibold">Verified</span>
-                                        </div>
-                                        <h3 class="text-2xl font-bold mb-2">Luxury 2-Bedroom Suite</h3>
-                                        <p class="text-gray-200">Kilimani • KES 65,000/month</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Navigation Buttons -->
-                            <div class="swiper-button-next bg-white/20 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-chevron-right text-white"></i>
-                            </div>
-                            <div class="swiper-button-prev bg-white/20 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-chevron-left text-white"></i>
-                            </div>
-
-                            <!-- Pagination -->
-                            <div class="swiper-pagination"></div>
-                        </div>
-                    </div>
-
-                    <!-- Moving Services Card -->
-                    <!-- <div class="absolute -bottom-6 -left-6  rounded-2xl shadow-2xl p-6 max-w-xs border border-gray-100 transform hover:-translate-y-2 transition-all duration-500" style="background-color: rgb(86, 185, 86) !important; color:#3CB371 !important">
-                        <div class="flex items-center mb-4">
-                            <div>
-                                <h4 class="font-bold text-800" style="color: rgb(86, 185, 86) !important;">Moving Services</h4>
-                                <p class="text-sm text-600" style="color: rgb(86, 185, 86) !important;">Integrated & Trusted</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4" style="color: rgb(86, 185, 86) !important;">
-                            Connect with verified movers, get competitive quotes, and enjoy seamless relocation.
-                        </p>
-                        <a href="#" class="text-[#2FA4E7] font-semibold text-sm flex items-center" style="color: rgb(86, 185, 86) !important;" >
-                            Explore Movers <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div> -->
-
-                    <!-- Verification Badge -->
-                    <!-- <div class="absolute -top-4 -right-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371]  rounded-2xl p-5 shadow-xl transform hover:rotate-6 transition-transform duration-500">
-                        <div class="text-center">
-                            <i class="fas fa-shield-alt text-3xl mb-2" style="color: rgb(86, 185, 86) !important;"></i>
-                            <p class="font-bold text-lg" style="color: rgb(86, 185, 86) !important;">Verified</p>
-                            <p class="text-xs opacity-90" style="color: rgb(86, 185, 86) !important;">100% Trusted Listings</p>
-                        </div>
-                    </div> -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-in-up-delay-2">
-            <div class="flex flex-col items-center">
-                <span class="text-gray-500 text-sm mb-2">Explore More</span>
-                <div class="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
-                    <div class="w-1 h-3 bg-gradient-to-b from-[#2FA4E7] to-[#3CB371] rounded-full mt-2 animate-bounce"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
-    <!-- How Rheaspark Works Section -->
-    <section class="py-24 px-6 bg-gradient-to-br from-blue-50 to-green-50/30">
-        <div class="container mx-auto max-w-6xl">
-            <!-- Section Header -->
-            <div class="text-center mb-20">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 brand-font">
-                    <span class="brand-gradient">How Rheaspark</span> Works
-                </h2>
-                <p class="text-gray-600 text-xl max-w-3xl mx-auto">
-                    Our 4-step process makes house hunting simple, transparent, and stress-free
-                </p>
-            </div>
-
-            <!-- Steps Timeline -->
-            <div class="relative">
-                <!-- Vertical Line - Hidden on mobile, shown on md+ -->
-                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 transform -translate-x-1/2">
-                    <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
-                </div>
-
-                <!-- Step 1 -->
-                <div class="relative flex items-start md:items-center mb-16 md:mb-24">
-                    <!-- Mobile Timeline Line - Far Left -->
-                    <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
-                        <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
-                    </div>
-
-                    <!-- Step Number Container (Mobile) -->
-                    <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-lg border-4 border-white">
-                            <span class="text-white font-bold text-xl">1</span>
-                        </div>
-                    </div>
-
-                    <!-- Content Container - Pushed to the right on mobile -->
-                    <div class="w-full pl-16 md:pl-0 md:w-1/2 md:pr-16 md:text-right mb-8 md:mb-0">
-                        <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
-                            <div class="md:hidden mb-4">
-                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-4">
-                                    <i class="fas fa-search text-2xl text-white"></i>
-                                </div>
-                            </div>
-
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Search & Browse</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Explore verified rental listings with transparent information about location, price, and property details. Our honest disclosure section reveals common issues and practical solutions.
-                            </p>
-
-                            <div class="mt-4 md:hidden">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                    <i class="fas fa-filter mr-1"></i> Area-based filtering
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Center Dot (Desktop) -->
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
-                            <span class="text-white font-bold text-2xl">1</span>
-                        </div>
-                    </div>
-
-                    <!-- Right Content (Desktop) - Empty for Step 1 -->
-                    <div class="hidden md:block md:w-1/2 md:pl-16">
-                        <!-- Desktop placeholder -->
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="relative flex items-start md:items-center mb-16 md:mb-24">
-                    <!-- Mobile Timeline Line - Far Left -->
-                    <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
-                        <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
-                    </div>
-
-                    <!-- Step Number Container (Mobile) -->
-                    <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-lg border-4 border-white">
-                            <span class="text-white font-bold text-xl">2</span>
-                        </div>
-                    </div>
-
-                    <!-- Left Content (Desktop) - Empty for Step 2 -->
-                    <div class="hidden md:block md:w-1/2 md:pr-16 md:text-right">
-                        <!-- Desktop placeholder -->
-                    </div>
-
-                    <!-- Center Dot (Desktop) -->
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
-                            <span class="text-white font-bold text-2xl">2</span>
-                        </div>
-                    </div>
-
-                    <!-- Content Container - Pushed to the right on mobile -->
-                    <div class="w-full pl-16 md:w-1/2 md:pl-16 mb-8 md:mb-0">
-                        <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
-                            <div class="md:hidden mb-4">
-                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center mb-4">
-                                    <i class="fas fa-lock-open text-2xl text-white"></i>
-                                </div>
-                            </div>
-
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Access Verified Details</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Pay a one-time KES 200 access fee to unlock full property details including landlord contact information, exact location mapping, and verified disclosure information.
-                            </p>
-
-                            <div class="mt-4 md:hidden">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    <i class="fas fa-shield-alt mr-1"></i> Verified information
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="relative flex items-start md:items-center mb-16 md:mb-24">
-                    <!-- Mobile Timeline Line - Far Left -->
-                    <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
-                        <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
-                    </div>
-
-                    <!-- Step Number Container (Mobile) -->
-                    <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-lg border-4 border-white">
-                            <span class="text-white font-bold text-xl">3</span>
-                        </div>
-                    </div>
-
-                    <!-- Content Container - Pushed to the right on mobile -->
-                    <div class="w-full pl-16 md:pl-0 md:w-1/2 md:pr-16 md:text-right mb-8 md:mb-0">
-                        <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
-                            <div class="md:hidden mb-4">
-                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-4">
-                                    <i class="fas fa-handshake text-2xl text-white"></i>
-                                </div>
-                            </div>
-
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Connect & Arrange Viewing</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Contact landlords directly using the verified contact details. Schedule property viewings with confidence, knowing all important information has been transparently disclosed.
-                            </p>
-
-                            <div class="mt-4 md:hidden">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                    <i class="fas fa-calendar-check mr-1"></i> Schedule viewings
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Center Dot (Desktop) -->
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
-                            <span class="text-white font-bold text-2xl">3</span>
-                        </div>
-                    </div>
-
-                    <!-- Right Content (Desktop) - Empty for Step 3 -->
-                    <div class="hidden md:block md:w-1/2 md:pl-16">
-                        <!-- Desktop placeholder -->
-                    </div>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="relative flex items-start md:items-center">
-                    <!-- Mobile Timeline Line - Far Left -->
-                    <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
-                        <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
-                    </div>
-
-                    <!-- Step Number Container (Mobile) -->
-                    <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-lg border-4 border-white">
-                            <span class="text-white font-bold text-xl">4</span>
-                        </div>
-                    </div>
-
-                    <!-- Left Content (Desktop) - Empty for Step 4 -->
-                    <div class="hidden md:block md:w-1/2 md:pr-16 md:text-right">
-                        <!-- Desktop placeholder -->
-                    </div>
-
-                    <!-- Center Dot (Desktop) -->
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
-                            <span class="text-white font-bold text-2xl">4</span>
-                        </div>
-                    </div>
-
-                    <!-- Content Container - Pushed to the right on mobile -->
-                    <div class="w-full pl-16 md:w-1/2 md:pl-16 mb-8 md:mb-0">
-                        <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
-                            <div class="md:hidden mb-4">
-                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center mb-4">
-                                    <i class="fas fa-truck-moving text-2xl text-white"></i>
-                                </div>
-                            </div>
-
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Seamless Moving Services</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Once you've secured your new home, connect with our trusted moving services through our platform. Get quotes, book services, and enjoy a stress-free relocation.
-                            </p>
-
-                            <div class="mt-4 md:hidden">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    <i class="fas fa-star mr-1"></i> Trusted partners
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured rental areas -->
-    <section class="py-16 md:py-24 px-4 sm:px-6 bg-gradient-to-b from-white to-blue-50/30">
-        <div class="container mx-auto max-w-7xl">
-            <!-- Section Header -->
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 brand-font">
-                    <span class="brand-gradient">Featured</span> Rental Properties
-                </h2>
-                <p class="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto px-2">
-                    Explore our most popular rental properties with verified listings and transparent information
-                </p>
-            </div>
-
-            <!-- Filter Tabs -->
-            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 md:mb-12 px-2" id="filter-tabs">
-                <!-- Filters will be loaded dynamically -->
-                <button class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 bg-gray-200 text-gray-500">
-                    <i class="fas fa-spinner fa-spin mr-2"></i>Loading filters...
-                </button>
-            </div>
-
-            <!-- Houses Grid with Proper Mobile Spacing -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0" id="houses-grid">
-                <!-- Houses will be loaded dynamically -->
-                <div class="bg-gray-100 rounded-xl h-64 sm:h-72 md:h-80 flex items-center justify-center">
+                <!-- Verification Badge -->
+                <!-- <div class="absolute -top-4 -right-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white rounded-2xl p-5 shadow-xl transform hover:rotate-6 transition-transform duration-500">
                     <div class="text-center">
-                        <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
-                        <p class="text-gray-500">Loading properties...</p>
+                        <i class="fas fa-shield-alt text-3xl mb-2"></i>
+                        <p class="font-bold text-lg">Verified</p>
+                        <p class="text-xs opacity-90">100% Trusted Listings</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- View All Button -->
-            <div class="text-center mt-8 sm:mt-12 px-2">
-                <a href="index.php?page=houses" class="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-sm sm:text-base">
-                    <i class="fas fa-map-marked-alt mr-2 sm:mr-3"></i> View All Properties
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Area Details Modal -->
-    <div id="areaModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
-        <div class="flex items-center justify-center min-h-screen px-2 sm:px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Background Overlay -->
-            <div class="fixed inset-0 transition-opacity bg-black/60 backdrop-blur-sm" id="modalOverlay"></div>
-
-            <!-- Modal Panel -->
-            <div class="inline-block align-bottom bg-white rounded-2xl sm:rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full mx-2 sm:mx-0">
-                <!-- Close Button -->
-                <button id="closeModal" class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 backdrop-blur-sm text-gray-700 hover:text-[#2FA4E7] hover:bg-white/30 transition-all duration-300 flex items-center justify-center">
-                    <i class="fas fa-times text-lg sm:text-xl"></i>
-                </button>
-
-                <!-- Modal Content -->
-                <div class="bg-white" id="modalContent">
-                    <!-- Content will be loaded here dynamically -->
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 
-    <!-- Platform benefits section and other sections from home.html -->
-    <!-- Include the rest of the sections from home.html here, but for brevity, I'll add the key dynamic parts -->
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-in-up-delay-2">
+        <div class="flex flex-col items-center">
+            <span class="text-gray-500 text-sm mb-2">Explore More</span>
+            <div class="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-gradient-to-b from-[#2FA4E7] to-[#3CB371] rounded-full mt-2 animate-bounce"></div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 
-        // Load featured houses for hero swiper
-        async function loadFeaturedHouses() {
-            try {
-                const response = await fetch('api/featured_houses.php');
-                const data = await response.json();
-
-                if (data.success && data.data.length > 0) {
-                    const swiperWrapper = document.querySelector('.heroSwiper .swiper-wrapper');
-                    swiperWrapper.innerHTML = '';
-
-                    data.data.forEach(house => {
-                        const slide = document.createElement('div');
-                        slide.className = 'swiper-slide relative';
-                        slide.innerHTML = `
-                            <img src="${house.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}"
-                                 alt="${house.title}"
-                                 class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                <div class="flex items-center mb-3">
-                                    <span class="w-10 h-1 bg-[#3CB371] rounded-full mr-3"></span>
-                                    <span class="font-semibold">Featured</span>
-                                </div>
-                                <h3 class="text-2xl font-bold mb-2">${house.title}</h3>
-                                <p class="text-gray-200">${house.area_name} • KES ${house.price}/month</p>
-                            </div>
-                        `;
-                        swiperWrapper.appendChild(slide);
-                    });
-
-                    // Initialize Swiper after loading slides
-                    const heroSwiper = new Swiper('.heroSwiper', {
-                        direction: 'horizontal',
-                        loop: true,
-                        autoplay: {
-                            delay: 5000,
-                            disableOnInteraction: false,
-                        },
-                        pagination: {
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        },
-                        navigation: {
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
-                        },
-                        effect: 'slide',
-                        speed: 800,
-                        grabCursor: true,
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading featured houses:', error);
-                // Initialize with default swiper if error
-                const heroSwiper = new Swiper('.heroSwiper', {
-                    direction: 'horizontal',
-                    loop: true,
-                    autoplay: {
-                        delay: 5000,
-                        disableOnInteraction: false,
-                    },
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true,
-                    },
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    effect: 'slide',
-                    speed: 800,
-                    grabCursor: true,
-                });
-            }
-        }
-
-        // Load filters
-        async function loadFilters() {
-            try {
-                const response = await fetch('api/filters.php');
-                const data = await response.json();
-
-                if (data.success && data.data.length > 0) {
-                    const filterTabs = document.getElementById('filter-tabs');
-                    filterTabs.innerHTML = '';
-
-                    data.data.forEach((filter, index) => {
-                        const button = document.createElement('button');
-                        button.className = `area-filter px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 ${index === 0 ? 'bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:border-[#2FA4E7] hover:text-[#2FA4E7]'}`;
-                        button.setAttribute('data-filter', filter.slug);
-                        button.textContent = filter.name;
-                        filterTabs.appendChild(button);
-                    });
-
-                    // Add event listeners to filter buttons
-                    document.querySelectorAll('.area-filter').forEach(button => {
-                        button.addEventListener('click', function() {
-                            document.querySelectorAll('.area-filter').forEach(btn => {
-                                btn.classList.remove('bg-gradient-to-r', 'from-[#2FA4E7]', 'to-[#3CB371]', 'text-white', 'shadow-md');
-                                btn.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-200');
-                            });
-
-                            this.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-200');
-                            this.classList.add('bg-gradient-to-r', 'from-[#2FA4E7]', 'to-[#3CB371]', 'text-white', 'shadow-md');
-
-                            loadHouses(this.getAttribute('data-filter'));
-                        });
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading filters:', error);
-            }
-        }
-
-        // Load houses
-        async function loadHouses(filter = 'all') {
-            try {
-                const response = await fetch(`api/featured_houses.php?filter=${filter}`);
-                const data = await response.json();
-
-                if (data.success && data.data.length > 0) {
-                    const housesGrid = document.getElementById('houses-grid');
-                    housesGrid.innerHTML = '';
-
-                    data.data.forEach(house => {
-                        const houseCard = document.createElement('div');
-                        houseCard.className = `house-card group mb-4 sm:mb-0`;
-                        houseCard.setAttribute('data-house-id', house.id);
-                        houseCard.innerHTML = `
-                            <div class="relative overflow-hidden rounded-xl sm:rounded-2xl h-64 sm:h-72 md:h-80 shadow-lg hover:shadow-2xl transition-all duration-500">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10"></div>
-                                <img src="${house.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}"
-                                     alt="${house.title}"
-                                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-
-                                <!-- House Info -->
-                                <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20">
-                                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">${house.title}</h3>
-                                    <div class="flex items-center text-white/90 mb-2 sm:mb-3 text-sm sm:text-base">
-                                        <i class="fas fa-map-marker-alt mr-1 sm:mr-2 text-xs sm:text-sm"></i>
-                                        <span>${house.area_name || house.location}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-white/80 text-xs sm:text-sm">Monthly Rent</p>
-                                            <p class="text-lg sm:text-xl font-bold text-white">KES ${house.price}</p>
-                                        </div>
-                                        <button class="house-details-btn px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all duration-300 flex items-center group-hover:bg-[#2FA4E7] text-sm sm:text-base">
-                                            View Details <i class="fas fa-arrow-right ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform text-xs sm:text-sm"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        housesGrid.appendChild(houseCard);
-                    });
-
-                    // Add animation classes
-                    document.querySelectorAll('.house-card').forEach((card, index) => {
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(30px)';
-                        card.style.animation = `fadeInUp 0.6s ease forwards`;
-                        card.style.animationDelay = `${index * 0.1}s`;
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading houses:', error);
-            }
-        }
-
-        // Modal functionality
-        function setupModal() {
-            const modal = document.getElementById('areaModal');
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalContent = document.getElementById('modalContent');
-            const closeModal = document.getElementById('closeModal');
-
-            // Open modal
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.house-details-btn')) {
-                    e.preventDefault();
-                    const card = e.target.closest('.house-card');
-                    const houseId = card.getAttribute('data-house-id');
-
-                    // Fetch house data
-                    fetch(`api/featured_houses.php?id=${houseId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success && data.data.length > 0) {
-                                const house = data.data[0];
-                                modalContent.innerHTML = `
-                                    <div class="flex flex-col lg:flex-row">
-                                        <div class="lg:w-2/5 relative h-48 sm:h-64 lg:h-auto">
-                                            <img src="${house.image_url_1}" alt="${house.title}" class="w-full h-full object-cover">
-                                            <div class="absolute top-3 left-3 sm:top-4 sm:left-4">
-                                                <span class="px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold text-white bg-[#2FA4E7]">
-                                                    ${house.property_type}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="lg:w-3/5 p-4 sm:p-6 md:p-8">
-                                            <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-3">${house.title}</h3>
-                                            <p class="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">${house.description}</p>
-                                            <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                                                <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
-                                                    <p class="text-xs sm:text-sm text-gray-500 mb-1">Monthly Rent</p>
-                                                    <p class="text-lg sm:text-xl font-bold text-gray-800">KES ${house.price}</p>
-                                                </div>
-                                                <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
-                                                    <p class="text-xs sm:text-sm text-gray-500 mb-1">Bedrooms</p>
-                                                    <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bedrooms}</p>
-                                                </div>
-                                                <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
-                                                    <p class="text-xs sm:text-sm text-gray-500 mb-1">Bathrooms</p>
-                                                    <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bathrooms}</p>
-                                                </div>
-                                                <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
-                                                    <p class="text-xs sm:text-sm text-gray-500 mb-1">Size</p>
-                                                    <p class="text-lg sm:text-xl font-bold text-gray-800">${house.size_sqft} sqft</p>
-                                                </div>
-                                            </div>
-                                            <div class="mb-6">
-                                                <h4 class="font-semibold text-gray-800 mb-3">Amenities</h4>
-                                                <div class="flex flex-wrap gap-2">
-                                                    ${house.wifi ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">WiFi</span>' : ''}
-                                                    ${house.swimming_pool ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Pool</span>' : ''}
-                                                    ${house.gym ? '<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Gym</span>' : ''}
-                                                    ${house.security_24_7 ? '<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">24/7 Security</span>' : ''}
-                                                    ${house.pet_friendly ? '<span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">Pet Friendly</span>' : ''}
-                                                    ${house.dedicated_parking ? '<span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">Parking</span>' : ''}
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                                                <a href="index.php?page=houses" class="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 text-center text-sm sm:text-base">
-                                                    View All Properties
-                                                </a>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-
-                                modal.classList.remove('hidden');
-                                document.body.style.overflow = 'hidden';
-
-                                setTimeout(() => {
-                                    modal.querySelector('.inline-block').classList.add('modal-enter');
-                                }, 10);
-                            }
-                        });
-                }
-            });
-
-            // Close modal
-            function closeAreaModal() {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-                modal.querySelector('.inline-block').classList.remove('modal-enter');
-            }
-
-            closeModal.addEventListener('click', closeAreaModal);
-            modalOverlay.addEventListener('click', closeAreaModal);
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                    closeAreaModal();
-                }
-            });
-        }
+<script>
+    // Initialize Swiper for hero section
+    document.addEventListener('DOMContentLoaded', function() {
+        const heroSwiper = new Swiper('.heroSwiper', {
+            direction: 'horizontal',
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+                dynamicBullets: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            effect: 'slide',
+            speed: 800,
+            grabCursor: true,
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                },
+                768: {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                },
+                1024: {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                },
+            },
+        });
 
         // Counter Animation
         function animateCounters() {
@@ -751,219 +286,730 @@
             });
         }
 
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            loadFilters();
-            loadHouses();
-            setupModal();
-            loadFeaturedHouses();
+        // Start counter animation when page loads
+        setTimeout(animateCounters, 1000);
 
-            // Start counter animation when page loads
-            setTimeout(animateCounters, 1000);
+        // Add scroll animation for elements
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-            // Add scroll animation for elements
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in-up');
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.fade-in-up, .fade-in-up-delay, .fade-in-up-delay-2').forEach(el => {
-                observer.observe(el);
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
             });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up, .fade-in-up-delay, .fade-in-up-delay-2').forEach(el => {
+            observer.observe(el);
         });
-    </script>
+    });
+</script>
 
-    <style>
-        /* Animation Classes */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s ease forwards;
+<style>
+    /* Animation Classes */
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .fade-in-up-delay {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease 0.3s forwards;
+    }
+
+    .fade-in-up-delay-2 {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease 0.6s forwards;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Gradient Text */
+    .brand-gradient {
+        background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Subtle Pulse Animation */
+    @keyframes pulse-glow {
+        0%, 100% {
+            box-shadow: 0 0 20px rgba(47, 164, 231, 0.2);
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(47, 164, 231, 0.4);
+        }
+    }
+
+    .pulse-glow {
+        animation: pulse-glow 3s infinite ease-in-out;
+    }
+
+    /* Floating Animation */
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .floating {
+        animation: float 5s infinite ease-in-out;
+    }
+
+    /* Swiper Customization */
+    .swiper-slide {
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform 0.5s ease;
+    }
+
+    .swiper-slide-active {
+        transform: scale(1.05);
+        z-index: 2;
+    }
+
+    .swiper-slide-prev, .swiper-slide-next {
+        opacity: 0.7;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 18px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 1;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    /* Hero Background Pattern */
+    .hero-pattern {
+        background-image: radial-gradient(circle at 25px 25px, rgba(47, 164, 231, 0.1) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(60, 179, 113, 0.1) 2%, transparent 0%);
+        background-size: 100px 100px;
+    }
+
+    /* Number Counter Animation */
+    .counter {
+        position: relative;
+        display: inline-block;
+        font-weight: 700;
+    }
+
+    .counter::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
+        transition: width 1.5s ease;
+    }
+
+    .counter.animated::after {
+        width: 100%;
+    }
+
+    /* Typing Effect */
+    .typewriter {
+        overflow: hidden;
+        white-space: nowrap;
+        margin: 0 auto;
+        animation: typing 3.5s steps(40, end);
+    }
+
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+
+    /* Active Filter */
+    .area-filter.active {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hover effect for area cards */
+    .area-card:hover .area-details-btn {
+        transform: translateX(5px);
+    }
+
+    /* Image hover effect */
+    .area-card img {
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Mobile-specific adjustments */
+    @media (max-width: 640px) {
+        .grid-cols-1 .area-card {
+            margin-bottom: 1rem;
         }
 
-        .fade-in-up-delay {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s ease 0.3s forwards;
+        .grid-cols-1 .area-card:last-child {
+            margin-bottom: 0;
         }
 
-        .fade-in-up-delay-2 {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s ease 0.6s forwards;
+        .container {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Gradient Text */
-        .brand-gradient {
-            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Subtle Pulse Animation */
-        @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(47, 164, 231, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(47, 164, 231, 0.4);
-            }
-        }
-
-        .pulse-glow {
-            animation: pulse-glow 3s infinite ease-in-out;
-        }
-
-        /* Floating Animation */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .floating {
-            animation: float 5s infinite ease-in-out;
-        }
-
-        /* Swiper Customization */
-        .swiper-slide {
-            border-radius: 20px;
-            overflow: hidden;
-            transition: transform 0.5s ease;
-        }
-
-        .swiper-slide-active {
-            transform: scale(1.05);
-            z-index: 2;
-        }
-
-        .swiper-slide-prev, .swiper-slide-next {
-            opacity: 0.7;
-        }
-
-        /* Hero Background Pattern */
-        .hero-pattern {
-            background-image: radial-gradient(circle at 25px 25px, rgba(47, 164, 231, 0.1) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(60, 179, 113, 0.1) 2%, transparent 0%);
-            background-size: 100px 100px;
-        }
-
-        /* Number Counter Animation */
-        .counter {
-            position: relative;
-            display: inline-block;
-            font-weight: 700;
-        }
-
-        .counter::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
-            transition: width 1.5s ease;
-        }
-
-        .counter.animated::after {
-            width: 100%;
-        }
-
-        /* Typing Effect */
-        .typewriter {
-            overflow: hidden;
-            white-space: nowrap;
+        #areaModal .inline-block {
+            width: calc(100% - 1rem);
             margin: 0 auto;
-            animation: typing 3.5s steps(40, end);
+        }
+        
+        .swiper-button-next,
+        .swiper-button-prev {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .swiper-button-next:after,
+        .swiper-button-prev:after {
+            font-size: 16px;
+        }
+    }
+
+    /* Tablet adjustments */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .grid-cols-2 .area-card:nth-child(odd) {
+            margin-right: 0.5rem;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .grid-cols-2 .area-card:nth-child(even) {
+            margin-left: 0.5rem;
         }
+    }
+</style>
 
-        /* Modal Animation */
-        .modal-enter {
-            animation: modalFadeIn 0.3s ease-out;
-        }
+<!-- How Rheaspark Works Section -->
+<section class="py-24 px-6 bg-gradient-to-br from-blue-50 to-green-50/30">
+    <div class="container mx-auto max-w-6xl">
+        <!-- Section Header -->
+        <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 brand-font">
+                <span class="brand-gradient">How Rheaspark</span> Works
+            </h2>
+            <p class="text-gray-600 text-xl max-w-3xl mx-auto">
+                Our 4-step process makes house hunting simple, transparent, and stress-free
+            </p>
+        </div>
 
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.95);
+        <!-- Steps Timeline -->
+        <div class="relative">
+            <!-- Vertical Line - Hidden on mobile, shown on md+ -->
+            <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 transform -translate-x-1/2">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="relative flex items-start md:items-center mb-16 md:mb-24">
+                <!-- Mobile Timeline Line - Far Left -->
+                <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
+                </div>
+
+                <!-- Step Number Container (Mobile) -->
+                <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-lg border-4 border-white">
+                        <span class="text-white font-bold text-xl">1</span>
+                    </div>
+                </div>
+
+                <!-- Content Container - Pushed to the right on mobile -->
+                <div class="w-full pl-16 md:pl-0 md:w-1/2 md:pr-16 md:text-right mb-8 md:mb-0">
+                    <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
+                        <div class="md:hidden mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-search text-2xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Search & Browse</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Explore verified rental listings with transparent information about location, price, and property details. Our honest disclosure section reveals common issues and practical solutions.
+                        </p>
+
+                        <div class="mt-4 md:hidden">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                <i class="fas fa-filter mr-1"></i> Area-based filtering
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Dot (Desktop) -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
+                        <span class="text-white font-bold text-2xl">1</span>
+                    </div>
+                </div>
+
+                <!-- Right Content (Desktop) - Empty for Step 1 -->
+                <div class="hidden md:block md:w-1/2 md:pl-16">
+                    <!-- Desktop placeholder -->
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative flex items-start md:items-center mb-16 md:mb-24">
+                <!-- Mobile Timeline Line - Far Left -->
+                <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
+                </div>
+
+                <!-- Step Number Container (Mobile) -->
+                <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-lg border-4 border-white">
+                        <span class="text-white font-bold text-xl">2</span>
+                    </div>
+                </div>
+
+                <!-- Left Content (Desktop) - Empty for Step 2 -->
+                <div class="hidden md:block md:w-1/2 md:pr-16 md:text-right">
+                    <!-- Desktop placeholder -->
+                </div>
+
+                <!-- Center Dot (Desktop) -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
+                        <span class="text-white font-bold text-2xl">2</span>
+                    </div>
+                </div>
+
+                <!-- Content Container - Pushed to the right on mobile -->
+                <div class="w-full pl-16 md:w-1/2 md:pl-16 mb-8 md:mb-0">
+                    <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
+                        <div class="md:hidden mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-lock-open text-2xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Access Verified Details</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Pay a one-time KES 200 access fee to unlock full property details including landlord contact information, exact location mapping, and verified disclosure information.
+                        </p>
+
+                        <div class="mt-4 md:hidden">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-shield-alt mr-1"></i> Verified information
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative flex items-start md:items-center mb-16 md:mb-24">
+                <!-- Mobile Timeline Line - Far Left -->
+                <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
+                </div>
+
+                <!-- Step Number Container (Mobile) -->
+                <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-lg border-4 border-white">
+                        <span class="text-white font-bold text-xl">3</span>
+                    </div>
+                </div>
+
+                <!-- Content Container - Pushed to the right on mobile -->
+                <div class="w-full pl-16 md:pl-0 md:w-1/2 md:pr-16 md:text-right mb-8 md:mb-0">
+                    <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
+                        <div class="md:hidden mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-handshake text-2xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Connect & Arrange Viewing</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Contact landlords directly using the verified contact details. Schedule property viewings with confidence, knowing all important information has been transparently disclosed.
+                        </p>
+
+                        <div class="mt-4 md:hidden">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                <i class="fas fa-calendar-check mr-1"></i> Schedule viewings
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Dot (Desktop) -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#2FA4E7] to-blue-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
+                        <span class="text-white font-bold text-2xl">3</span>
+                    </div>
+                </div>
+
+                <!-- Right Content (Desktop) - Empty for Step 3 -->
+                <div class="hidden md:block md:w-1/2 md:pl-16">
+                    <!-- Desktop placeholder -->
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="relative flex items-start md:items-center">
+                <!-- Mobile Timeline Line - Far Left -->
+                <div class="md:hidden absolute left-0 top-0 bottom-0 w-1">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#2FA4E7] via-[#3CB371] to-transparent rounded-full"></div>
+                </div>
+
+                <!-- Step Number Container (Mobile) -->
+                <div class="md:hidden absolute left-0 transform -translate-x-1/2 z-10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-lg border-4 border-white">
+                        <span class="text-white font-bold text-xl">4</span>
+                    </div>
+                </div>
+
+                <!-- Left Content (Desktop) - Empty for Step 4 -->
+                <div class="hidden md:block md:w-1/2 md:pr-16 md:text-right">
+                    <!-- Desktop placeholder -->
+                </div>
+
+                <!-- Center Dot (Desktop) -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center shadow-xl border-8 border-white hover:scale-110 transition-transform duration-300">
+                        <span class="text-white font-bold text-2xl">4</span>
+                    </div>
+                </div>
+
+                <!-- Content Container - Pushed to the right on mobile -->
+                <div class="w-full pl-16 md:w-1/2 md:pl-16 mb-8 md:mb-0">
+                    <div class="md:bg-transparent md:shadow-none md:p-0 md:border-none">
+                        <div class="md:hidden mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#3CB371] to-green-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-truck-moving text-2xl text-white"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Seamless Moving Services</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Once you've secured your new home, connect with our trusted moving services through our platform. Get quotes, book services, and enjoy a stress-free relocation.
+                        </p>
+
+                        <div class="mt-4 md:hidden">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-star mr-1"></i> Trusted partners
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured rental areas -->
+<section class="py-16 md:py-24 px-4 sm:px-6 bg-gradient-to-b from-white to-blue-50/30">
+    <div class="container mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 brand-font">
+                <span class="brand-gradient">Featured</span> Rental Properties
+            </h2>
+            <p class="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto px-2">
+                Explore our most popular rental properties with verified listings and transparent information
+            </p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 md:mb-12 px-2" id="filter-tabs">
+            <!-- Filters will be loaded dynamically -->
+            <button class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 bg-gray-200 text-gray-500">
+                <i class="fas fa-spinner fa-spin mr-2"></i>Loading filters...
+            </button>
+        </div>
+
+        <!-- Houses Grid with Proper Mobile Spacing -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0" id="houses-grid">
+            <!-- Houses will be loaded dynamically -->
+            <div class="bg-gray-100 rounded-xl h-64 sm:h-72 md:h-80 flex items-center justify-center">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500">Loading properties...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- View All Button -->
+        <div class="text-center mt-8 sm:mt-12 px-2">
+            <a href="index.php?page=houses" class="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-sm sm:text-base">
+                <i class="fas fa-map-marked-alt mr-2 sm:mr-3"></i> View All Properties
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Area Details Modal -->
+<div id="areaModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen px-2 sm:px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background Overlay -->
+        <div class="fixed inset-0 transition-opacity bg-black/60 backdrop-blur-sm" id="modalOverlay"></div>
+
+        <!-- Modal Panel -->
+        <div class="inline-block align-bottom bg-white rounded-2xl sm:rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full mx-2 sm:mx-0">
+            <!-- Close Button -->
+            <button id="closeModal" class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 backdrop-blur-sm text-gray-700 hover:text-[#2FA4E7] hover:bg-white/30 transition-all duration-300 flex items-center justify-center">
+                <i class="fas fa-times text-lg sm:text-xl"></i>
+            </button>
+
+            <!-- Modal Content -->
+            <div class="bg-white" id="modalContent">
+                <!-- Content will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Platform benefits section and other sections from home.html -->
+<!-- Include the rest of the sections from home.html here, but for brevity, I'll add the key dynamic parts -->
+
+<script>
+    // Load filters
+    async function loadFilters() {
+        try {
+            const response = await fetch('api/filters.php');
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                const filterTabs = document.getElementById('filter-tabs');
+                filterTabs.innerHTML = '';
+
+                data.data.forEach((filter, index) => {
+                    const button = document.createElement('button');
+                    button.className = `area-filter px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 ${index === 0 ? 'bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:border-[#2FA4E7] hover:text-[#2FA4E7]'}`;
+                    button.setAttribute('data-filter', filter.slug);
+                    button.textContent = filter.name;
+                    filterTabs.appendChild(button);
+                });
+
+                // Add event listeners to filter buttons
+                document.querySelectorAll('.area-filter').forEach(button => {
+                    button.addEventListener('click', function() {
+                        document.querySelectorAll('.area-filter').forEach(btn => {
+                            btn.classList.remove('bg-gradient-to-r', 'from-[#2FA4E7]', 'to-[#3CB371]', 'text-white', 'shadow-md');
+                            btn.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-200');
+                        });
+
+                        this.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-200');
+                        this.classList.add('bg-gradient-to-r', 'from-[#2FA4E7]', 'to-[#3CB371]', 'text-white', 'shadow-md');
+
+                        loadHouses(this.getAttribute('data-filter'));
+                    });
+                });
             }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
+        } catch (error) {
+            console.error('Error loading filters:', error);
+        }
+    }
+
+    // Load houses
+    async function loadHouses(filter = 'all') {
+        try {
+            const response = await fetch(`api/featured_houses.php?filter=${filter}`);
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                const housesGrid = document.getElementById('houses-grid');
+                housesGrid.innerHTML = '';
+
+                data.data.forEach(house => {
+                    const houseCard = document.createElement('div');
+                    houseCard.className = `house-card group mb-4 sm:mb-0`;
+                    houseCard.setAttribute('data-house-id', house.id);
+                    houseCard.innerHTML = `
+                        <div class="relative overflow-hidden rounded-xl sm:rounded-2xl h-64 sm:h-72 md:h-80 shadow-lg hover:shadow-2xl transition-all duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10"></div>
+                            <img src="${house.image_url_1 || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}"
+                                 alt="${house.title}"
+                                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+
+                            <!-- House Info -->
+                            <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20">
+                                <h3 class="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">${house.title}</h3>
+                                <div class="flex items-center text-white/90 mb-2 sm:mb-3 text-sm sm:text-base">
+                                    <i class="fas fa-map-marker-alt mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                                    <span>${house.area_name || house.location}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-white/80 text-xs sm:text-sm">Monthly Rent</p>
+                                        <p class="text-lg sm:text-xl font-bold text-white">KES ${house.price}</p>
+                                    </div>
+                                    <button class="house-details-btn px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all duration-300 flex items-center group-hover:bg-[#2FA4E7] text-sm sm:text-base">
+                                        View Details <i class="fas fa-arrow-right ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform text-xs sm:text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    housesGrid.appendChild(houseCard);
+                });
+
+                // Add animation classes
+                document.querySelectorAll('.house-card').forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.animation = `fadeInUp 0.6s ease forwards`;
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
             }
+        } catch (error) {
+            console.error('Error loading houses:', error);
+        }
+    }
+
+    // Modal functionality
+    function setupModal() {
+        const modal = document.getElementById('areaModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+
+        // Open modal
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.house-details-btn')) {
+                e.preventDefault();
+                const card = e.target.closest('.house-card');
+                const houseId = card.getAttribute('data-house-id');
+
+                // Fetch house data
+                fetch(`api/featured_houses.php?id=${houseId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.data.length > 0) {
+                            const house = data.data[0];
+                            modalContent.innerHTML = `
+                                <div class="flex flex-col lg:flex-row">
+                                    <div class="lg:w-2/5 relative h-48 sm:h-64 lg:h-auto">
+                                        <img src="${house.image_url_1}" alt="${house.title}" class="w-full h-full object-cover">
+                                        <div class="absolute top-3 left-3 sm:top-4 sm:left-4">
+                                            <span class="px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold text-white bg-[#2FA4E7]">
+                                                ${house.property_type}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="lg:w-3/5 p-4 sm:p-6 md:p-8">
+                                        <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-3">${house.title}</h3>
+                                        <p class="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">${house.description}</p>
+                                        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                                            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Monthly Rent</p>
+                                                <p class="text-lg sm:text-xl font-bold text-gray-800">KES ${house.price}</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Bedrooms</p>
+                                                <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bedrooms}</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Bathrooms</p>
+                                                <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bathrooms}</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Size</p>
+                                                <p class="text-lg sm:text-xl font-bold text-gray-800">${house.size_sqft} sqft</p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-6">
+                                            <h4 class="font-semibold text-gray-800 mb-3">Amenities</h4>
+                                            <div class="flex flex-wrap gap-2">
+                                                ${house.wifi ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">WiFi</span>' : ''}
+                                                ${house.swimming_pool ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Pool</span>' : ''}
+                                                ${house.gym ? '<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Gym</span>' : ''}
+                                                ${house.security_24_7 ? '<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">24/7 Security</span>' : ''}
+                                                ${house.pet_friendly ? '<span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">Pet Friendly</span>' : ''}
+                                                ${house.dedicated_parking ? '<span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">Parking</span>' : ''}
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                                            <a href="index.php?page=houses" class="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 text-center text-sm sm:text-base">
+                                                View All Properties
+                                            </a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                            modal.classList.remove('hidden');
+                            document.body.style.overflow = 'hidden';
+
+                            setTimeout(() => {
+                                modal.querySelector('.inline-block').classList.add('modal-enter');
+                            }, 10);
+                        }
+                    });
+            }
+        });
+
+        // Close modal
+        function closeAreaModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            modal.querySelector('.inline-block').classList.remove('modal-enter');
         }
 
-        /* Active Filter */
-        .area-filter.active {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+        closeModal.addEventListener('click', closeAreaModal);
+        modalOverlay.addEventListener('click', closeAreaModal);
 
-        /* Hover effect for area cards */
-        .area-card:hover .area-details-btn {
-            transform: translateX(5px);
-        }
-
-        /* Image hover effect */
-        .area-card img {
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Mobile-specific adjustments */
-        @media (max-width: 640px) {
-            .grid-cols-1 .area-card {
-                margin-bottom: 1rem;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeAreaModal();
             }
+        });
+    }
 
-            .grid-cols-1 .area-card:last-child {
-                margin-bottom: 0;
-            }
-
-            .container {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-
-            #areaModal .inline-block {
-                width: calc(100% - 1rem);
-                margin: 0 auto;
-            }
-        }
-
-        /* Tablet adjustments */
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .grid-cols-2 .area-card:nth-child(odd) {
-                margin-right: 0.5rem;
-            }
-
-            .grid-cols-2 .area-card:nth-child(even) {
-                margin-left: 0.5rem;
-            }
-        }
-    </style>
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFilters();
+        loadHouses();
+        setupModal();
+    });
+</script>
     
 <!-- Platform benefits (trust, transparency, time-saving) -->
  <section class="py-24 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 overflow-hidden">
@@ -1538,7 +1584,7 @@
                                 <!-- Right Image -->
                                 <div class="lg:w-2/5 relative overflow-hidden min-h-[300px] lg:min-h-full lg:h-full">
                                     <div class="absolute inset-0 bg-gradient-to-t from-[#2FA4E7]/20 via-[#3CB371]/20 to-transparent z-10"></div>
-                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCGg_GZiPH1hVG2NfTnLS45vs5e47I_VQxkg&s" 
                                          alt="Integrated Moving Service" 
                                          class="w-full h-full object-cover">
                                     
@@ -1628,7 +1674,7 @@
                                 <!-- Right Image -->
                                 <div class="lg:w-2/5 relative overflow-hidden min-h-[300px] lg:min-h-full lg:h-full">
                                     <div class="absolute inset-0 bg-gradient-to-t from-[#3CB371]/20 to-transparent z-10"></div>
-                                    <img src="https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                    <img src="https://www.whoa.in/download/amazing-house-in-amazing-place-hd-wallpaper" 
                                          alt="Moving Process" 
                                          class="w-full h-full object-cover">
                                     
@@ -1713,7 +1759,7 @@
                                 <!-- Right Image -->
                                 <div class="lg:w-2/5 relative overflow-hidden min-h-[300px] lg:min-h-full lg:h-full">
                                     <div class="absolute inset-0 bg-gradient-to-t from-[#2FA4E7]/20 to-transparent z-10"></div>
-                                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                    <img src="https://t3.ftcdn.net/jpg/03/22/06/68/360_F_322066808_CANrp7u5Cdiz7700TJReqKD299d2AZtD.jpg" 
                                          alt="Transparent Pricing" 
                                          class="w-full h-full object-cover">
                                     
@@ -1795,7 +1841,7 @@
                                 <!-- Right Image -->
                                 <div class="lg:w-2/5 relative overflow-hidden min-h-[300px] lg:min-h-full lg:h-full">
                                     <div class="absolute inset-0 bg-gradient-to-t from-[#2FA4E7]/20 via-[#3CB371]/20 to-transparent z-10"></div>
-                                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                    <img src="https://media.istockphoto.com/id/1490571644/photo/digitally-generated-image-of-a-living-room-with-a-wooden-floor.jpg?s=612x612&w=0&k=20&c=Vl5aLRtx0lYnECP2082jZz_uH8xoO8EZYEQ0XLiyf5c=" 
                                          alt="Benefits of Our Service" 
                                          class="w-full h-full object-cover">
                                     
@@ -2156,9 +2202,9 @@
                                 <button id="toggleBenefits" class="px-6 py-2 rounded-full font-medium transition-all duration-300 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white">
                                     Benefits
                                 </button>
-                                <button id="toggleForm" class="px-6 py-2 rounded-full font-medium text-gray-700 hover:text-[#2FA4E7] transition-colors duration-300">
+                                <!-- <button id="toggleForm" class="px-6 py-2 rounded-full font-medium text-gray-700 hover:text-[#2FA4E7] transition-colors duration-300">
                                     Get Started
-                                </button>
+                                </button> -->
                             </div>
                         </div>
 
@@ -2647,640 +2693,11 @@
 </script>
 
 
-<!-- contact us -->
- <section class="py-24 px-6 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 opacity-5">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, #2FA4E7 1px, transparent 0); background-size: 40px 40px;"></div>
-    </div>
-    
-    <!-- Floating Shapes -->
-    <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#2FA4E7]/10 to-transparent rounded-full filter blur-3xl"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#3CB371]/10 to-transparent rounded-full filter blur-3xl"></div>
+<?php  
 
-    <div class="container mx-auto max-w-6xl relative z-10">
-        <!-- Section Header -->
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold mb-6 brand-font">
-                <span class="brand-gradient">Get In Touch</span> With Us
-            </h2>
-            <p class="text-gray-600 text-xl max-w-3xl mx-auto">
-                Have questions about house hunting or moving services? We're here to help you every step of the way.
-            </p>
-        </div>
+include "contactus.php";
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <!-- Left Column - Contact Information -->
-            <div class="space-y-8">
-                <!-- Contact Cards -->
-                <div class="space-y-6">
-                    <!-- Phone Card -->
-                    <div class="group">
-                        <div class="bg-gradient-to-r from-white to-blue-50/30 rounded-2xl p-8 border border-blue-100 hover:border-[#2FA4E7] hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                            <div class="flex items-start">
-                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2FA4E7] to-blue-300 flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fas fa-phone-alt text-2xl text-white"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Call Us</h3>
-                                    <p class="text-gray-600 mb-4">Speak directly with our support team for immediate assistance</p>
-                                    <a href="tel:+254769525570" class="inline-flex items-center text-xl font-bold text-[#2FA4E7] hover:text-blue-600 transition-colors duration-300 group-hover:translate-x-2 transition-transform">
-                                        <i class="fas fa-phone mr-3 text-lg"></i> +254 769 525 570
-                                    </a>
-                                    <p class="text-gray-500 text-sm mt-2">Available Monday-Saturday, 8AM-8PM</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Email Card -->
-                    <div class="group">
-                        <div class="bg-gradient-to-r from-white to-green-50/30 rounded-2xl p-8 border border-green-100 hover:border-[#3CB371] hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                            <div class="flex items-start">
-                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3CB371] to-green-300 flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fas fa-envelope text-2xl text-white"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Email Us</h3>
-                                    <p class="text-gray-600 mb-4">Send us your inquiries and we'll respond within 24 hours</p>
-                                    <a href="mailto:wenbusale383@gmail.com" class="inline-flex items-center text-xl font-bold text-[#3CB371] hover:text-green-600 transition-colors duration-300 group-hover:translate-x-2 transition-transform">
-                                        <i class="fas fa-envelope mr-3 text-lg"></i> wenbusale383@gmail.com
-                                    </a>
-                                    <p class="text-gray-500 text-sm mt-2">We typically respond within 2-4 hours</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Office Hours Card -->
-                    <div class="group">
-                        <div class="bg-gradient-to-r from-white to-blue-50/30 rounded-2xl p-8 border border-blue-100 hover:border-[#2FA4E7] hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                            <div class="flex items-start">
-                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fas fa-clock text-2xl text-white"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Business Hours</h3>
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                            <span class="text-gray-700">Monday - Friday</span>
-                                            <span class="font-semibold text-[#2FA4E7]">8:00 AM - 8:00 PM</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                            <span class="text-gray-700">Saturday</span>
-                                            <span class="font-semibold text-[#3CB371]">9:00 AM - 6:00 PM</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2">
-                                            <span class="text-gray-700">Sunday</span>
-                                            <span class="font-semibold text-gray-500">Closed</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Social Media Section -->
-                <div class="pt-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Connect With Us</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <!-- Facebook -->
-                        <a href="#" class="group relative overflow-hidden">
-                            <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fab fa-facebook-f text-2xl text-white"></i>
-                                </div>
-                                <span class="text-white font-semibold">Facebook</span>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                        </a>
-
-                        <!-- Twitter -->
-                        <a href="#" class="group relative overflow-hidden">
-                            <div class="bg-gradient-to-br from-sky-500 to-sky-600 rounded-2xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fab fa-twitter text-2xl text-white"></i>
-                                </div>
-                                <span class="text-white font-semibold">Twitter</span>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                        </a>
-
-                        <!-- Instagram -->
-                        <a href="#" class="group relative overflow-hidden">
-                            <div class="bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fab fa-instagram text-2xl text-white"></i>
-                                </div>
-                                <span class="text-white font-semibold">Instagram</span>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                        </a>
-
-                        <!-- LinkedIn -->
-                        <a href="#" class="group relative overflow-hidden">
-                            <div class="bg-gradient-to-br from-blue-700 to-blue-800 rounded-2xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fab fa-linkedin-in text-2xl text-white"></i>
-                                </div>
-                                <span class="text-white font-semibold">LinkedIn</span>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column - Contact Form -->
-            <div>
-                <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Send Us a Message</h3>
-                    <p class="text-gray-600 mb-8">Fill out the form below and we'll get back to you as soon as possible</p>
-                    
-                    <form id="contactForm" class="space-y-6">
-                        <!-- Name Field -->
-                        <div class="group">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-user mr-2 text-[#2FA4E7]"></i> Full Name *
-                            </label>
-                            <div class="relative">
-                                <input type="text" 
-                                       required
-                                       class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-[#2FA4E7] focus:ring-4 focus:ring-[#2FA4E7]/10 outline-none transition-all duration-300 group-hover:shadow-md"
-                                       placeholder="Enter your full name">
-                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <i class="fas fa-user-check text-[#3CB371]"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Email Field -->
-                        <div class="group">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-envelope mr-2 text-[#3CB371]"></i> Email Address *
-                            </label>
-                            <div class="relative">
-                                <input type="email" 
-                                       required
-                                       class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-[#3CB371] focus:ring-4 focus:ring-[#3CB371]/10 outline-none transition-all duration-300 group-hover:shadow-md"
-                                       placeholder="you@example.com">
-                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <i class="fas fa-envelope-open text-[#2FA4E7]"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Subject Field -->
-                        <div class="group">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-tag mr-2 text-[#2FA4E7]"></i> Subject *
-                            </label>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                <button type="button" class="subject-btn py-3 rounded-xl border border-gray-300 text-gray-700 hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300" data-subject="House Hunting">
-                                    <i class="fas fa-home mr-2"></i> House Hunting
-                                </button>
-                                <button type="button" class="subject-btn py-3 rounded-xl border border-gray-300 text-gray-700 hover:border-[#3CB371] hover:text-[#3CB371] transition-all duration-300" data-subject="Moving Services">
-                                    <i class="fas fa-truck-moving mr-2"></i> Moving Services
-                                </button>
-                                <button type="button" class="subject-btn py-3 rounded-xl border border-gray-300 text-gray-700 hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300" data-subject="Landlord Inquiry">
-                                    <i class="fas fa-user-tie mr-2"></i> Landlord Inquiry
-                                </button>
-                            </div>
-                            <input type="hidden" id="selectedSubject" name="subject" required>
-                        </div>
-
-                        <!-- Message Field -->
-                        <div class="group">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-comment-dots mr-2 text-[#3CB371]"></i> Message *
-                            </label>
-                            <div class="relative">
-                                <textarea 
-                                    rows="5"
-                                    required
-                                    class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-[#3CB371] focus:ring-4 focus:ring-[#3CB371]/10 outline-none transition-all duration-300 group-hover:shadow-md resize-none"
-                                    placeholder="How can we help you today?"></textarea>
-                                <div class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <i class="fas fa-edit text-[#2FA4E7]"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" 
-                                class="w-full py-4 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 transform flex items-center justify-center group">
-                            <span class="group-hover:translate-x-1 transition-transform duration-300">
-                                Send Message <i class="fas fa-paper-plane ml-2"></i>
-                            </span>
-                        </button>
-
-                        <!-- Privacy Note -->
-                        <p class="text-center text-sm text-gray-500">
-                            <i class="fas fa-lock mr-1"></i> Your information is secure. We'll never share your details.
-                        </p>
-                    </form>
-                </div>
-
-                <!-- Quick Response Stats -->
-                <div class="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <p class="text-2xl font-bold text-[#2FA4E7] animate-number">2 Hours</p>
-                        <p class="text-sm text-gray-600">Avg. Response</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <p class="text-2xl font-bold text-[#3CB371] animate-number">98%</p>
-                        <p class="text-sm text-gray-600">Satisfaction</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <p class="text-2xl font-bold text-[#2FA4E7] animate-number">24/7</p>
-                        <p class="text-sm text-gray-600">Support</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Location & Map Placeholder -->
-        <div class="mt-16 bg-gradient-to-r from-[#2FA4E7]/10 to-[#3CB371]/10 rounded-3xl p-8 border border-blue-100/50">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="mb-6 md:mb-0 md:pr-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">
-                        <i class="fas fa-map-marker-alt mr-2 text-[#2FA4E7]"></i> Our Location
-                    </h3>
-                    <p class="text-gray-600 mb-2">
-                        <i class="fas fa-building mr-2 text-gray-400"></i> Rheaspark Headquarters
-                    </p>
-                    <p class="text-gray-600">
-                        <i class="fas fa-location-dot mr-2 text-gray-400"></i> Nairobi, Kenya
-                    </p>
-                    <p class="text-gray-500 text-sm mt-4">
-                        <i class="fas fa-info-circle mr-2"></i> We serve clients across Kenya with our online platform
-                    </p>
-                </div>
-                <div class="w-full md:w-2/3 h-64 rounded-2xl overflow-hidden border border-gray-200 shadow-md">
-                    <!-- Map Placeholder -->
-                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative">
-                        <div class="text-center">
-                            <i class="fas fa-map text-4xl text-gray-400 mb-3"></i>
-                            <p class="text-gray-600 font-medium">Interactive Map</p>
-                            <p class="text-gray-500 text-sm">Would show our location here</p>
-                        </div>
-                        <!-- Map Pin -->
-                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <div class="w-10 h-10 rounded-full bg-[#2FA4E7] border-4 border-white shadow-lg animate-pulse"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Floating WhatsApp Button (Now on Bottom Right) -->
-<div id="whatsappButton" class="fixed bottom-8 right-8 z-50 animate-bounce-slow">
-    <a href="https://wa.me/254769525570?text=Hello%20Rheaspark,%20I%20need%20help%20with..." 
-       target="_blank" 
-       rel="noopener noreferrer"
-       class="whatsapp-button group">
-        <div class="relative">
-            <!-- Main Button -->
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#25D366] to-green-500 shadow-2xl flex items-center justify-center hover:scale-110 hover:rotate-12 transition-all duration-500">
-                <i class="fab fa-whatsapp text-3xl text-white"></i>
-            </div>
-            
-            <!-- Notification Badge -->
-            <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 border-4 border-white flex items-center justify-center animate-ping-slow">
-                <span class="text-white text-xs font-bold">!</span>
-            </div>
-            
-            <!-- Tooltip (Now on left side) -->
-            <div class="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div class="bg-gray-900 text-white px-4 py-2 rounded-lg whitespace-nowrap">
-                    <span class="font-semibold">Chat with us on WhatsApp</span>
-                    <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1">
-                        <div class="w-2 h-2 bg-gray-900 rotate-45"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>
-
-<!-- Chat Notification (Now on Bottom Right) -->
-<div id="chatNotification" class="fixed bottom-32 right-8 z-40 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl p-4 max-w-xs border border-gray-200 animate-slide-up">
-        <div class="flex items-start">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center mr-3 flex-shrink-0">
-                <i class="fas fa-headset text-white"></i>
-            </div>
-            <div>
-                <p class="font-semibold text-gray-800 mb-1">Need help?</p>
-                <p class="text-sm text-gray-600 mb-2">We're here to assist you with house hunting or moving services.</p>
-                <button id="closeNotification" class="text-xs text-[#2FA4E7] font-medium hover:underline">
-                    Got it, thanks!
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Brand gradient utility */
-    .brand-gradient {
-        background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    /* Custom brand font class */
-    .brand-font {
-        font-family: 'Playfair Display', serif;
-    }
-    
-    /* Custom Animations */
-    @keyframes bounce-slow {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes ping-slow {
-        0% { transform: scale(1); opacity: 1; }
-        70% { transform: scale(1.2); opacity: 0.7; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-    
-    @keyframes slide-up {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-    
-    .animate-bounce-slow {
-        animation: bounce-slow 3s ease-in-out infinite;
-    }
-    
-    .animate-ping-slow {
-        animation: ping-slow 2s ease-in-out infinite;
-    }
-    
-    .animate-slide-up {
-        animation: slide-up 0.5s ease-out;
-    }
-    
-    /* WhatsApp Button Hover Effects */
-    .whatsapp-button:hover .w-16 {
-        box-shadow: 0 0 30px rgba(37, 211, 102, 0.5);
-    }
-    
-    /* Form input focus effects */
-    input:focus, textarea:focus, button:focus {
-        outline: none;
-    }
-    
-    /* Subject button active state */
-    .subject-btn.active {
-        background: linear-gradient(90deg, #2FA4E7 0%, #3CB371 100%);
-        color: white;
-        border-color: transparent;
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        #whatsappButton {
-            bottom: 4rem;
-            right: 1rem;
-            left: auto;
-        }
-        
-        #chatNotification {
-            right: 1rem;
-            left: auto;
-            max-width: calc(100vw - 2rem);
-        }
-    }
-    
-    /* Scroll animation for contact cards */
-    @media (min-width: 1024px) {
-        .group:nth-child(1) .bg-gradient-to-r { transition-delay: 0.1s; }
-        .group:nth-child(2) .bg-gradient-to-r { transition-delay: 0.2s; }
-        .group:nth-child(3) .bg-gradient-to-r { transition-delay: 0.3s; }
-    }
-    
-    /* Smooth transitions */
-    .transition-all {
-        transition-property: all;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Tooltip positioning for right side */
-    .right-full {
-        right: 100%;
-    }
-    
-    .mr-3 {
-        margin-right: 0.75rem;
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Subject button selection
-        const subjectButtons = document.querySelectorAll('.subject-btn');
-        const subjectInput = document.getElementById('selectedSubject');
-        
-        subjectButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                subjectButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                subjectInput.value = this.dataset.subject;
-            });
-        });
-        
-        // Set first subject as default
-        if (subjectButtons.length > 0 && !subjectInput.value) {
-            subjectButtons[0].click();
-        }
-        
-        // Contact form submission
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(this);
-            const name = this.querySelector('input[type="text"]').value;
-            const email = this.querySelector('input[type="email"]').value;
-            const subject = subjectInput.value;
-            const message = this.querySelector('textarea').value;
-            
-            // Show success animation
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-            
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
-            submitButton.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                // Success state
-                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i> Message Sent!';
-                submitButton.classList.remove('from-[#2FA4E7]', 'to-[#3CB371]');
-                submitButton.classList.add('from-green-500', 'to-green-600');
-                
-                // Show success message
-                const successMessage = document.createElement('div');
-                successMessage.className = 'mt-4 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200';
-                successMessage.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
-                        <div>
-                            <p class="font-semibold">Thank you, ${name}!</p>
-                            <p class="text-sm">We've received your message about "${subject}". We'll respond to ${email} within 2 hours.</p>
-                        </div>
-                    </div>
-                `;
-                
-                contactForm.appendChild(successMessage);
-                
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    contactForm.reset();
-                    submitButton.innerHTML = originalText;
-                    submitButton.classList.remove('from-green-500', 'to-green-600');
-                    submitButton.classList.add('from-[#2FA4E7]', 'to-[#3CB371]');
-                    submitButton.disabled = false;
-                    successMessage.remove();
-                    subjectButtons[0].click(); // Reset to first subject
-                }, 3000);
-            }, 1500);
-        });
-        
-        // Chat notification (moved to bottom right)
-        const chatNotification = document.getElementById('chatNotification');
-        const closeNotification = document.getElementById('closeNotification');
-        const whatsappButton = document.getElementById('whatsappButton');
-        
-        // Show notification after 5 seconds
-        setTimeout(() => {
-            if (!localStorage.getItem('chatNotificationClosed')) {
-                chatNotification.classList.remove('hidden');
-            }
-        }, 5000);
-        
-        // Close notification
-        closeNotification.addEventListener('click', function() {
-            chatNotification.classList.add('hidden');
-            localStorage.setItem('chatNotificationClosed', 'true');
-        });
-        
-        // WhatsApp button click tracking
-        whatsappButton.addEventListener('click', function() {
-            // Track WhatsApp clicks (you can integrate with analytics here)
-            console.log('WhatsApp clicked - Number: +254769525570');
-            
-            // Hide notification if visible
-            chatNotification.classList.add('hidden');
-            localStorage.setItem('chatNotificationClosed', 'true');
-        });
-        
-        // Add hover effects to contact cards
-        const contactCards = document.querySelectorAll('.group .bg-gradient-to-r');
-        contactCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-        
-        // Add click animation to social media cards
-        const socialCards = document.querySelectorAll('.group.relative');
-        socialCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Add click animation
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
-                
-                // Show alert (in real implementation, these would link to actual social media)
-                const platform = this.querySelector('span').textContent;
-                alert(`In a real implementation, this would link to our ${platform} page.\n\nFor now, please use WhatsApp, email, or phone for contact.`);
-            });
-        });
-        
-        // Animate stats on scroll
-        const stats = document.querySelectorAll('.animate-number');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const stat = entry.target;
-                    const text = stat.textContent.trim();
-                    let targetValue = 0;
-                    let suffix = '';
-
-                    if (text.includes('%')) {
-                        targetValue = parseInt(text);
-                        suffix = '%';
-                    } else if (text.includes('+')) {
-                        targetValue = parseInt(text.replace(/,/g, ''));
-                        suffix = '+';
-                    } else if (text.includes(' Hours')) {
-                        targetValue = parseInt(text);
-                        suffix = ' Hours';
-                    } else if (text.includes(' Days')) {
-                        targetValue = parseInt(text);
-                        suffix = ' Days';
-                    } else if (text === '24/7') {
-                        stat.style.opacity = '1';
-                        observer.unobserve(stat);
-                        return;
-                    }
-
-                    let currentValue = 0;
-                    const increment = targetValue / 50;
-
-                    const timer = setInterval(() => {
-                        currentValue += increment;
-                        if (currentValue >= targetValue) {
-                            stat.textContent = targetValue.toLocaleString() + suffix;
-                            clearInterval(timer);
-                        } else {
-                            stat.textContent = Math.floor(currentValue).toLocaleString() + suffix;
-                        }
-                    }, 30);
-
-                    observer.unobserve(stat);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        stats.forEach(stat => observer.observe(stat));
-        
-        // Add floating effect to WhatsApp button on mouse move (for bottom right)
-        document.addEventListener('mousemove', function(e) {
-            const x = -(e.clientX / window.innerWidth) * 20 + 10; // Reverse for right side
-            const y = (e.clientY / window.innerHeight) * 20 - 10;
-            whatsappButton.style.transform = `translate(${x}px, ${y}px)`;
-        });
-        
-        // Auto-hide notification when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!chatNotification.contains(e.target) && 
-                !whatsappButton.contains(e.target) &&
-                !chatNotification.classList.contains('hidden')) {
-                chatNotification.classList.add('hidden');
-                localStorage.setItem('chatNotificationClosed', 'true');
-            }
-        });
-    });
-</script>
-
-<?php include 'footer.php'; ?>
+?>
 
 </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 <!-- Footer -->
 <footer class="bg-gray-900 text-white py-16">
     <div class="container mx-auto px-6">
@@ -89,7 +91,7 @@
         <div class="border-t border-gray-700 mt-12 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 text-sm">
-                    © 2024 Rheaspark. All rights reserved.
+                    © 2026 Rheaspark. All rights reserved.
                 </p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
                     <a href="#" class="text-gray-400 hover:text-[#2FA4E7] text-sm transition-colors">Privacy Policy</a>

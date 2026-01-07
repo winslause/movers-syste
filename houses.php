@@ -1,7 +1,7 @@
-<?php
+<!-- <?php
 session_start();
 // Main Container
-?>
+?> -->
 <div class="container mx-auto px-4 py-8">
 
     <!-- Page Header -->
@@ -1375,3 +1375,8 @@ session_start();
     // Set login status
     window.userLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
 </script>
+<?php  
+
+include "contactus.php";
+
+?>

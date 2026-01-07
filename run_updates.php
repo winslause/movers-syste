@@ -62,6 +62,17 @@ try {
         FOREIGN KEY (house_id) REFERENCES houses(id)
     )");
 
+    // Create contact_messages table if not exists
+    $pdo->exec("CREATE TABLE IF NOT EXISTS contact_messages (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        subject VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        status ENUM('unread', 'read', 'replied') DEFAULT 'unread',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
     echo "Database updates completed.\n";
 
 } catch (Exception $e) {

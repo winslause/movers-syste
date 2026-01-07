@@ -104,12 +104,24 @@ function getMessages($pdo) {
     return $stmt->fetchAll();
 }
 
+// Function to get contact messages
+function getContactMessages($pdo) {
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM contact_messages
+        ORDER BY created_at DESC
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
 $stats = getDashboardStats($pdo);
 $users = getUsers($pdo);
 $properties = getProperties($pdo);
 $movers = getMovers($pdo);
 $requests = getRequests($pdo);
 $messages = getMessages($pdo);
+$contactMessages = getContactMessages($pdo);
 ?>
 
 <!DOCTYPE html>
@@ -327,7 +339,7 @@ $messages = getMessages($pdo);
     <!-- Admin Layout -->
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col">
+        <div id="sidebar" class="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col fixed inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 md:static md:inset-0 transition-transform duration-300 ease-in-out">
             <!-- Logo -->
             <div class="p-6 border-b border-gray-700">
                 <div class="flex items-center">
@@ -396,7 +408,7 @@ $messages = getMessages($pdo);
                 <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="contacts">
                     <i class="fas fa-envelope w-6 mr-3"></i>
                     <span>Contact Messages</span>
-                    <span class="ml-auto bg-purple-500 text-xs px-2 py-1 rounded-full"><?php echo count(array_filter($messages, function($m) { return !$m['is_read']; })); ?></span>
+                    <span class="ml-auto bg-purple-500 text-xs px-2 py-1 rounded-full"><?php echo count(array_filter($contactMessages, function($m) { return $m['status'] === 'unread'; })); ?></span>
                 </a>
 
                 <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="reports">
@@ -419,11 +431,19 @@ $messages = getMessages($pdo);
             </div>
         </div>
 
+        <!-- Mobile Overlay -->
+        <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
+
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Bar -->
             <header class="bg-white border-b border-gray-200 px-6 py-4">
                 <div class="flex items-center justify-between">
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="md:hidden text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300 mr-4">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
                     <!-- Search -->
                     <div class="flex-1 max-w-2xl">
                         <div class="relative">
@@ -447,13 +467,13 @@ $messages = getMessages($pdo);
                         </div>
 
                         <!-- Quick Actions -->
-                        <div class="relative">
+                        <!-- <div class="relative">
                             <button id="quickActionsBtn" class="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white rounded-xl hover:shadow-lg transition-all duration-300">
                                 <i class="fas fa-plus"></i>
                                 <span>Quick Actions</span>
                                 <i class="fas fa-chevron-down ml-2 text-sm"></i>
                             </button>
-                        </div>
+                        </div> -->
 
                         <!-- Date & Time -->
                         <div class="text-right">
@@ -530,7 +550,7 @@ $messages = getMessages($pdo);
                             </div>
                         </div>
 
-                        <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#9C27B0]">
+                        <!-- <div class="stats-card bg-white rounded-2xl shadow p-6 border-l-4 border-[#9C27B0]">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600">Revenue (Today)</p>
@@ -546,7 +566,7 @@ $messages = getMessages($pdo);
                                     <span>KES 8,400 yesterday</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Charts & Quick Actions -->
@@ -669,7 +689,7 @@ $messages = getMessages($pdo);
                     </div>
 
                     <!-- Tabs -->
-                    <div class="mb-6">
+                    <!-- <div class="mb-6">
                         <div class="border-b border-gray-200">
                             <div class="flex space-x-8">
                                 <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium active" data-tab="all-users">
@@ -689,7 +709,7 @@ $messages = getMessages($pdo);
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Users Table -->
                     <div class="bg-white rounded-2xl shadow overflow-hidden">
@@ -772,7 +792,7 @@ $messages = getMessages($pdo);
                                                 <button class="action-btn text-[#FF9800] hover:text-orange-700" title="Suspend" onclick="showConfirmation('suspendUser', <?php echo $user['id']; ?>, 'Are you sure you want to suspend this user?')">
                                                     <i class="fas fa-user-slash"></i>
                                                 </button>
-                                                <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteUser', <?php echo $user['id']; ?>, 'Are you sure you want to delete this user? This action cannot be undone.')">
+                                                <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="if(confirm('Are you sure you want to delete this user? This action cannot be undone.')) { deleteUser(<?php echo $user['id']; ?>) }">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -1057,8 +1077,8 @@ $messages = getMessages($pdo);
                     <div class="bg-white rounded-2xl shadow overflow-hidden">
                         <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800">Messages</h3>
-                                <p class="text-sm text-gray-600"><?php echo count($messages); ?> total messages</p>
+                                <h3 class="text-lg font-semibold text-gray-800">Contact Messages</h3>
+                                <p class="text-sm text-gray-600"><?php echo count($contactMessages); ?> total messages</p>
                             </div>
                             <div class="flex space-x-3">
                                 <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-300">
@@ -1083,7 +1103,18 @@ $messages = getMessages($pdo);
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    <?php foreach ($messages as $index => $message): ?>
+                                    <?php if (empty($contactMessages)): ?>
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-envelope text-gray-300 text-4xl mb-4"></i>
+                                                <h3 class="text-lg font-medium text-gray-900 mb-2">No contact messages yet</h3>
+                                                <p class="text-gray-500">Contact messages from the website will appear here.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php else: ?>
+                                    <?php foreach ($contactMessages as $index => $message): ?>
                                     <tr class="fade-in-row" style="animation-delay: <?php echo $index * 0.1; ?>s">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
@@ -1091,13 +1122,13 @@ $messages = getMessages($pdo);
                                                     <i class="fas fa-user text-gray-600"></i>
                                                 </div>
                                                 <div>
-                                                    <div class="font-medium text-gray-900"><?php echo htmlspecialchars($message['first_name'] . ' ' . $message['last_name']); ?></div>
+                                                    <div class="font-medium text-gray-900"><?php echo htmlspecialchars($message['name']); ?></div>
                                                     <div class="text-sm text-gray-500"><?php echo htmlspecialchars($message['email']); ?></div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                            Contact Message
+                                            <?php echo htmlspecialchars($message['subject']); ?>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                                             <?php echo htmlspecialchars(substr($message['message'], 0, 100)) . (strlen($message['message']) > 100 ? '...' : ''); ?>
@@ -1106,26 +1137,33 @@ $messages = getMessages($pdo);
                                             <?php echo date('M j, H:i', strtotime($message['created_at'])); ?>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="status-badge <?php echo $message['is_read'] ? 'status-active' : 'status-pending'; ?>">
-                                                <i class="fas <?php echo $message['is_read'] ? 'fa-check-circle' : 'fa-envelope'; ?> mr-1"></i>
-                                                <?php echo $message['is_read'] ? 'Read' : 'Unread'; ?>
+                                            <span class="status-badge <?php
+                                                echo $message['status'] === 'read' ? 'status-active' :
+                                                     ($message['status'] === 'replied' ? 'status-verified' : 'status-pending');
+                                            ?>">
+                                                <i class="fas <?php
+                                                    echo $message['status'] === 'read' ? 'fa-check-circle' :
+                                                         ($message['status'] === 'replied' ? 'fa-reply' : 'fa-envelope');
+                                                ?> mr-1"></i>
+                                                <?php echo ucfirst($message['status']); ?>
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
-                                                <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
+                                                <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View" onclick="viewContactMessage(<?php echo $message['id']; ?>)">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="action-btn text-[#3CB371] hover:text-green-700" title="Reply">
+                                                <button class="action-btn text-[#3CB371] hover:text-green-700" title="Reply" onclick="replyToContactMessage(<?php echo $message['id']; ?>)">
                                                     <i class="fas fa-reply"></i>
                                                 </button>
-                                                <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteMessage', <?php echo $message['id']; ?>, 'Are you sure you want to delete this message?')">
+                                                <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteContactMessage', <?php echo $message['id']; ?>, 'Are you sure you want to delete this contact message?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -1140,125 +1178,169 @@ $messages = getMessages($pdo);
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+    // DOM Elements (defined inside ready)
+    let sections, sidebarItems, sidebar, mobileMenuBtn, mobileOverlay, addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal, tabBtns, quickActionBtns;
+
+    // State Variables
+    let currentAction = null;
+    let currentItemId = null;
+
+    // Initialize DataTables
+    $(document).ready(function() {
         // DOM Elements
-        const sections = document.querySelectorAll('.section-content');
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
-        const addPropertyModal = document.getElementById('addPropertyModal');
-        const addUserModal = document.getElementById('addUserModal');
-        const viewPropertyModal = document.getElementById('viewPropertyModal');
-        const confirmationModal = document.getElementById('confirmationModal');
-        const notificationsModal = document.getElementById('notificationsModal');
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+        sections = document.querySelectorAll('.section-content');
+        sidebarItems = document.querySelectorAll('.sidebar-item');
+        sidebar = document.getElementById('sidebar');
+        mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        mobileOverlay = document.getElementById('mobileOverlay');
+        addPropertyModal = document.getElementById('addPropertyModal');
+        addUserModal = document.getElementById('addUserModal');
+        viewPropertyModal = document.getElementById('viewPropertyModal');
+        confirmationModal = document.getElementById('confirmationModal');
+        notificationsModal = document.getElementById('notificationsModal');
+        tabBtns = document.querySelectorAll('.tab-btn');
+        quickActionBtns = document.querySelectorAll('.quick-action-btn');
 
-        // State Variables
-        let currentAction = null;
-        let currentItemId = null;
-
-        // Initialize DataTables
-        $(document).ready(function() {
-            // Initialize users table
-            $('#usersTable').DataTable({
-                paging: true,
-                pageLength: 5,
-                searching: true,
-                info: true,
-                ordering: true
-            });
-
-            // Initialize properties table
-            $('#propertiesTable').DataTable({
-                paging: true,
-                pageLength: 5,
-                searching: true,
-                info: true,
-                ordering: true
-            });
-
-            // Initialize movers table
-            $('#moversTable').DataTable({
-                paging: false,
-                searching: false,
-                info: false,
-                ordering: false
-            });
-
-            // Initialize requests table
-            $('#requestsTable').DataTable({
-                paging: false,
-                searching: false,
-                info: false,
-                ordering: false
-            });
-
-            // Initialize contacts table
-            $('#contactsTable').DataTable({
-                paging: false,
-                searching: false,
-                info: false,
-                ordering: false
-            });
+        // Initialize users table
+        $('#usersTable').DataTable({
+            paging: true,
+            pageLength: 5,
+            searching: true,
+            info: true,
+            ordering: true
         });
 
-        // Initialize Chart
-        const ctx = document.getElementById('activityChart').getContext('2d');
-        const activityChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Property Views',
-                    data: [120, 190, 300, 500, 200, 300, 450],
-                    borderColor: '#2FA4E7',
-                    backgroundColor: 'rgba(47, 164, 231, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: 'User Signups',
-                    data: [50, 80, 120, 180, 90, 120, 160],
-                    borderColor: '#3CB371',
-                    backgroundColor: 'rgba(60, 179, 113, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            drawBorder: false
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
+        // Initialize properties table
+        $('#propertiesTable').DataTable({
+            paging: true,
+            pageLength: 5,
+            searching: true,
+            info: true,
+            ordering: true
+        });
+
+        // Initialize movers table
+        $('#moversTable').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false
+        });
+
+        // Initialize requests table
+        $('#requestsTable').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false
+        });
+
+        // Initialize contacts table
+        $('#contactsTable').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false
+        });
+
+        // Mobile Menu Toggle - FIXED VERSION
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('-translate-x-full');
+                if (mobileOverlay) {
+                    mobileOverlay.classList.toggle('hidden');
+                }
+            });
+        }
+
+        // Close sidebar when clicking overlay
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', function() {
+                sidebar.classList.add('-translate-x-full');
+                this.classList.add('hidden');
+            });
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 768 && sidebar && mobileOverlay) {
+                if (!sidebar.contains(e.target) && 
+                    e.target !== mobileMenuBtn && 
+                    !mobileOverlay.contains(e.target) &&
+                    !sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.add('hidden');
                 }
             }
         });
+    });
 
-        // Update Date and Time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
-            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    // Initialize Chart
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    const activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Property Views',
+                data: [120, 190, 300, 500, 200, 300, 450],
+                borderColor: '#2FA4E7',
+                backgroundColor: 'rgba(47, 164, 231, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'User Signups',
+                data: [50, 80, 120, 180, 90, 120, 160],
+                borderColor: '#3CB371',
+                backgroundColor: 'rgba(60, 179, 113, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
         }
+    });
 
-        // Update every minute
-        updateDateTime();
-        setInterval(updateDateTime, 60000);
+    // Update Date and Time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
 
-        // Sidebar Navigation
+    // Update every minute
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+
+    // Sidebar Navigation
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const sections = document.querySelectorAll('.section-content');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
         sidebarItems.forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1276,8 +1358,17 @@ $messages = getMessages($pdo);
                     section.classList.add('hidden');
                 });
 
-                document.getElementById(targetSection).classList.remove('hidden');
-                document.getElementById(targetSection).classList.add('active');
+                const targetElement = document.getElementById(targetSection);
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                    targetElement.classList.add('active');
+                }
+
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth < 768 && sidebar && mobileOverlay) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.add('hidden');
+                }
 
                 // Update page title
                 document.title = `${targetSection.charAt(0).toUpperCase() + targetSection.slice(1)} | Rheaspark Admin`;
@@ -1285,6 +1376,7 @@ $messages = getMessages($pdo);
         });
 
         // Tab Navigation
+        const tabBtns = document.querySelectorAll('.tab-btn');
         tabBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 // Update active tab
@@ -1298,8 +1390,12 @@ $messages = getMessages($pdo);
                 this.classList.add('border-[#2FA4E7]', 'text-[#2FA4E7]');
             });
         });
+    });
 
-        // Quick Actions
+    // Quick Actions
+    document.addEventListener('DOMContentLoaded', function() {
+        const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+        
         quickActionBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 const action = this.id;
@@ -1323,470 +1419,537 @@ $messages = getMessages($pdo);
                 }
             });
         });
+    });
 
-        // Add Property Button (from properties section)
-        document.getElementById('addPropertyModalBtn')?.addEventListener('click', () => {
-            openModal(addPropertyModal);
-        });
+    // Add Property Button (from properties section)
+    document.addEventListener('DOMContentLoaded', function() {
+        const addPropertyModalBtn = document.getElementById('addPropertyModalBtn');
+        if (addPropertyModalBtn) {
+            addPropertyModalBtn.addEventListener('click', () => {
+                openModal(addPropertyModal);
+            });
+        }
+    });
 
-        // Add User Button
-        document.getElementById('addUserBtn')?.addEventListener('click', () => {
-            openModal(addUserModal);
-        });
+    // Add User Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const addUserBtn = document.getElementById('addUserBtn');
+        if (addUserBtn) {
+            addUserBtn.addEventListener('click', () => {
+                openModal(addUserModal);
+            });
+        }
+    });
 
-        // Add Mover Button
-        document.getElementById('addMoverBtn')?.addEventListener('click', () => {
-            // For now, use add user modal
-            openModal(addUserModal);
-            // Pre-select mover type
-            document.querySelector('input[name="userType"][value="mover"]').checked = true;
-        });
-
-        // Quick Actions Button
-        document.getElementById('quickActionsBtn')?.addEventListener('click', function() {
-            // Create quick actions dropdown
-            const dropdown = document.createElement('div');
-            dropdown.className = 'absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50';
-            dropdown.innerHTML = `
-                <div class="p-4">
-                    <div class="space-y-2">
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
-                            <i class="fas fa-home mr-3 text-[#2FA4E7]"></i>
-                            <span>Add Property</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
-                            <i class="fas fa-user-plus mr-3 text-[#3CB371]"></i>
-                            <span>Add User</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
-                            <i class="fas fa-truck mr-3 text-[#2FA4E7]"></i>
-                            <span>Add Mover</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
-                            <i class="fas fa-file-invoice mr-3 text-[#FF9800]"></i>
-                            <span>Generate Report</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
-                            <i class="fas fa-cog mr-3 text-gray-600"></i>
-                            <span>Settings</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-
-            // Position and show dropdown
-            this.parentNode.appendChild(dropdown);
-
-            // Close on outside click
-            document.addEventListener('click', function closeDropdown(e) {
-                if (!dropdown.contains(e.target) && e.target !== this) {
-                    dropdown.remove();
-                    document.removeEventListener('click', closeDropdown);
+    // Add Mover Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMoverBtn = document.getElementById('addMoverBtn');
+        if (addMoverBtn) {
+            addMoverBtn.addEventListener('click', () => {
+                // For now, use add user modal
+                openModal(addUserModal);
+                // Pre-select mover type
+                const moverRadio = document.querySelector('input[name="userType"][value="mover"]');
+                if (moverRadio) {
+                    moverRadio.checked = true;
                 }
-            }.bind(this));
-        });
+            });
+        }
+    });
 
-        // Notifications Button
-        document.getElementById('notificationsBtn')?.addEventListener('click', () => {
-            openModal(notificationsModal);
-            loadNotifications();
-        });
-
-        // Load Notifications
-        function loadNotifications() {
-            const container = notificationsModal.querySelector('.p-4');
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="p-4 rounded-xl bg-blue-50 border border-blue-100">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-home text-blue-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-800">New Property Needs Review</div>
-                                <div class="text-sm text-gray-600 mt-1">Property #P-1245 needs verification</div>
-                                <div class="text-xs text-gray-500 mt-2">10 minutes ago</div>
-                            </div>
+    // Quick Actions Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const quickActionsBtn = document.getElementById('quickActionsBtn');
+        if (quickActionsBtn) {
+            quickActionsBtn.addEventListener('click', function() {
+                // Create quick actions dropdown
+                const dropdown = document.createElement('div');
+                dropdown.className = 'absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50';
+                dropdown.innerHTML = `
+                    <div class="p-4">
+                        <div class="space-y-2">
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-home mr-3 text-[#2FA4E7]"></i>
+                                <span>Add Property</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-user-plus mr-3 text-[#3CB371]"></i>
+                                <span>Add User</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-truck mr-3 text-[#2FA4E7]"></i>
+                                <span>Add Mover</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-file-invoice mr-3 text-[#FF9800]"></i>
+                                <span>Generate Report</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-50 text-gray-700">
+                                <i class="fas fa-cog mr-3 text-gray-600"></i>
+                                <span>Settings</span>
+                            </a>
                         </div>
                     </div>
+                `;
 
-                    <div class="p-4 rounded-xl bg-green-50 border border-green-100">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-user-check text-green-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-800">User Verification Complete</div>
-                                <div class="text-sm text-gray-600 mt-1">Sarah Johnson verified as landlord</div>
-                                <div class="text-xs text-gray-500 mt-2">1 hour ago</div>
-                            </div>
+                // Position and show dropdown
+                this.parentNode.appendChild(dropdown);
+
+                // Close on outside click
+                document.addEventListener('click', function closeDropdown(e) {
+                    if (!dropdown.contains(e.target) && e.target !== this) {
+                        dropdown.remove();
+                        document.removeEventListener('click', closeDropdown);
+                    }
+                }.bind(this));
+            });
+        }
+    });
+
+    // Notifications Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationsBtn = document.getElementById('notificationsBtn');
+        if (notificationsBtn) {
+            notificationsBtn.addEventListener('click', () => {
+                openModal(notificationsModal);
+                loadNotifications();
+            });
+        }
+    });
+
+    // Load Notifications
+    function loadNotifications() {
+        const container = notificationsModal?.querySelector('.p-4');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="space-y-4">
+                <div class="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-home text-blue-600 text-sm"></i>
                         </div>
-                    </div>
-
-                    <div class="p-4 rounded-xl bg-red-50 border border-red-100">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-800">Reported Content</div>
-                                <div class="text-sm text-gray-600 mt-1">Property #P-0482 reported for misleading info</div>
-                                <div class="text-xs text-gray-500 mt-2">2 hours ago</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 rounded-xl bg-purple-50 border border-purple-100">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-money-check-alt text-purple-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-800">Payment Issue</div>
-                                <div class="text-sm text-gray-600 mt-1">Refund request #R-784 needs approval</div>
-                                <div class="text-xs text-gray-500 mt-2">3 hours ago</div>
-                            </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">New Property Needs Review</div>
+                            <div class="text-sm text-gray-600 mt-1">Property #P-1245 needs verification</div>
+                            <div class="text-xs text-gray-500 mt-2">10 minutes ago</div>
                         </div>
                     </div>
                 </div>
-            `;
-        }
 
-        // Save Property
-        document.getElementById('saveProperty')?.addEventListener('click', function() {
-            const form = document.getElementById('propertyForm');
-            const isValid = validateForm(form);
+                <div class="p-4 rounded-xl bg-green-50 border border-green-100">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-user-check text-green-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">User Verification Complete</div>
+                            <div class="text-sm text-gray-600 mt-1">Sarah Johnson verified as landlord</div>
+                            <div class="text-xs text-gray-500 mt-2">1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
 
-            if (isValid) {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-                this.disabled = true;
+                <div class="p-4 rounded-xl bg-red-50 border border-red-100">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Reported Content</div>
+                            <div class="text-sm text-gray-600 mt-1">Property #P-0482 reported for misleading info</div>
+                            <div class="text-xs text-gray-500 mt-2">2 hours ago</div>
+                        </div>
+                    </div>
+                </div>
 
-                // Simulate API call
-                setTimeout(() => {
-                    showNotification('Property added successfully!', 'success');
-                    closeModal(addPropertyModal);
-                    this.innerHTML = 'Save Property';
-                    this.disabled = false;
+                <div class="p-4 rounded-xl bg-purple-50 border border-purple-100">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-money-check-alt text-purple-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Payment Issue</div>
+                            <div class="text-sm text-gray-600 mt-1">Refund request #R-784 needs approval</div>
+                            <div class="text-xs text-gray-500 mt-2">3 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-                    // Refresh properties table
-                    loadSampleProperties();
-                }, 1500);
-            }
-        });
+    // Save Property
+    document.addEventListener('DOMContentLoaded', function() {
+        const savePropertyBtn = document.getElementById('saveProperty');
+        if (savePropertyBtn) {
+            savePropertyBtn.addEventListener('click', function() {
+                const form = document.getElementById('propertyForm');
+                const isValid = validateForm(form);
 
-        // Save User
-        document.getElementById('saveUser')?.addEventListener('click', function() {
-            const form = document.getElementById('userForm');
-            const isValid = validateForm(form);
+                if (isValid) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+                    this.disabled = true;
 
-            if (isValid) {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
-                this.disabled = true;
-
-                // Simulate API call
-                setTimeout(() => {
-                    showNotification('User created successfully!', 'success');
-                    closeModal(addUserModal);
-                    this.innerHTML = 'Create User';
-                    this.disabled = false;
-
-                    // Refresh users table
-                    loadSampleUsers();
-                }, 1500);
-            }
-        });
-
-        // Cancel Buttons
-        document.getElementById('cancelProperty')?.addEventListener('click', () => closeModal(addPropertyModal));
-        document.getElementById('cancelUser')?.addEventListener('click', () => closeModal(addUserModal));
-        document.getElementById('closeAddPropertyModal')?.addEventListener('click', () => closeModal(addPropertyModal));
-        document.getElementById('closeAddUserModal')?.addEventListener('click', () => closeModal(addUserModal));
-        document.getElementById('closeViewPropertyModal')?.addEventListener('click', () => closeModal(viewPropertyModal));
-        document.getElementById('closeNotificationsModal')?.addEventListener('click', () => closeModal(notificationsModal));
-        document.getElementById('cancelConfirm')?.addEventListener('click', () => closeModal(confirmationModal));
-
-        // Open Modal Helper
-        function openModal(modal) {
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.querySelector('.modal-enter').classList.add('modal-enter-active');
-            }, 10);
-
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Close Modal Helper
-        function closeModal(modal) {
-            modal.querySelector('.modal-enter').classList.remove('modal-enter-active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }, 300);
-        }
-
-        // Show Confirmation Modal
-        function showConfirmation(action, itemId, message) {
-            currentAction = action;
-            currentItemId = itemId;
-
-            document.getElementById('confirmTitle').textContent = 'Confirm Action';
-            document.getElementById('confirmMessage').textContent = message;
-
-            openModal(confirmationModal);
-        }
-
-        // Confirm Action
-        document.getElementById('confirmAction')?.addEventListener('click', function() {
-            switch(currentAction) {
-                case 'deleteProperty':
-                    // Simulate delete
-                    showNotification('Property deleted successfully!', 'success');
-                    break;
-                case 'deleteUser':
-                    // Simulate delete
-                    showNotification('User deleted successfully!', 'success');
-                    break;
-                case 'suspendUser':
-                    // Simulate suspend
-                    showNotification('User suspended successfully!', 'success');
-                    break;
-            }
-
-            closeModal(confirmationModal);
-        });
-
-        // Validate Form
-        function validateForm(form) {
-            const requiredInputs = form.querySelectorAll('[required]');
-            let isValid = true;
-
-            requiredInputs.forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.style.borderColor = '#F87171';
+                    // Simulate API call
                     setTimeout(() => {
-                        input.style.borderColor = '';
-                    }, 3000);
+                        showNotification('Property added successfully!', 'success');
+                        closeModal(addPropertyModal);
+                        this.innerHTML = 'Save Property';
+                        this.disabled = false;
+
+                        // Refresh properties table
+                        loadSampleProperties();
+                    }, 1500);
                 }
             });
+        }
+    });
 
-            if (!isValid) {
-                showNotification('Please fill all required fields.', 'error');
+    // Save User
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveUserBtn = document.getElementById('saveUser');
+        if (saveUserBtn) {
+            saveUserBtn.addEventListener('click', function() {
+                const form = document.getElementById('userForm');
+                const isValid = validateForm(form);
+
+                if (isValid) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
+                    this.disabled = true;
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        showNotification('User created successfully!', 'success');
+                        closeModal(addUserModal);
+                        this.innerHTML = 'Create User';
+                        this.disabled = false;
+
+                        // Refresh users table
+                        loadSampleUsers();
+                    }, 1500);
+                }
+            });
+        }
+    });
+
+    // Cancel Buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelButtons = {
+            'cancelProperty': addPropertyModal,
+            'cancelUser': addUserModal,
+            'closeAddPropertyModal': addPropertyModal,
+            'closeAddUserModal': addUserModal,
+            'closeViewPropertyModal': viewPropertyModal,
+            'closeNotificationsModal': notificationsModal,
+            'cancelConfirm': confirmationModal
+        };
+
+        for (const [id, modal] of Object.entries(cancelButtons)) {
+            const button = document.getElementById(id);
+            if (button && modal) {
+                button.addEventListener('click', () => closeModal(modal));
             }
+        }
+    });
 
-            return isValid;
+    // Open Modal Helper
+    function openModal(modal) {
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            const modalEnter = modal.querySelector('.modal-enter');
+            if (modalEnter) {
+                modalEnter.classList.add('modal-enter-active');
+            }
+        }, 10);
+
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close Modal Helper
+    function closeModal(modal) {
+        if (!modal) return;
+        const modalEnter = modal.querySelector('.modal-enter');
+        if (modalEnter) {
+            modalEnter.classList.remove('modal-enter-active');
+        }
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    // Show Confirmation Modal
+    function showConfirmation(action, itemId, message) {
+        currentAction = action;
+        currentItemId = itemId;
+
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        
+        if (confirmTitle) confirmTitle.textContent = 'Confirm Action';
+        if (confirmMessage) confirmMessage.textContent = message;
+
+        openModal(confirmationModal);
+    }
+
+    // Confirm Action
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmActionBtn = document.getElementById('confirmAction');
+        if (confirmActionBtn) {
+            confirmActionBtn.addEventListener('click', function() {
+                switch(currentAction) {
+                    case 'deleteProperty':
+                        // Simulate delete
+                        showNotification('Property deleted successfully!', 'success');
+                        break;
+                    case 'deleteUser':
+                        // Actual delete via API
+                        fetch('api/admin_delete_user.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'user_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('User deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting user', 'error');
+                        });
+                        break;
+                    case 'suspendUser':
+                        // Simulate suspend
+                        showNotification('User suspended successfully!', 'success');
+                        break;
+                    case 'deleteContactMessage':
+                        // Delete contact message via API
+                        fetch('api/delete_contact_message.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'message_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Contact message deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting contact message', 'error');
+                        });
+                        break;
+                }
+
+                closeModal(confirmationModal);
+            });
+        }
+    });
+
+    // Validate Form
+    function validateForm(form) {
+        if (!form) return false;
+        
+        const requiredInputs = form.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredInputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.style.borderColor = '#F87171';
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                }, 3000);
+            }
+        });
+
+        if (!isValid) {
+            showNotification('Please fill all required fields.', 'error');
         }
 
-        // Show Notification
-        function showNotification(message, type) {
-            // Remove existing notification
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
+        return isValid;
+    }
 
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full`;
-
-            // Set notification style based on type
-            let bgColor, icon;
-            if (type === 'success') {
-                bgColor = 'linear-gradient(90deg, #3CB371, #4CAF50)';
-                icon = 'check-circle';
-            } else if (type === 'error') {
-                bgColor = 'linear-gradient(90deg, #F44336, #E53935)';
-                icon = 'exclamation-circle';
+    // Delete User
+    function deleteUser(userId) {
+        fetch('api/admin_delete_user.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'user_id=' + userId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('User deleted successfully!', 'success');
+                location.reload();
             } else {
-                bgColor = 'linear-gradient(90deg, #2FA4E7, #2196F3)';
-                icon = 'info-circle';
+                showNotification('Error: ' + data.error, 'error');
             }
+        })
+        .catch(error => {
+            showNotification('Error deleting user', 'error');
+        });
+    }
 
-            notification.style.background = bgColor;
+    // View Contact Message
+    function viewContactMessage(messageId) {
+        // For now, just show an alert. In a real implementation, this would open a modal
+        showNotification('View message functionality would open a detailed view modal', 'info');
+    }
 
-            notification.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-${icon} text-white text-xl mr-3"></i>
-                    <span class="text-white font-semibold">${message}</span>
-                </div>
+    // Reply to Contact Message
+    function replyToContactMessage(messageId) {
+        // For now, just show an alert. In a real implementation, this would open a reply modal
+        showNotification('Reply functionality would open an email composer', 'info');
+    }
+
+    // Show Notification
+    function showNotification(message, type) {
+        // Remove existing notification
+        const existingNotification = document.querySelector('.notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-500 translate-x-full`;
+
+        // Set notification style based on type
+        let bgColor, icon;
+        if (type === 'success') {
+            bgColor = 'linear-gradient(90deg, #3CB371, #4CAF50)';
+            icon = 'check-circle';
+        } else if (type === 'error') {
+            bgColor = 'linear-gradient(90deg, #F44336, #E53935)';
+            icon = 'exclamation-circle';
+        } else {
+            bgColor = 'linear-gradient(90deg, #2FA4E7, #2196F3)';
+            icon = 'info-circle';
+        }
+
+        notification.style.background = bgColor;
+
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-${icon} text-white text-xl mr-3"></i>
+                <span class="text-white font-semibold">${message}</span>
+            </div>
+        `;
+
+        // Add to body
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 10);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }, 3000);
+    }
+
+    function loadSampleProperties() {
+        const propertiesTable = document.querySelector('#propertiesTable tbody');
+        if (!propertiesTable) return;
+        
+        const properties = [
+            { title: 'Spacious 3-Bedroom Apartment', location: 'Westlands', price: 'KES 85,000', status: 'Active', views: 124 },
+            { title: 'Modern 2-Bedroom Studio', location: 'Kilimani', price: 'KES 65,000', status: 'Active', views: 89 },
+            { title: 'Luxury Villa', location: 'Karen', price: 'KES 250,000', status: 'Pending', views: 45 },
+            { title: 'Cozy Bedsitter', location: 'South B', price: 'KES 25,000', status: 'Active', views: 156 },
+            { title: 'Executive Apartment', location: 'Kileleshwa', price: 'KES 120,000', status: 'Inactive', views: 67 }
+        ];
+
+        propertiesTable.innerHTML = '';
+
+        properties.forEach((property, index) => {
+            const statusClass = property.status === 'Active' ? 'status-active' :
+                                property.status === 'Pending' ? 'status-pending' : 'status-inactive';
+
+            const row = document.createElement('tr');
+            row.className = 'fade-in-row';
+            row.style.animationDelay = `${index * 0.1}s`;
+
+            row.innerHTML = `
+                <td class="px-6 py-4">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center mr-3">
+                            <i class="fas fa-home text-gray-600"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900">${property.title}</div>
+                            <div class="text-sm text-gray-500">ID: PROP-${2000 + index}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
+                        <span class="text-gray-900">${property.location}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-semibold">
+                    ${property.price}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge ${statusClass}">
+                        <i class="fas ${property.status === 'Active' ? 'fa-check-circle' : property.status === 'Pending' ? 'fa-clock' : 'fa-ban'} mr-1"></i>
+                        ${property.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900">
+                    ${property.views}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                        <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn text-[#3CB371] hover:text-green-700" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteProperty', ${index}, 'Are you sure you want to delete this property? This action cannot be undone.')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             `;
 
-            // Add to body
-            document.body.appendChild(notification);
-
-            // Animate in
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 10);
-
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    notification.remove();
-                }, 500);
-            }, 3000);
-        }
-
-        // Load Sample Data
-        function loadSampleUsers() {
-            const usersTable = document.querySelector('#usersTable tbody');
-            const users = [
-                { name: 'John Doe', type: 'House Seeker', email: 'john@example.com', phone: '+254712345678', status: 'Active', joined: '2023-10-10' },
-                { name: 'Sarah Johnson', type: 'Landlord', email: 'sarah@example.com', phone: '+254723456789', status: 'Verified', joined: '2023-10-05' },
-                { name: 'Mike Smith', type: 'Mover', email: 'mike@example.com', phone: '+254734567890', status: 'Pending', joined: '2023-10-12' },
-                { name: 'Emma Wilson', type: 'House Seeker', email: 'emma@example.com', phone: '+254745678901', status: 'Active', joined: '2023-10-08' },
-                { name: 'David Brown', type: 'Landlord', email: 'david@example.com', phone: '+254756789012', status: 'Verified', joined: '2023-10-03' }
-            ];
-
-            usersTable.innerHTML = '';
-
-            users.forEach((user, index) => {
-                const statusClass = user.status === 'Active' ? 'status-active' :
-                                    user.status === 'Verified' ? 'status-verified' : 'status-pending';
-
-                const row = document.createElement('tr');
-                row.className = 'fade-in-row';
-                row.style.animationDelay = `${index * 0.1}s`;
-
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                                <i class="fas fa-user text-gray-600"></i>
-                            </div>
-                            <div>
-                                <div class="font-medium text-gray-900">${user.name}</div>
-                                <div class="text-sm text-gray-500">ID: USER-${1000 + index}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full ${user.type === 'Landlord' ? 'bg-green-100' : user.type === 'Mover' ? 'bg-blue-100' : 'bg-gray-100'} flex items-center justify-center mr-2">
-                                <i class="fas ${user.type === 'Landlord' ? 'fa-home text-green-600' : user.type === 'Mover' ? 'fa-truck text-blue-600' : 'fa-search text-gray-600'} text-sm"></i>
-                            </div>
-                            <span class="text-gray-900">${user.type}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">${user.email}</div>
-                        <div class="text-sm text-gray-500">${user.phone}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="status-badge ${statusClass}">
-                            <i class="fas ${user.status === 'Active' ? 'fa-check-circle' : user.status === 'Verified' ? 'fa-shield-alt' : 'fa-clock'} mr-1"></i>
-                            ${user.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${user.joined}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn text-[#3CB371] hover:text-green-700" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn text-[#FF9800] hover:text-orange-700" title="Suspend" onclick="showConfirmation('suspendUser', ${index}, 'Are you sure you want to suspend this user?')">
-                                <i class="fas fa-user-slash"></i>
-                            </button>
-                            <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteUser', ${index}, 'Are you sure you want to delete this user? This action cannot be undone.')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-
-                usersTable.appendChild(row);
-            });
-        }
-
-        function loadSampleProperties() {
-            const propertiesTable = document.querySelector('#propertiesTable tbody');
-            const properties = [
-                { title: 'Spacious 3-Bedroom Apartment', location: 'Westlands', price: 'KES 85,000', status: 'Active', views: 124 },
-                { title: 'Modern 2-Bedroom Studio', location: 'Kilimani', price: 'KES 65,000', status: 'Active', views: 89 },
-                { title: 'Luxury Villa', location: 'Karen', price: 'KES 250,000', status: 'Pending', views: 45 },
-                { title: 'Cozy Bedsitter', location: 'South B', price: 'KES 25,000', status: 'Active', views: 156 },
-                { title: 'Executive Apartment', location: 'Kileleshwa', price: 'KES 120,000', status: 'Inactive', views: 67 }
-            ];
-
-            propertiesTable.innerHTML = '';
-
-            properties.forEach((property, index) => {
-                const statusClass = property.status === 'Active' ? 'status-active' :
-                                    property.status === 'Pending' ? 'status-pending' : 'status-inactive';
-
-                const row = document.createElement('tr');
-                row.className = 'fade-in-row';
-                row.style.animationDelay = `${index * 0.1}s`;
-
-                row.innerHTML = `
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center mr-3">
-                                <i class="fas fa-home text-gray-600"></i>
-                            </div>
-                            <div>
-                                <div class="font-medium text-gray-900">${property.title}</div>
-                                <div class="text-sm text-gray-500">ID: PROP-${2000 + index}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <i class="fas fa-map-marker-alt text-[#3CB371] mr-2"></i>
-                            <span class="text-gray-900">${property.location}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-semibold">
-                        ${property.price}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="status-badge ${statusClass}">
-                            <i class="fas ${property.status === 'Active' ? 'fa-check-circle' : property.status === 'Pending' ? 'fa-clock' : 'fa-ban'} mr-1"></i>
-                            ${property.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-900">
-                        ${property.views}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn text-[#3CB371] hover:text-green-700" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteProperty', ${index}, 'Are you sure you want to delete this property? This action cannot be undone.')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-
-                propertiesTable.appendChild(row);
-            });
-        }
-
-        // Load initial data
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSampleUsers();
+            propertiesTable.appendChild(row);
         });
+    }
 
-        // Close modals on background click
-        [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal].forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    const closeBtn = this.querySelector('button[id^="close"], button[id^="cancel"]');
-                    if (closeBtn) closeBtn.click();
-                }
-            });
+    // Close modals on background click
+    document.addEventListener('DOMContentLoaded', function() {
+        const modals = [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal];
+        
+        modals.forEach(modal => {
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        const closeBtn = this.querySelector('button[id^="close"], button[id^="cancel"]');
+                        if (closeBtn) closeBtn.click();
+                    }
+                });
+            }
         });
-    </script>
+    });
+</script>
+   
 </body>
 </html>

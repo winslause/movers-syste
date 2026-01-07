@@ -18,7 +18,7 @@ if (isset($_GET['page']) && strpos($_GET['page'], 'api/') === 0) {
 $page = $_GET['page'] ?? 'home';
 
 // Pages that don't require authentication
-$public_pages = ['home', 'login', 'register', 'reset_password', 'logout'];
+$public_pages = ['home', 'login', 'register', 'reset_password', 'logout', 'moving_services', 'about'];
 
 // Check if user is logged in for protected pages
 if (!isset($_SESSION['user_id']) && !in_array($page, $public_pages)) {
@@ -37,6 +37,12 @@ switch ($page) {
         break;
     case 'houses':
         include 'houses.php';
+        break;
+    case 'moving_services':
+        include 'moving_services.php';
+        break;
+    case 'about':
+        include 'about.php';
         break;
     case 'profile':
         include 'profile.php';
