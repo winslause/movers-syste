@@ -1,5 +1,5 @@
 <?php
-$password = 'Temp@1234';
+$password = 'password';
 $hash = password_hash($password, PASSWORD_DEFAULT);
 echo "Password: $password\n";
 echo "Hash: $hash\n";
