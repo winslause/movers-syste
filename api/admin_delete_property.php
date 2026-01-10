@@ -29,17 +29,35 @@ if (empty($property_id) || !is_numeric($property_id)) {
 }
 
 try {
-    // Delete property
+    // Start transaction
+    $pdo->beginTransaction();
+
+    // Delete related requests
+    $stmt = $pdo->prepare("DELETE FROM requests WHERE house_id = ?");
+    $stmt->execute([$property_id]);
+
+    // Delete related messages
+    $stmt = $pdo->prepare("DELETE FROM messages WHERE house_id = ?");
+    $stmt->execute([$property_id]);
+
+    // Delete related favorites
+    $stmt = $pdo->prepare("DELETE FROM favorites WHERE house_id = ?");
+    $stmt->execute([$property_id]);
+
+    // Delete the property
     $stmt = $pdo->prepare("DELETE FROM houses WHERE id = ?");
     $stmt->execute([$property_id]);
 
     if ($stmt->rowCount() > 0) {
+        $pdo->commit();
         echo json_encode(['success' => true, 'message' => 'Property deleted successfully']);
     } else {
+        $pdo->rollBack();
         http_response_code(404);
         echo json_encode(['success' => false, 'error' => 'Property not found']);
     }
 } catch (Exception $e) {
+    $pdo->rollBack();
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

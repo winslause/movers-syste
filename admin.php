@@ -424,7 +424,7 @@ $contactMessages = getContactMessages($pdo);
 
             <!-- Logout -->
             <div class="p-4 border-t border-gray-700">
-                <a href="logout.php" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700 w-full text-left">
+                <a href="logout.php" class="flex items-center p-3 rounded-lg hover:bg-gray-700 w-full text-left">
                     <i class="fas fa-sign-out-alt w-6 mr-3"></i>
                     <span>Logout</span>
                 </a>
@@ -1169,7 +1169,109 @@ $contactMessages = getContactMessages($pdo);
                         </div>
                     </div>
                 </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Settings</h1>
+                        <p class="text-gray-600">Manage your admin account settings</p>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="max-w-2xl">
+                        <div class="bg-white rounded-2xl shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-6">Change Password</h3>
+
+                            <form id="changePasswordForm" class="space-y-6">
+                                <div>
+                                    <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                                    <input
+                                        type="password"
+                                        id="currentPassword"
+                                        name="currentPassword"
+                                        required
+                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                        placeholder="Enter your current password"
+                                    >
+                                </div>
+
+                                <div>
+                                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                    <input
+                                        type="password"
+                                        id="newPassword"
+                                        name="newPassword"
+                                        required
+                                        minlength="8"
+                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                        placeholder="Enter your new password"
+                                    >
+                                </div>
+
+                                <div>
+                                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        required
+                                        minlength="8"
+                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                        placeholder="Confirm your new password"
+                                    >
+                                </div>
+
+                                <div class="flex space-x-4">
+                                    <button
+                                        type="submit"
+                                        id="changePasswordBtn"
+                                        class="px-6 py-3 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                                    >
+                                        Change Password
+                                    </button>
+                                    <button
+                                        type="button"
+                                        id="cancelChangePassword"
+                                        class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-300"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
             </main>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="modal-enter bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 id="confirmTitle" class="text-xl font-bold text-gray-800">Confirm Action</h3>
+                        <button id="cancelConfirm" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="mb-6">
+                        <p id="confirmMessage" class="text-gray-600">Are you sure you want to proceed with this action?</p>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button id="confirmAction" class="flex-1 bg-gradient-to-r from-[#F44336] to-[#E53935] text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300">
+                            Confirm
+                        </button>
+                        <button id="cancelConfirmBtn" class="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1642,7 +1744,8 @@ $contactMessages = getContactMessages($pdo);
             'closeAddUserModal': addUserModal,
             'closeViewPropertyModal': viewPropertyModal,
             'closeNotificationsModal': notificationsModal,
-            'cancelConfirm': confirmationModal
+            'cancelConfirm': confirmationModal,
+            'cancelConfirmBtn': confirmationModal
         };
 
         for (const [id, modal] of Object.entries(cancelButtons)) {
@@ -1701,8 +1804,24 @@ $contactMessages = getContactMessages($pdo);
             confirmActionBtn.addEventListener('click', function() {
                 switch(currentAction) {
                     case 'deleteProperty':
-                        // Simulate delete
-                        showNotification('Property deleted successfully!', 'success');
+                        // Delete property via API
+                        fetch('api/admin_delete_property.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'property_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Property deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting property', 'error');
+                        });
                         break;
                     case 'deleteUser':
                         // Actual delete via API
@@ -1934,10 +2053,75 @@ $contactMessages = getContactMessages($pdo);
         });
     }
 
+    // Change Password Form
+    document.addEventListener('DOMContentLoaded', function() {
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const cancelChangePassword = document.getElementById('cancelChangePassword');
+
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Client-side validation
+                if (newPassword !== confirmPassword) {
+                    showNotification('New password and confirmation do not match', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showNotification('New password must be at least 8 characters long', 'error');
+                    return;
+                }
+
+                // Disable button
+                changePasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Changing...';
+                changePasswordBtn.disabled = true;
+
+                // Send request
+                fetch('api/admin_change_password.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        currentPassword: currentPassword,
+                        newPassword: newPassword,
+                        confirmPassword: confirmPassword
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Password changed successfully!', 'success');
+                        changePasswordForm.reset();
+                    } else {
+                        showNotification('Error: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error changing password', 'error');
+                })
+                .finally(() => {
+                    changePasswordBtn.innerHTML = 'Change Password';
+                    changePasswordBtn.disabled = false;
+                });
+            });
+        }
+
+        if (cancelChangePassword) {
+            cancelChangePassword.addEventListener('click', function() {
+                changePasswordForm.reset();
+            });
+        }
+    });
+
     // Close modals on background click
     document.addEventListener('DOMContentLoaded', function() {
         const modals = [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal];
-        
+
         modals.forEach(modal => {
             if (modal) {
                 modal.addEventListener('click', function(e) {

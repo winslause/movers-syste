@@ -146,7 +146,8 @@
             position: fixed;
             top: 0;
             right: -100%;
-            width: 320px;
+            width: 100%;
+            max-width: 320px;
             height: 100vh;
             background: white;
             box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
@@ -181,15 +182,18 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.77, 0.2, 0.05, 1);
+            background-color: #f9fafb;
         }
 
         .mobile-dropdown.open {
-            max-height: 400px;
+            max-height: 500px;
         }
 
         .mobile-dropdown-toggle {
             position: relative;
             padding-right: 40px;
+            width: 100%;
+            text-align: left;
         }
 
         .mobile-dropdown-toggle::after {
@@ -205,6 +209,27 @@
 
         .mobile-dropdown-toggle.active::after {
             content: '-';
+        }
+
+        /* Mobile dropdown items spacing */
+        .mobile-dropdown a {
+            display: block;
+            padding: 12px 20px;
+            padding-left: 30px;
+            color: #4b5563;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-dropdown a:hover {
+            color: #2FA4E7;
+            background-color: #f0f9ff;
+            padding-left: 35px;
         }
 
         /* CTA Button Styling */
@@ -253,6 +278,26 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        /* Mobile menu items */
+        .mobile-nav-item {
+            display: block;
+            padding: 16px 20px;
+            color: #374151;
+            font-weight: 500;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-item:hover {
+            background-color: #f0f9ff;
+            color: #2FA4E7;
+        }
+
+        /* Fix for mobile menu spacing */
+        .mobile-menu-content {
+            padding-bottom: 20px;
         }
     </style>
 </head>
@@ -313,25 +358,24 @@
                             Moving Services
                         </a>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=moving_services" class="dropdown-item">
                                 <div class="font-medium">Find Registered Movers</div>
                                 <div class="text-sm text-gray-500 mt-1">Browse trusted relocation partners</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=moving_services" class="dropdown-item">
                                 <div class="font-medium">Request a Move</div>
                                 <div class="text-sm text-gray-500 mt-1">Direct contact or job request option</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=moving_services" class="dropdown-item">
                                 <div class="font-medium">Mover Profiles</div>
                                 <div class="text-sm text-gray-500 mt-1">View services, capacity, and coverage areas</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=moving_services" class="dropdown-item">
                                 <div class="font-medium">Commission System</div>
                                 <div class="text-sm text-gray-500 mt-1">10% per successful relocation job</div>
                             </a>
                         </div>
                     </div>
-
 
                     <!-- About -->
                     <div class="dropdown-container">
@@ -339,19 +383,19 @@
                             About
                         </a>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=about" class="dropdown-item">
                                 <div class="font-medium">Our Mission</div>
                                 <div class="text-sm text-gray-500 mt-1">Simplifying house hunting and relocation</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=about" class="dropdown-item">
                                 <div class="font-medium">Business Plan</div>
                                 <div class="text-sm text-gray-500 mt-1">Platform roadmap and vision</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=about" class="dropdown-item">
                                 <div class="font-medium">How It Works</div>
                                 <div class="text-sm text-gray-500 mt-1">Platform functionalities and features</div>
                             </a>
-                            <a href="#" class="dropdown-item">
+                            <a href="index.php?page=about" class="dropdown-item">
                                 <div class="font-medium">Contact Support</div>
                                 <div class="text-sm text-gray-500 mt-1">WhatsApp, email, and inquiry system</div>
                             </a>
@@ -384,10 +428,6 @@
                                     <div class="text-sm text-gray-500 mt-1">Account preferences</div>
                                 </a>
                                 <div class="border-t border-gray-100 my-2"></div>
-                                <!-- <a href="index.php?page=logout" class="dropdown-item">
-                                    <div class="font-medium">Log Out</div>
-                                    <div class="text-sm text-gray-500 mt-1">Sign out of your account</div>
-                                </a> -->
                             </div>
                         </div>
                     <?php else: ?>
@@ -415,9 +455,9 @@
 
     <!-- Mobile Menu Sidebar -->
     <div id="mobile-menu" class="mobile-menu">
-        <div class="p-6">
+        <div class="mobile-menu-content">
             <!-- Mobile Menu Header -->
-            <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
                     <div class="logo-wrapper" style="width: 40px; height: 40px;">
                         <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
@@ -435,27 +475,27 @@
             </div>
 
             <!-- Mobile Navigation -->
-            <div class="space-y-1">
-                <a href="index.php" class="block py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300 border-b border-gray-100">
+            <div class="space-y-0">
+                <a href="index.php" class="mobile-nav-item">
                     Home
                 </a>
 
                 <!-- Find a House Dropdown -->
                 <div class="border-b border-gray-100">
-                    <button class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
+                    <button class="mobile-dropdown-toggle mobile-nav-item">
                         Find a House
                     </button>
-                    <div class="mobile-dropdown pl-6">
-                        <a href="index.php?page=houses" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                    <div class="mobile-dropdown">
+                        <a href="index.php?page=houses" class="mobile-dropdown-item">
                             Browse by Area
                         </a>
-                        <a href="index.php?page=houses" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=houses" class="mobile-dropdown-item">
                             Advanced Filters
                         </a>
-                        <a href="index.php?page=houses" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=houses" class="mobile-dropdown-item">
                             Verified Listings
                         </a>
-                        <a href="index.php?page=houses" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=houses" class="mobile-dropdown-item">
                             Payment Access
                         </a>
                     </div>
@@ -463,42 +503,41 @@
 
                 <!-- Moving Services Dropdown -->
                 <div class="border-b border-gray-100">
-                    <a href="index.php?page=moving_services" class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
+                    <button class="mobile-dropdown-toggle mobile-nav-item">
                         Moving Services
-                    </a>
-                    <div class="mobile-dropdown pl-6">
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                    </button>
+                    <div class="mobile-dropdown">
+                        <a href="index.php?page=moving_services" class="mobile-dropdown-item">
                             Find Registered Movers
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=moving_services" class="mobile-dropdown-item">
                             Request a Move
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=moving_services" class="mobile-dropdown-item">
                             Mover Profiles
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=moving_services" class="mobile-dropdown-item">
                             Commission System
                         </a>
                     </div>
                 </div>
 
-
                 <!-- About Dropdown -->
                 <div class="border-b border-gray-100">
-                    <a href="index.php?page=about" class="mobile-dropdown-toggle w-full text-left py-4 px-4 rounded-lg text-gray-800 font-medium hover:bg-blue-50 transition-colors duration-300">
+                    <button class="mobile-dropdown-toggle mobile-nav-item">
                         About
-                    </a>
-                    <div class="mobile-dropdown pl-6">
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                    </button>
+                    <div class="mobile-dropdown">
+                        <a href="index.php?page=about" class="mobile-dropdown-item">
                             Our Mission
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=about" class="mobile-dropdown-item">
                             Business Plan
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=about" class="mobile-dropdown-item">
                             How It Works
                         </a>
-                        <a href="#" class="block py-3 text-gray-600 hover:text-[#2FA4E7] transition-colors duration-300">
+                        <a href="index.php?page=about" class="mobile-dropdown-item">
                             Contact Support
                         </a>
                     </div>
@@ -506,26 +545,26 @@
             </div>
 
             <!-- Mobile CTA Buttons -->
-            <div class="mt-10 space-y-4">
+            <div class="p-6 space-y-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="block w-full py-4 text-center text-gray-800 font-medium">
+                    <div class="text-center py-3 text-gray-600 font-medium border border-gray-200 rounded-lg bg-gray-50">
                         Welcome, <?php echo htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']); ?>
                     </div>
-                    <a href="index.php?page=profile" class="block w-full py-4 text-center text-gray-800 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
+                    <a href="index.php?page=profile" class="block w-full py-3 text-center text-gray-700 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
                         My Profile
                     </a>
-                    <a href="index.php?page=dashboard" class="block w-full py-4 text-center text-gray-800 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
+                    <a href="index.php?page=dashboard" class="block w-full py-3 text-center text-gray-700 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
                         Dashboard
                     </a>
-                    <a href="index.php?page=logout" class="block w-full py-4 text-center text-gray-800 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
+                    <a href="index.php?page=logout" class="block w-full py-3 text-center text-gray-700 font-medium border border-gray-300 rounded-lg hover:border-red-500 hover:text-red-500 transition-all duration-300">
                         Log Out
                     </a>
                 <?php else: ?>
-                    <a href="index.php?page=login" class="block w-full py-4 text-center text-gray-800 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
+                    <a href="index.php?page=login" class="block w-full py-3 text-center text-gray-700 font-medium border border-gray-300 rounded-lg hover:border-[#2FA4E7] hover:text-[#2FA4E7] transition-all duration-300">
                         Log In
                     </a>
                 <?php endif; ?>
-                <a href="index.php?page=houses" class="block w-full py-4 text-center cta-button">
+                <a href="index.php?page=houses" class="block w-full py-3 text-center cta-button">
                     Find Houses
                 </a>
             </div>
@@ -562,10 +601,9 @@
         // Mobile dropdown functionality
         document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
             toggle.addEventListener('click', function(e) {
-                // Prevent navigation for links
-                if (this.tagName === 'A') {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const dropdown = this.nextElementSibling;
                 const isOpen = dropdown.classList.contains('open');
 
@@ -581,6 +619,18 @@
                 dropdown.classList.toggle('open');
                 this.classList.toggle('active');
             });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.mobile-dropdown-toggle') && !e.target.closest('.mobile-dropdown')) {
+                document.querySelectorAll('.mobile-dropdown').forEach(d => {
+                    d.classList.remove('open');
+                });
+                document.querySelectorAll('.mobile-dropdown-toggle').forEach(t => {
+                    t.classList.remove('active');
+                });
+            }
         });
 
         // Add scroll effect to header

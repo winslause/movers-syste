@@ -34,14 +34,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Delete the house
-    $stmt = $pdo->prepare("DELETE FROM houses WHERE id = ?");
-    $result = $stmt->execute([$house_id]);
+    // Delete related records first to avoid foreign key constraint errors
+    try {
+        // Start transaction
+        $pdo->beginTransaction();
 
-    if ($result) {
-        echo json_encode(['success' => true, 'message' => 'Property deleted successfully']);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to delete property']);
+        // Delete related requests
+        $stmt = $pdo->prepare("DELETE FROM requests WHERE house_id = ?");
+        $stmt->execute([$house_id]);
+
+        // Delete related messages
+        $stmt = $pdo->prepare("DELETE FROM messages WHERE house_id = ?");
+        $stmt->execute([$house_id]);
+
+        // Delete related favorites
+        $stmt = $pdo->prepare("DELETE FROM favorites WHERE house_id = ?");
+        $stmt->execute([$house_id]);
+
+        // Delete the house
+        $stmt = $pdo->prepare("DELETE FROM houses WHERE id = ?");
+        $result = $stmt->execute([$house_id]);
+
+        if ($result) {
+            $pdo->commit();
+            echo json_encode(['success' => true, 'message' => 'Property deleted successfully']);
+        } else {
+            $pdo->rollBack();
+            echo json_encode(['success' => false, 'error' => 'Failed to delete property']);
+        }
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'error' => 'Failed to delete property: ' . $e->getMessage()]);
     }
 } else {
     echo json_encode(['success' => false, 'error' => 'Invalid request method']);

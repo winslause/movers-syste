@@ -252,9 +252,9 @@ if ($user_type === 'landlord') {
 <body class="bg-gray-50 min-h-screen">
     
     <!-- Dashboard Container -->
-    <div class="flex">
+    <div class="flex w-full min-h-screen">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar-collapse w-64 bg-white shadow-xl min-h-screen fixed lg:relative lg:mr-4 z-30">
+        <aside id="sidebar" class="sidebar-collapse w-64 bg-white shadow-xl min-h-screen hidden lg:block fixed lg:relative lg:mr-4 z-30">
             <!-- Sidebar Header -->
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
@@ -394,7 +394,7 @@ if ($user_type === 'landlord') {
         </aside>
         
         <!-- Main Content -->
-        <div class="flex-1 lg:ml-0 p-6 lg:pl-0">
+        <div class="flex-1 lg:ml-0 p-6 lg:pl-0 w-full">
             <!-- Top Bar -->
             <header class="bg-white shadow-sm sticky top-0 z-20">
                 <div class="px-6 py-4 flex items-center justify-between">

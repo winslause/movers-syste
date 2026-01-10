@@ -1,0 +1,1 @@
+in admin.php sidebar,   i want you to remove  reports & analytics and replace it with CATEGORIES.  in the main content:  this section will manage categories table and filters table.  i should be able to add or remove  filters and categories

@@ -214,14 +214,14 @@
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-in-up-delay-2">
+    <!-- <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-in-up-delay-2">
         <div class="flex flex-col items-center">
             <span class="text-gray-500 text-sm mb-2">Explore More</span>
             <div class="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
                 <div class="w-1 h-3 bg-gradient-to-b from-[#2FA4E7] to-[#3CB371] rounded-full mt-2 animate-bounce"></div>
             </div>
         </div>
-    </div>
+    </div> -->
 </section>
 
 <!-- Scripts -->

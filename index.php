@@ -17,8 +17,15 @@ if (isset($_GET['page']) && strpos($_GET['page'], 'api/') === 0) {
 
 $page = $_GET['page'] ?? 'home';
 
+// Handle logout before any output
+if ($page === 'logout') {
+    session_destroy();
+    header('Location: index.php');
+    exit;
+}
+
 // Pages that don't require authentication
-$public_pages = ['home', 'login', 'register', 'reset_password', 'logout', 'moving_services', 'about'];
+$public_pages = ['home', 'login', 'register', 'reset_password', 'moving_services', 'about'];
 
 // Check if user is logged in for protected pages
 if (!isset($_SESSION['user_id']) && !in_array($page, $public_pages)) {
@@ -55,11 +62,6 @@ switch ($page) {
         break;
     case 'reset_password':
         include 'reset_password.php';
-        break;
-    case 'logout':
-        session_destroy();
-        header('Location: index.php');
-        exit;
         break;
     default:
         include 'home.php';
