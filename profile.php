@@ -1637,6 +1637,7 @@ if ($user_type === 'landlord') {
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Bedrooms*</label>
                                     <select name="bedrooms" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FA4E7] focus:border-transparent transition-all duration-300" required>
+                                        <option value="1">0</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3" selected>3</option>

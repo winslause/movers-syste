@@ -877,7 +877,7 @@
                                 <h3 class="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">${house.title}</h3>
                                 <div class="flex items-center text-white/90 mb-2 sm:mb-3 text-sm sm:text-base">
                                     <i class="fas fa-map-marker-alt mr-1 sm:mr-2 text-xs sm:text-sm"></i>
-                                    <span>${house.area_name || house.location}</span>
+                                    <span>${house.location}</span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div>
