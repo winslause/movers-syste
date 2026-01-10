@@ -226,7 +226,7 @@ session_start();
                                         <span class="text-gray-600">Property Type</span>
                                         <span class="font-semibold" id="modalPropertyType">Apartment</span>
                                     </div>
-                                    <div class="flex justify-between py-3 border-b border-gray-100">
+                                    <div class="flex justify-between py-3 border-b border-gray-100" id="bedroomsRow">
                                         <span class="text-gray-600">Bedrooms</span>
                                         <span class="font-semibold" id="modalBedrooms">3</span>
                                     </div>
@@ -769,7 +769,7 @@ session_start();
         card.setAttribute('data-property-id', house.id);
 
         const features = [];
-        if (house.bedrooms) features.push(`<div class="flex items-center"><i class="fas fa-bed text-[#2FA4E7] mr-1"></i><span class="text-sm text-gray-700">${house.bedrooms} Bed</span></div>`);
+        if (house.property_type !== 'single room' && house.property_type !== 'bedsitter') features.push(`<div class="flex items-center"><i class="fas fa-bed text-[#2FA4E7] mr-1"></i><span class="text-sm text-gray-700">${house.bedrooms == 0 ? 'N/A' : house.bedrooms + ' Bed'}</span></div>`);
         if (house.bathrooms) features.push(`<div class="flex items-center"><i class="fas fa-bath text-[#2FA4E7] mr-1"></i><span class="text-sm text-gray-700">${house.bathrooms} Bath</span></div>`);
         if (house.size_sqft) features.push(`<div class="flex items-center"><i class="fas fa-ruler-combined text-[#2FA4E7] mr-1"></i><span class="text-sm text-gray-700">${house.size_sqft} sqft</span></div>`);
         if (house.parking_spaces) features.push(`<div class="flex items-center"><i class="fas fa-car text-[#2FA4E7] mr-1"></i><span class="text-sm text-gray-700">${house.parking_spaces} Parking</span></div>`);
@@ -965,7 +965,7 @@ session_start();
         // Update modal content
         document.getElementById('modalPropertyTitle').textContent = house.title;
         document.getElementById('modalPropertyType').textContent = house.property_type.charAt(0).toUpperCase() + house.property_type.slice(1);
-        document.getElementById('modalBedrooms').textContent = house.bedrooms || 'N/A';
+        document.getElementById('modalBedrooms').textContent = house.bedrooms == 0 ? 'N/A' : house.bedrooms;
         document.getElementById('modalBathrooms').textContent = house.bathrooms || 'N/A';
         document.getElementById('modalSquareFeet').textContent = house.size_sqft ? house.size_sqft + ' sqft' : 'N/A';
         document.getElementById('modalParking').textContent = house.parking_spaces ? house.parking_spaces + ' Spaces' : 'N/A';
@@ -974,6 +974,9 @@ session_start();
         document.getElementById('modalDeposit').textContent = house.security_deposit ? 'KES ' + house.security_deposit.toLocaleString() : 'N/A';
         document.getElementById('modalAvailable').textContent = house.available_from || 'Immediately';
         document.getElementById('modalMainImage').src = house.image_url_1;
+
+        // Hide bedrooms row for single room or bedsitter
+        document.getElementById('bedroomsRow').style.display = (house.property_type === 'single room' || house.property_type === 'bedsitter') ? 'none' : 'flex';
 
         // Update thumbnails
         const thumbnails = document.querySelectorAll('.modal-enter img:not(#modalMainImage)');

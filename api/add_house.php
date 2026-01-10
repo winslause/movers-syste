@@ -24,7 +24,7 @@ try {
     // Validate required fields
     $required_fields = ['title', 'description', 'price', 'location', 'bedrooms', 'bathrooms'];
     foreach ($required_fields as $field) {
-        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+        if (!isset($_POST[$field]) || $_POST[$field] === '' || $_POST[$field] === null) {
             throw new Exception("Field '$field' is required");
         }
     }

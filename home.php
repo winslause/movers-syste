@@ -953,10 +953,12 @@
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Monthly Rent</p>
                                                 <p class="text-lg sm:text-xl font-bold text-gray-800">KES ${house.price}</p>
                                             </div>
+                                            ${house.property_type !== 'single room' && house.property_type !== 'bedsitter' ? `
                                             <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Bedrooms</p>
-                                                <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bedrooms}</p>
+                                                <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bedrooms == 0 ? 'N/A' : house.bedrooms}</p>
                                             </div>
+                                            ` : ''}
                                             <div class="bg-gray-50 p-3 sm:p-4 rounded-xl">
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Bathrooms</p>
                                                 <p class="text-lg sm:text-xl font-bold text-gray-800">${house.bathrooms}</p>
