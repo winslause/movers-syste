@@ -7,7 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 require_once __DIR__ . '/../db.php';
 
 $id = isset($_GET['id']) ? $_GET['id'] : null;
-$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$filter = isset($_GET['property_type']) ? $_GET['property_type'] : 'all';
 
 try {
     if ($id) {
@@ -19,7 +19,7 @@ try {
         $stmt->execute();
         $houses = $stmt->fetchAll();
     } else {
-        $stmt = $pdo->prepare("SELECT h.*, a.name as area_name FROM houses h LEFT JOIN areas a ON h.area_id = a.id JOIN categories c ON h.category_id = c.id WHERE c.slug = ? ORDER BY h.created_at DESC LIMIT 6");
+        $stmt = $pdo->prepare("SELECT h.*, a.name as area_name FROM houses h LEFT JOIN areas a ON h.area_id = a.id WHERE h.property_type = ? ORDER BY h.created_at DESC LIMIT 6");
         $stmt->execute([$filter]);
         $houses = $stmt->fetchAll();
     }

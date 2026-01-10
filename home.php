@@ -809,21 +809,21 @@
 <!-- Include the rest of the sections from home.html here, but for brevity, I'll add the key dynamic parts -->
 
 <script>
-    // Load filters
+    // Load property types as filters
     async function loadFilters() {
         try {
-            const response = await fetch('api/filters.php');
+            const response = await fetch('api/property_types.php');
             const data = await response.json();
 
             if (data.success && data.data.length > 0) {
                 const filterTabs = document.getElementById('filter-tabs');
                 filterTabs.innerHTML = '';
 
-                data.data.forEach((filter, index) => {
+                data.data.forEach((propertyType, index) => {
                     const button = document.createElement('button');
                     button.className = `area-filter px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 ${index === 0 ? 'bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:border-[#2FA4E7] hover:text-[#2FA4E7]'}`;
-                    button.setAttribute('data-filter', filter.slug);
-                    button.textContent = filter.name;
+                    button.setAttribute('data-filter', propertyType.slug);
+                    button.textContent = propertyType.name;
                     filterTabs.appendChild(button);
                 });
 
@@ -843,23 +843,27 @@
                 });
             }
         } catch (error) {
-            console.error('Error loading filters:', error);
+            console.error('Error loading property types:', error);
         }
     }
 
     // Load houses
     async function loadHouses(filter = 'all') {
         try {
-            const response = await fetch(`api/featured_houses.php?filter=${filter}`);
+            const response = await fetch(`api/featured_houses.php?property_type=${filter}`);
             const data = await response.json();
 
-            if (data.success && data.data.length > 0) {
-                const housesGrid = document.getElementById('houses-grid');
-                housesGrid.innerHTML = '';
+            const housesGrid = document.getElementById('houses-grid');
+            housesGrid.innerHTML = '';
 
-                data.data.forEach(house => {
+            if (data.success && data.data.length > 0) {
+                // Limit to 6 latest houses
+                const housesToShow = data.data.slice(0, 6);
+
+                housesToShow.forEach(house => {
                     const houseCard = document.createElement('div');
                     houseCard.className = `house-card group mb-4 sm:mb-0`;
+
                     houseCard.setAttribute('data-house-id', house.id);
                     houseCard.innerHTML = `
                         <div class="relative overflow-hidden rounded-xl sm:rounded-2xl h-64 sm:h-72 md:h-80 shadow-lg hover:shadow-2xl transition-all duration-500">
@@ -897,12 +901,20 @@
                     card.style.animation = `fadeInUp 0.6s ease forwards`;
                     card.style.animationDelay = `${index * 0.1}s`;
                 });
+            } else {
+                // Show no houses message
+                housesGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-home text-gray-300 text-6xl mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">No houses found</h3>
+                        <p class="text-gray-500">No properties available for this property type at the moment.</p>
+                    </div>
+                `;
             }
         } catch (error) {
             console.error('Error loading houses:', error);
         }
     }
-
     // Modal functionality
     function setupModal() {
         const modal = document.getElementById('areaModal');

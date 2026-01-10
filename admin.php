@@ -115,6 +115,27 @@ function getContactMessages($pdo) {
     return $stmt->fetchAll();
 }
 
+// Function to get categories
+function getCategories($pdo) {
+    $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY created_at DESC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+// Function to get filters
+function getFilters($pdo) {
+    $stmt = $pdo->prepare("SELECT * FROM filters ORDER BY id ASC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+// Function to get property types
+function getPropertyTypes($pdo) {
+    $stmt = $pdo->prepare("SELECT * FROM property_types ORDER BY created_at DESC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
 $stats = getDashboardStats($pdo);
 $users = getUsers($pdo);
 $properties = getProperties($pdo);
@@ -122,6 +143,9 @@ $movers = getMovers($pdo);
 $requests = getRequests($pdo);
 $messages = getMessages($pdo);
 $contactMessages = getContactMessages($pdo);
+$categories = getCategories($pdo);
+$filters = getFilters($pdo);
+$propertyTypes = getPropertyTypes($pdo);
 ?>
 
 <!DOCTYPE html>
@@ -357,9 +381,9 @@ $contactMessages = getContactMessages($pdo);
             <div class="p-6 border-b border-gray-700">
                 <div class="flex items-center">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
-                             alt="Admin"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-[#3CB371]">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] flex items-center justify-center border-2 border-[#3CB371]">
+                            <i class="fas fa-user text-white text-lg"></i>
+                        </div>
                         <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
                     </div>
                     <div class="ml-4">
@@ -400,20 +424,21 @@ $contactMessages = getContactMessages($pdo);
                     <span class="ml-auto bg-yellow-500 text-xs px-2 py-1 rounded-full"><?php echo count(array_filter($requests, function($r) { return $r['status'] === 'pending'; })); ?></span>
                 </a>
 
-                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="payments">
-                    <i class="fas fa-credit-card w-6 mr-3"></i>
-                    <span>Payments</span>
-                </a>
-
                 <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="contacts">
                     <i class="fas fa-envelope w-6 mr-3"></i>
                     <span>Contact Messages</span>
                     <span class="ml-auto bg-purple-500 text-xs px-2 py-1 rounded-full"><?php echo count(array_filter($contactMessages, function($m) { return $m['status'] === 'unread'; })); ?></span>
                 </a>
 
-                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="reports">
-                    <i class="fas fa-chart-bar w-6 mr-3"></i>
-                    <span>Reports & Analytics</span>
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="categories">
+                    <i class="fas fa-tags w-6 mr-3"></i>
+                    <span>CATEGORIES</span>
+                </a>
+
+                <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="propertytypes">
+                    <i class="fas fa-building w-6 mr-3"></i>
+                    <span>Property Types</span>
+                    <span class="ml-auto bg-blue-500 text-xs px-2 py-1 rounded-full"><?php echo count($propertyTypes); ?></span>
                 </a>
 
                 <a href="#" class="sidebar-item flex items-center p-3 rounded-lg hover:bg-gray-700" data-section="settings">
@@ -1170,6 +1195,71 @@ $contactMessages = getContactMessages($pdo);
                     </div>
                 </section>
 
+                <!-- Property Types Section -->
+                <section id="propertytypes" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Property Types Management</h1>
+                        <p class="text-gray-600">Manage property types for property listings</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Property Types</h3>
+                                <p class="text-sm text-gray-600">Manage property types</p>
+                            </div>
+                            <button id="addPropertyTypeBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                Add Property Type
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="propertyTypesTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <?php foreach ($propertyTypes as $index => $propertyType): ?>
+                                    <tr class="fade-in-row" style="animation-delay: <?php echo $index * 0.1; ?>s">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 rounded-full mr-3" style="background-color: <?php echo htmlspecialchars($propertyType['color']); ?>"></div>
+                                                <div class="font-medium text-gray-900"><?php echo htmlspecialchars($propertyType['name']); ?></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <?php echo htmlspecialchars($propertyType['slug']); ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                                            <?php echo htmlspecialchars($propertyType['description'] ?? ''); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <?php echo htmlspecialchars($propertyType['color']); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex space-x-2">
+                                                <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deletePropertyType', <?php echo $propertyType['id']; ?>, 'Are you sure you want to delete this property type? This action cannot be undone.')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Settings Section -->
                 <section id="settings" class="section-content hidden">
                     <div class="mb-8">
@@ -1240,6 +1330,148 @@ $contactMessages = getContactMessages($pdo);
                             </form>
                         </div>
                     </div>
+
+                </section>
+
+                <!-- Categories Section -->
+                <section id="categories" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Categories & Filters Management</h1>
+                        <p class="text-gray-600">Manage categories and filters for property listings</p>
+                    </div>
+
+                    <!-- Tabs for Categories and Filters -->
+                    <div class="mb-6">
+                        <div class="border-b border-gray-200">
+                            <div class="flex space-x-8">
+                                <button class="tab-btn py-3 px-1 border-b-2 border-[#2FA4E7] text-[#2FA4E7] font-medium active" data-tab="categories-tab">
+                                    Categories (<?php echo count($categories); ?>)
+                                </button>
+                                <button class="tab-btn py-3 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-800 font-medium" data-tab="filters-tab">
+                                    Filters (<?php echo count($filters); ?>)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories Tab Content -->
+                    <div id="categories-tab" class="tab-content hidden">
+                        <div class="bg-white rounded-2xl shadow overflow-hidden">
+                            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Categories</h3>
+                                    <p class="text-sm text-gray-600">Manage property categories</p>
+                                </div>
+                                <button id="addCategoryBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Add Category
+                                </button>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200" id="categoriesTable">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        <?php foreach ($categories as $index => $category): ?>
+                                        <tr class="fade-in-row" style="animation-delay: <?php echo $index * 0.1; ?>s">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full mr-3" style="background-color: <?php echo htmlspecialchars($category['color']); ?>"></div>
+                                                    <div class="font-medium text-gray-900"><?php echo htmlspecialchars($category['name']); ?></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <?php echo htmlspecialchars($category['slug']); ?>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                                                <?php echo htmlspecialchars($category['description'] ?? ''); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <?php echo htmlspecialchars($category['color']); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <div class="flex space-x-2">
+                                                    <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteCategory', <?php echo $category['id']; ?>, 'Are you sure you want to delete this category? This action cannot be undone.')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Tab Content -->
+                    <div id="filters-tab" class="tab-content hidden">
+                        <div class="bg-white rounded-2xl shadow overflow-hidden">
+                            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Filters</h3>
+                                    <p class="text-sm text-gray-600">Manage property filters</p>
+                                </div>
+                                <button id="addFilterBtn" class="px-4 py-2 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                                    Add Filter
+                                </button>
+                            </div>
+
+                            <p>Property Types Content Here</p>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200" id="filtersTable">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Filter</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        <?php foreach ($filters as $index => $filter): ?>
+                                        <tr class="fade-in-row" style="animation-delay: <?php echo $index * 0.1; ?>s">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-filter text-gray-600"></i>
+                                                    </div>
+                                                    <div class="font-medium text-gray-900"><?php echo htmlspecialchars($filter['name']); ?></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <?php echo htmlspecialchars($filter['slug']); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <?php echo htmlspecialchars($filter['category']); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <div class="flex space-x-2">
+                                                    <button class="action-btn text-[#2FA4E7] hover:text-blue-700" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="action-btn text-[#F44336] hover:text-red-700" title="Delete" onclick="showConfirmation('deleteFilter', <?php echo $filter['id']; ?>, 'Are you sure you want to delete this filter? This action cannot be undone.')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>
@@ -1270,6 +1502,248 @@ $contactMessages = getContactMessages($pdo);
                             Cancel
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="modal-enter bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Add New Category</h3>
+                        <button id="closeAddCategoryModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <form id="addCategoryForm" class="space-y-4">
+                        <div>
+                            <label for="categoryName" class="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                            <input
+                                type="text"
+                                id="categoryName"
+                                name="name"
+                                required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="Enter category name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="categorySlug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                            <input
+                                type="text"
+                                id="categorySlug"
+                                name="slug"
+                                required
+                                pattern="[a-z0-9-]+"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="enter-slug-here"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="categoryDescription" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea
+                                id="categoryDescription"
+                                name="description"
+                                rows="3"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="Enter category description"
+                            ></textarea>
+                        </div>
+
+                        <div>
+                            <label for="categoryColor" class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                            <input
+                                type="color"
+                                id="categoryColor"
+                                name="color"
+                                value="#2FA4E7"
+                                class="w-full h-12 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                            >
+                        </div>
+
+                        <div class="flex space-x-3 pt-4">
+                            <button
+                                type="submit"
+                                id="saveCategoryBtn"
+                                class="flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300"
+                            >
+                                Add Category
+                            </button>
+                            <button
+                                type="button"
+                                id="cancelAddCategory"
+                                class="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-50 transition-colors duration-300"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Filter Modal -->
+    <div id="addFilterModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="modal-enter bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Add New Filter</h3>
+                        <button id="closeAddFilterModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <form id="addFilterForm" class="space-y-4">
+                        <div>
+                            <label for="filterName" class="block text-sm font-medium text-gray-700 mb-2">Filter Name</label>
+                            <input
+                                type="text"
+                                id="filterName"
+                                name="name"
+                                required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="Enter filter name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="filterSlug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                            <input
+                                type="text"
+                                id="filterSlug"
+                                name="slug"
+                                required
+                                pattern="[a-z0-9-]+"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="enter-slug-here"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="filterCategory" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <select
+                                id="filterCategory"
+                                name="category"
+                                required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                            >
+                                <option value="">Select category</option>
+                                <?php foreach ($categories as $category): ?>
+                                <option value="<?php echo htmlspecialchars($category['slug']); ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="flex space-x-3 pt-4">
+                            <button
+                                type="submit"
+                                id="saveFilterBtn"
+                                class="flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300"
+                            >
+                                Add Filter
+                            </button>
+                            <button
+                                type="button"
+                                id="cancelAddFilter"
+                                class="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-50 transition-colors duration-300"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Property Type Modal -->
+    <div id="addPropertyTypeModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="modal-enter bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Add New Property Type</h3>
+                        <button id="closeAddPropertyTypeModal" class="text-gray-500 hover:text-gray-800 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <form id="addPropertyTypeForm" class="space-y-4">
+                        <div>
+                            <label for="propertyTypeName" class="block text-sm font-medium text-gray-700 mb-2">Property Type Name</label>
+                            <input
+                                type="text"
+                                id="propertyTypeName"
+                                name="name"
+                                required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="Enter property type name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="propertyTypeSlug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                            <input
+                                type="text"
+                                id="propertyTypeSlug"
+                                name="slug"
+                                required
+                                pattern="[a-z0-9-]+"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="enter-slug-here"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="propertyTypeDescription" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea
+                                id="propertyTypeDescription"
+                                name="description"
+                                rows="3"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                                placeholder="Enter property type description"
+                            ></textarea>
+                        </div>
+
+                        <div>
+                            <label for="propertyTypeColor" class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                            <input
+                                type="color"
+                                id="propertyTypeColor"
+                                name="color"
+                                value="#2FA4E7"
+                                class="w-full h-12 border border-gray-200 rounded-xl focus:outline-none focus:border-[#2FA4E7] focus:ring-2 focus:ring-blue-100"
+                            >
+                        </div>
+
+                        <div class="flex space-x-3 pt-4">
+                            <button
+                                type="submit"
+                                id="savePropertyTypeBtn"
+                                class="flex-1 bg-gradient-to-r from-[#2FA4E7] to-[#3CB371] text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300"
+                            >
+                                Add Property Type
+                            </button>
+                            <button
+                                type="button"
+                                id="cancelAddPropertyType"
+                                class="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-50 transition-colors duration-300"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1490,6 +1964,19 @@ $contactMessages = getContactMessages($pdo);
                     b.classList.remove('border-[#2FA4E7]', 'text-[#2FA4E7]');
                 });
                 this.classList.add('border-[#2FA4E7]', 'text-[#2FA4E7]');
+
+                // Show corresponding tab content
+                const tabId = this.dataset.tab;
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    content.classList.add('hidden');
+                });
+                const targetContent = document.getElementById(tabId);
+                if (targetContent) {
+                    targetContent.classList.remove('hidden');
+                    targetContent.classList.add('active');
+                }
             });
         });
     });
@@ -1555,6 +2042,39 @@ $contactMessages = getContactMessages($pdo);
                 if (moverRadio) {
                     moverRadio.checked = true;
                 }
+            });
+        }
+    });
+
+    // Add Category Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const addCategoryBtn = document.getElementById('addCategoryBtn');
+        const addCategoryModal = document.getElementById('addCategoryModal');
+        if (addCategoryBtn && addCategoryModal) {
+            addCategoryBtn.addEventListener('click', () => {
+                openModal(addCategoryModal);
+            });
+        }
+    });
+
+    // Add Filter Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const addFilterBtn = document.getElementById('addFilterBtn');
+        const addFilterModal = document.getElementById('addFilterModal');
+        if (addFilterBtn && addFilterModal) {
+            addFilterBtn.addEventListener('click', () => {
+                openModal(addFilterModal);
+            });
+        }
+    });
+
+    // Add Property Type Button
+    document.addEventListener('DOMContentLoaded', function() {
+        const addPropertyTypeBtn = document.getElementById('addPropertyTypeBtn');
+        const addPropertyTypeModal = document.getElementById('addPropertyTypeModal');
+        if (addPropertyTypeBtn && addPropertyTypeModal) {
+            addPropertyTypeBtn.addEventListener('click', () => {
+                openModal(addPropertyTypeModal);
             });
         }
     });
@@ -1745,7 +2265,13 @@ $contactMessages = getContactMessages($pdo);
             'closeViewPropertyModal': viewPropertyModal,
             'closeNotificationsModal': notificationsModal,
             'cancelConfirm': confirmationModal,
-            'cancelConfirmBtn': confirmationModal
+            'cancelConfirmBtn': confirmationModal,
+            'closeAddCategoryModal': document.getElementById('addCategoryModal'),
+            'cancelAddCategory': document.getElementById('addCategoryModal'),
+            'closeAddFilterModal': document.getElementById('addFilterModal'),
+            'cancelAddFilter': document.getElementById('addFilterModal'),
+            'closeAddPropertyTypeModal': document.getElementById('addPropertyTypeModal'),
+            'cancelAddPropertyType': document.getElementById('addPropertyTypeModal')
         };
 
         for (const [id, modal] of Object.entries(cancelButtons)) {
@@ -1865,6 +2391,66 @@ $contactMessages = getContactMessages($pdo);
                         })
                         .catch(error => {
                             showNotification('Error deleting contact message', 'error');
+                        });
+                        break;
+                    case 'deleteCategory':
+                        // Delete category via API
+                        fetch('api/delete_category.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'category_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Category deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting category', 'error');
+                        });
+                        break;
+                    case 'deleteFilter':
+                        // Delete filter via API
+                        fetch('api/delete_filter.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'filter_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Filter deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting filter', 'error');
+                        });
+                        break;
+                    case 'deletePropertyType':
+                        // Delete property type via API
+                        fetch('api/delete_property_type.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'property_type_id=' + currentItemId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Property type deleted successfully!', 'success');
+                                location.reload();
+                            } else {
+                                showNotification('Error: ' + data.error, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error deleting property type', 'error');
                         });
                         break;
                 }
@@ -2118,9 +2704,138 @@ $contactMessages = getContactMessages($pdo);
         }
     });
 
+    // Add Category Form
+    document.addEventListener('DOMContentLoaded', function() {
+        const addCategoryForm = document.getElementById('addCategoryForm');
+        const saveCategoryBtn = document.getElementById('saveCategoryBtn');
+        const addCategoryModal = document.getElementById('addCategoryModal');
+
+        if (addCategoryForm) {
+            addCategoryForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                // Disable button
+                saveCategoryBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adding...';
+                saveCategoryBtn.disabled = true;
+
+                // Send request
+                fetch('api/add_category.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Category added successfully!', 'success');
+                        addCategoryForm.reset();
+                        closeModal(addCategoryModal);
+                        location.reload();
+                    } else {
+                        showNotification('Error: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error adding category', 'error');
+                })
+                .finally(() => {
+                    saveCategoryBtn.innerHTML = 'Add Category';
+                    saveCategoryBtn.disabled = false;
+                });
+            });
+        }
+    });
+
+    // Add Filter Form
+    document.addEventListener('DOMContentLoaded', function() {
+        const addFilterForm = document.getElementById('addFilterForm');
+        const saveFilterBtn = document.getElementById('saveFilterBtn');
+        const addFilterModal = document.getElementById('addFilterModal');
+
+        if (addFilterForm) {
+            addFilterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                // Disable button
+                saveFilterBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adding...';
+                saveFilterBtn.disabled = true;
+
+                // Send request
+                fetch('api/add_filter.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Filter added successfully!', 'success');
+                        addFilterForm.reset();
+                        closeModal(addFilterModal);
+                        location.reload();
+                    } else {
+                        showNotification('Error: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error adding filter', 'error');
+                })
+                .finally(() => {
+                    saveFilterBtn.innerHTML = 'Add Filter';
+                    saveFilterBtn.disabled = false;
+                });
+            });
+        }
+    });
+
+    // Add Property Type Form
+    document.addEventListener('DOMContentLoaded', function() {
+        const addPropertyTypeForm = document.getElementById('addPropertyTypeForm');
+        const savePropertyTypeBtn = document.getElementById('savePropertyTypeBtn');
+        const addPropertyTypeModal = document.getElementById('addPropertyTypeModal');
+
+        if (addPropertyTypeForm) {
+            addPropertyTypeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                // Disable button
+                savePropertyTypeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adding...';
+                savePropertyTypeBtn.disabled = true;
+
+                // Send request
+                fetch('api/add_property_type.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Property type added successfully!', 'success');
+                        addPropertyTypeForm.reset();
+                        closeModal(addPropertyTypeModal);
+                        location.reload();
+                    } else {
+                        showNotification('Error: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error adding property type', 'error');
+                })
+                .finally(() => {
+                    savePropertyTypeBtn.innerHTML = 'Add Property Type';
+                    savePropertyTypeBtn.disabled = false;
+                });
+            });
+        }
+    });
+
     // Close modals on background click
     document.addEventListener('DOMContentLoaded', function() {
-        const modals = [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal];
+        const modals = [addPropertyModal, addUserModal, viewPropertyModal, confirmationModal, notificationsModal, document.getElementById('addCategoryModal'), document.getElementById('addFilterModal'), document.getElementById('addPropertyTypeModal')];
 
         modals.forEach(modal => {
             if (modal) {

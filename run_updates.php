@@ -73,6 +73,25 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
+    // Insert missing property types
+    $propertyTypes = [
+        ['Student', 'student', 'Student housing and shared accommodations', '#2FA4E7'],
+        ['Airbnb', 'airbnb', 'Short-term rental properties', '#3CB371'],
+        ['Single Room', 'single-room', 'Individual rooms for rent', '#2FA4E7']
+    ];
+
+    foreach ($propertyTypes as $type) {
+        $stmt = $pdo->prepare("SELECT id FROM property_types WHERE slug = ?");
+        $stmt->execute([$type[1]]);
+        if (!$stmt->fetch()) {
+            $stmt = $pdo->prepare("INSERT INTO property_types (name, slug, description, color) VALUES (?, ?, ?, ?)");
+            $stmt->execute($type);
+            echo "Property type '{$type[0]}' inserted.\n";
+        } else {
+            echo "Property type '{$type[0]}' already exists.\n";
+        }
+    }
+
     echo "Database updates completed.\n";
 
 } catch (Exception $e) {
